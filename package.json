@@ -1,0 +1,27 @@
+{
+  "name": "emuse",
+  "version": "1.0.0",
+  "description": "genetic music generator",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geneball/emuse.git"
+  },
+  "keywords": [
+    "music",
+    "generation",
+    "genetic"
+  ],
+  "author": "Gene Ball",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geneball/emuse/issues"
+  },
+  "homepage": "https://github.com/geneball/emuse#readme",
+  "devDependencies": {
+    "electron": "^20.1.4"
+  }
+}
