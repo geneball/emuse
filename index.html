@@ -11,10 +11,65 @@
       http-equiv="X-Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
     />
-    <title>Hello from Electron renderer!</title>
+    <title>Emuse -- Gene Ball -- Sept 2022</title>
   </head>
   <body>
-    <h1>Hello from Electron renderer!</h1>
-    <p>👋</p>
+    <h1>Emuse -- Gene Ball -- Sept 2022</h1>
+  <p>
+    MIDI In: <select id=selectmidiin><option>Please wait...</option></select> &xrArr;
+    MIDI Out: <select id=selectmidiout><option>Please wait...</option></select>
+	</p>
+
+  <p> Root: <select id="selectRoot">
+    <option> C </option>
+    <option> C#/Db </option>
+    <option> D </option>
+    <option> D#/Eb </option>
+    <option> E </option>
+    <option> F </option>
+    <option> F#/Gb </option>
+    <option> G </option>
+    <option> G#/Ab </option>
+    <option> A </option>
+    <option> A#/Bb </option>
+    <option> B </option>
+  </select>
+
+  Mode: 
+  <select id="selectMode" >
+    <option> Major </option>
+    <option> Minor </option>
+    <option> Ionian (major)</option>
+    <option> Dorian </option>
+    <option> Phrygian </option>
+    <option> Lydian </option>
+    <option> Mixolydian </option>
+    <option> Aeolian (minor)</option>
+    <option> Locrian  </option>
+    <option> Harmonic minor </option>
+    <option> Melodic minor </option>
+    <option> Phryrgian Dominant </option>
+  </select>
+
+  Chord: 
+  <select id="selectChord" >
+  </select>
+  </p>
+
+  Song: 
+  <select id="selectSong" >
+  </select>
+  </p>
+
+  Track: 
+  <select id="selectTrack" >
+  </select>
+  </p>
+
+	<p id=piano> piano </p>
+
+    <p id="info"> info </p>
+    <p id="status"> status </p>
   </body>
+  <script src="./renderer.js"></script>
 </html>

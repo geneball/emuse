@@ -16,12 +16,19 @@
     "genetic"
   ],
   "author": "Gene Ball",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/geneball/emuse/issues"
   },
   "homepage": "https://github.com/geneball/emuse#readme",
   "devDependencies": {
-    "electron": "^20.1.4"
+    "electron": "^20.1.4",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-is-dev": "^2.0.0",
+    "jazz-midi-electron": "^1.2.4",
+    "jzz": "^1.5.0",
+    "jzz-gui-select": "^1.0.7",
+    "jzz-input-kbd": "^1.2.4",
+    "jzz-synth-tiny": "^1.2.9"
   }
 }
