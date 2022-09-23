@@ -1,0 +1,4 @@
+
+body { background-color: rgb(36, 63, 121); }
+.inner { position:absolute; bottom:0; left:0; width:100%; text-align:center; }
+select { width:16em; }

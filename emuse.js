@@ -157,10 +157,10 @@
 	
 	function asStr( chd ){
 		if ( chd instanceof Array ){
-			var s = `[${chd}]=` + '[ ';
+			var s = '[ ';
 			for ( var i=0; i < chd.length; i++ )
 				s += asStr( chd[i] ) + ' ';
-			return s + '] ' + chordName(chd);
+			return s + ']=' + chordName(chd);
 		}
     
         var keynum = parseFloat( chd );

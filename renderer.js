@@ -13,7 +13,8 @@ require('jzz-gui-select')(JZZ);
 JZZ.synth.Tiny.register('Web Audio');
 
 // Create HTML piano
-var piano = JZZ.input.Kbd({at: 'piano', from: 'F4', to: 'E6', onCreate: function(){
+var piano = JZZ.input.Kbd({at: 'piano', from: 'C3', to: 'C7', 
+  wl:100, ww:28, bl:66, bw:16, onCreate: function(){
   this.getBlackKeys().setStyle({color:'#fff'});
   this.getKey('C5').setInnerHTML('<span class=inner>Z</span>');
   this.getKey('C#5').setInnerHTML('<span class=inner>S</span>');
@@ -58,21 +59,19 @@ function loadSelect( sel, nms ){
     sel.appendChild(opt);  
   }
 }
-function playChord( midi, dur ){
+function playCurrChord( midi, dur ){
     const root = em.toKeyNum( selRoot.value );
     const chd = em.toChord( selChd.value, root );
-
+    playChord( midi, chd );
+}
+function playChord( midi, chd, dur ){
+    dur = dur==undefined? 1000 : dur;
     const information = document.getElementById('info')
     information.innerText = `playChord( [${chd}], ${dur} )`
     
     for ( var i=0; i<chd.length; i++ ){
-      midi.noteOn(0, chd[i], 120 );
+      midi.noteOn(0, chd[i], 120 ).wait(dur).noteOff(0, chd[i]);
     }
-    midi.wait( dur ).then( ()=>{
-      for ( var i=0; i<chd.length; i++ ){
-        midi.noteOff(0, chd[i] );
-      }
-    });
 }
 
 
@@ -80,28 +79,46 @@ const selRoot = document.getElementById('selectRoot');
 const selChd = document.getElementById('selectChord');
 const selSong = document.getElementById('selectSong');
 const selTrk = document.getElementById('selectTrack');
+const selEvts = document.getElementById('selectEvents');
+const selWhich = document.getElementById('selWhich');
+const btnPlay = document.getElementById('btnPlay');
 
 const em = require('./emuse.js');
 em.test();
 loadSelect( selChd, em.chordNames() );
 
 const sngs = require('./songs.js');
-var _song;
+var _song, _track, _evtList, _msPerTic;
    
 selRoot.addEventListener("change", function() {
-    playChord( _midiOut, 1000);
+    playCurrChord( _midiOut, 500);
 });
 selChd.addEventListener("change", function() {
-      playChord( _midiOut, 1000);
+      playCurrChord( _midiOut, 500);
 });
 selSong.addEventListener("change", function() {
   _song = sngs.findSong( selSong.value );
   loadSelect( selTrk, sngs.trackNames( _song ));
 });
-selTrk.addEventListener("change", function() {
-  var trk = selTrk.value;
-  sngs.playTrack( _midiOut, _song, sngs.findTrack(_song, trk))
+selEvts.addEventListener("change", function() {
+  var evt = _evtList[ selEvts.selectedIndex ];
+  if (evt.nt !=undefined )
+    _midiOut.noteOn(0, evt.nt, 120).wait( evt.d * _msPerTic ).noteOff( 0,evt.nt );
+  if (evt.chord !=undefined )
+    playChord( _midiOut, evt.chord, evt.d * _msPerTic );
+});
+btnPlay.addEventListener("click", function(){
+  _song = sngs.findSong( selSong.value );
+  _msPerTic = 60000 / _song.tempo / _song.ticsPerBeat;
+
+  _track = sngs.findTrack( _song, selTrk.value );
+  _evtList = sngs.playTrack( _midiOut, _song, _track, selWhich.value ); 
+  
+  var evts = _evtList.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} for ${x.d}` );
+  loadSelect( selEvts, evts );
 });
 
 loadSelect( selSong, sngs.songNames() );
+_song = sngs.findSong( selSong.value );
+loadSelect( selTrk, sngs.trackNames( _song ));
 

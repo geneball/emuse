@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'"
@@ -12,13 +13,15 @@
       content="default-src 'self'; script-src 'self'"
     />
     <title>Emuse -- Gene Ball -- Sept 2022</title>
+    <link  	rel="stylesheet" 	href="emuse.css" >
   </head>
-  <body>
+  <body style="background-color: rgb(36, 63, 121);">
     <h1>Emuse -- Gene Ball -- Sept 2022</h1>
   <p>
     MIDI In: <select id=selectmidiin><option>Please wait...</option></select> &xrArr;
     MIDI Out: <select id=selectmidiout><option>Please wait...</option></select>
 	</p>
+
 
   <p> Root: <select id="selectRoot">
     <option> C </option>
@@ -51,18 +54,29 @@
     <option> Phryrgian Dominant </option>
   </select>
 
+
   Chord: 
   <select id="selectChord" >
   </select>
   </p>
 
+  <p>
   Song: 
   <select id="selectSong" >
   </select>
-  </p>
 
   Track: 
   <select id="selectTrack" >
+  </select>
+ 
+  Play: <button id="btnPlay">Play</button>
+  <select id="selWhich" >
+    <option> Both </option> 
+    <option> Chords </option>
+    <option> Melody </option>
+  </select>
+  Events:
+  <select id="selectEvents" >
   </select>
   </p>
 

@@ -263,7 +263,7 @@ const songs =
       Chorus7: []
     }
   },
-  { nm: 'You Can't Hurry Love',
+  { nm: 'You Can\'t Hurry Love',
     root: 'Bb',
     mode: 'Major',
     timeSig: '4/4', 
@@ -453,7 +453,7 @@ const songs =
 		'|1 12:I 4:I7 16:IV 12:I 4:I7 16:IV',
 		'|5 12:I 4:I7 16:IV 12:I 4:I7 16:IV'
         ]
-      }.
+      },
 	  { nm: 'Chorus lead-out',
         melody: [
 		'|1 3:r 1:6 2:8 2:6 4:8 2:10 2:10',
@@ -523,7 +523,7 @@ const songs =
 		'|8 18:r 2:4 2:4',
 		'|9 6:5 6:5 8:5 4:5 8:6 4:6 8:7 4:7',
 		'|11 4:8 8:8 8:8 4:8',
-		'|12 2:9 10:8 8:9 4:8'
+		'|12 2:9 10:8 8:9 4:8',
 		'|13 2:9 10:9 8:9 8:9 8:9 8:10 10:9 10:8 8:r',
 		'|16 12:r 4:10 8:12'
         ],
@@ -672,8 +672,25 @@ function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
   while ( scdeg > 8 ){ scdeg-=8; off+=12; }
   return scale[scdeg] + off;
 }
+const playChords = 0;
+const playMelody = 1;
+const playBoth = 2;
 
-function playTrack( midi, song, track ){
+function playChord( midi, chd, dur ){
+  dur = dur==undefined? 1000 : dur;
+  const information = document.getElementById('info')
+  information.innerText = `playChord( [${chd}], ${dur} )`
+  
+  for ( var i=0; i<chd.length; i++ ){
+    midi.noteOn(0, chd[i], 120 ).wait(dur).noteOff(0, chd[i]);
+  }
+  // midi.wait( dur );
+  // for ( var i=0; i<chd.length; i++ ){
+  //     midi.noteOff(0, chd[i] );
+  // }
+}
+function playTrack( midi, song, track, playwhich ){
+  if (playwhich==undefined) playwhich = playBoth;
   var bpb = song.beatsPerBar;
   var tpb = song.ticsPerBeat;
   var msPerTic = 60000 / song.tempo / tpb;
@@ -681,45 +698,50 @@ function playTrack( midi, song, track ){
   var root = toKeyNum( song.root );
   var scale = toScale( song.mode, root );
 
-  var chdseq = track.chords.join(' ').split(' ');
   var evts = [], tic = 0;
-  for ( var c of chdseq ){
-    if (c[0]=='|'){
-      var mtic = (parseFloat(c.substr(1))-1) *ticsPerBar;
-      if ( tic != mtic )
-        console.log( `chords ${c} at tic ${tic} not ${mtic}` );
-    } else {
-        var [tics,chordname] = c.split(':');
-        if ( chd != 'r' ){
-          var chd = asChord( chordname, scale );
+  if (playwhich=='Chords' || playwhich=='Both'){
+    var chdseq = track.chords.join(' ').split(' ');
+    for ( var c of chdseq ){
+      if (c[0]=='|'){
+        var mtic = (parseFloat(c.substr(1))-1) *ticsPerBar;
+        if ( tic != mtic )
+          console.log( `chords ${c} at tic ${tic} not ${mtic}` );
+      } else {
+          var [tics,chordname] = c.split(':');
+          if ( chd != 'r' ){
+            var chd = asChord( chordname, scale );
 
-          if ( tics % song.ticsPerBeat != 0 ) 
-            console.log( `chords: tics(${tics}) not at beat (${song.ticsPerBeat}) ` )
-          var beats = tics / song.ticsPerBeat;
-          for( var i=0; i<beats; i++ ){
-            evts.push( {t: tic, chord: chd } );
-            tic += song.ticsPerBeat;
-          }
-        } else 
+            if ( tics % song.ticsPerBeat != 0 ) 
+              console.log( `chords: tics(${tics}) not at beat (${song.ticsPerBeat}) ` )
+            var beats = tics / song.ticsPerBeat;
+            for( var i=0; i<beats; i++ ){
+              evts.push( {t: tic, chord: chd, d:song.ticsPerBeat } );
+              tic += song.ticsPerBeat;
+            }
+          } else 
+            tic += tics;
+      }
+    }
+  }
+  if (playwhich=='Melody' || playwhich=='Both'){
+    var mseq = track.melody.join(' ').split(' ');
+    tic = 0;
+    for ( var n of mseq ){
+      if (n[0]=='|'){
+        var mtic = (parseFloat(n.substr(1))-1) * ticsPerBar;
+        if ( tic != mtic )
+          console.log( `melody ${n} at tic ${tic} not ${mtic}` );
+      } else {
+          var [tics,scdeg] = n.split(':');
+          tics = Number(tics);
+          if ( scdeg != 'r' )
+            evts.push( {t:tic, nt: asNote( scdeg, scale ), d:tics } );
           tic += tics;
+      }
     }
   }
-  var mseq = track.melody.join(' ').split(' ');
-  tic = 0;
-  for ( var n of mseq ){
-    if (n[0]=='|'){
-      var mtic = (parseFloat(n.substr(1))-1) * ticsPerBar;
-      if ( tic != mtic )
-        console.log( `melody ${n} at tic ${tic} not ${mtic}` );
-    } else {
-        var [tics,scdeg] = n.split(':');
-        tics = Number(tics);
-        if ( scdeg != 'r' )
-          evts.push( {t:tic, nt: asNote( scdeg, scale ), d:tics } );
-        tic += tics;
-    }
-  }
-  console.log( evts );
+  //console.log( evts );
   evts.sort( (a,b) => (a.t - b.t) );
+  return evts;
 }
 module.exports = { songNames, findSong, trackNames,findTrack, playTrack };
