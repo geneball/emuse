@@ -15,15 +15,22 @@
     <title>Emuse -- Gene Ball -- Sept 2022</title>
     <link  	rel="stylesheet" 	href="emuse.css" >
   </head>
-  <body style="background-color: rgb(36, 63, 121);">
-    <h1>Emuse -- Gene Ball -- Sept 2022</h1>
-  <p>
-    MIDI In: <select id=selectmidiin><option>Please wait...</option></select> &xrArr;
-    MIDI Out: <select id=selectmidiout><option>Please wait...</option></select>
-	</p>
+  <body>
+    <h1>Emuse</h1>
+    <div id="bars"> 
+      <span id="bar1"></span>
+      <span id="bar2"></span>
+      <span id="bar3"></span>
+      <span id="bar4"></span>
+      <span id="bar5"></span>
+      <span id="bar6"></span>
+      <span id="bar7"></span>
+      <span id="bar8"></span>
+      <span id="bar9"></span>
+      <span id="bar10"></span>
+    </div>
 
-
-  <p> Root: <select id="selectRoot">
+  <p> <b>Key</b>: <select id="selectRoot">
     <option> C </option>
     <option> C#/Db </option>
     <option> D </option>
@@ -37,8 +44,6 @@
     <option> A#/Bb </option>
     <option> B </option>
   </select>
-
-  Mode: 
   <select id="selectMode" >
     <option> Major </option>
     <option> Minor </option>
@@ -54,8 +59,7 @@
     <option> Phryrgian Dominant </option>
   </select>
 
-
-  Chord: 
+  Chords: 
   <select id="selectChord" >
   </select>
   </p>
@@ -64,12 +68,9 @@
   Song: 
   <select id="selectSong" >
   </select>
-
-  Track: 
   <select id="selectTrack" >
   </select>
  
-  Play: <button id="btnPlay">Play</button>
   <select id="selWhich" >
     <option> Both </option> 
     <option> Chords </option>
@@ -78,6 +79,7 @@
   Events:
   <select id="selectEvents" >
   </select>
+  <button id="btnPlay">Play</button>
   </p>
 
 	<p id=piano> piano </p>

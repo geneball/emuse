@@ -1,4 +1,20 @@
 
-body { background-color: rgb(36, 63, 121); }
+body { background-color:  rgb(115, 115, 124); }
 .inner { position:absolute; bottom:0; left:0; width:100%; text-align:center; }
 select { width:16em; }
+#selectRoot     { width:3em; }
+#selectMode     { width:10em; }
+#selectTrack    { width:10em; }
+#selWhich       { width:5em; }
+#selectChord    { width:5em; }
+#bars  { position:relative; border: 1px solid black; width:1000px; height:22px; }
+#bar1  { position:absolute; bottom:0; left:000px; width:100px; height:20px; background-color: #800000; border: 1px solid black;}
+#bar2  { position:absolute; bottom:0; left:100px; width:100px; height:20px; background-color: #e6294b; border: 1px solid black;}
+#bar3  { position:absolute; bottom:0; left:200px; width:100px; height:20px; background-color: #f58231; border: 1px solid black;}
+#bar4  { position:absolute; bottom:0; left:300px; width:100px; height:20px; background-color: #808000; border: 1px solid black;}
+#bar5  { position:absolute; bottom:0; left:400px; width:100px; height:20px; background-color: #ffe119; border: 1px solid black;}
+#bar6  { position:absolute; bottom:0; left:500px; width:100px; height:20px; background-color: #bfef45; border: 1px solid black;}
+#bar7  { position:absolute; bottom:0; left:600px; width:100px; height:20px; background-color: #42d4f4; border: 1px solid black;}
+#bar8  { position:absolute; bottom:0; left:700px; width:100px; height:20px; background-color: #000075; border: 1px solid black;}
+#bar9  { position:absolute; bottom:0; left:800px; width:100px; height:20px; background-color: #911eb4; border: 1px solid black;}
+#bar10 { position:absolute; bottom:0; left:900px; width:100px; height:20px; background-color: #f032e6; border: 1px solid black;}

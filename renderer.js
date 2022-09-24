@@ -39,12 +39,13 @@ var _midiOut = null;
 
 // JZZ() engine must be started after jazz-midi-electron is initialized
 require('jazz-midi-electron')().then(function() {
-    var midiin = JZZ.gui.SelectMidiIn({ at: 'selectmidiin', none: 'HTML Piano' });
-    _midiOut = JZZ.gui.SelectMidiOut({ at: 'selectmidiout', none: 'No MIDI Out' });
-    midiin.connect(piano);
+    // var midiin = JZZ.gui.SelectMidiIn({ at: 'selectmidiin', none: 'HTML Piano' });
+    // _midiOut = JZZ.gui.SelectMidiOut({ at: 'selectmidiout', none: 'No MIDI Out' });
+    // midiin.connect(piano);
+    _midiOut = JZZ().openMidiOut('Microsoft GS Wavetable Synth');
     piano.connect(_midiOut);
     // Open the default MIDI Out port:
-    _midiOut.select();
+    //_midiOut.select();
     const stat = document.getElementById('status')
 });
 
@@ -100,6 +101,22 @@ selSong.addEventListener("change", function() {
   _song = sngs.findSong( selSong.value );
   loadSelect( selTrk, sngs.trackNames( _song ));
 });
+function evalTrack(){
+  _song = sngs.findSong( selSong.value );
+  _msPerTic = 60000 / _song.tempo / _song.ticsPerBeat;
+
+  _track = sngs.findTrack( _song, selTrk.value );
+  _evtList = sngs.trackEvents( _song, _track, selWhich.value ); 
+  
+  var evts = _evtList.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} for ${x.d}` );
+  loadSelect( selEvts, evts );
+}
+selTrk.addEventListener("change", function() {
+  evalTrack();
+});
+selWhich.addEventListener("change", function() {
+  evalTrack();
+});
 selEvts.addEventListener("change", function() {
   var evt = _evtList[ selEvts.selectedIndex ];
   if (evt.nt !=undefined )
@@ -108,14 +125,7 @@ selEvts.addEventListener("change", function() {
     playChord( _midiOut, evt.chord, evt.d * _msPerTic );
 });
 btnPlay.addEventListener("click", function(){
-  _song = sngs.findSong( selSong.value );
-  _msPerTic = 60000 / _song.tempo / _song.ticsPerBeat;
-
-  _track = sngs.findTrack( _song, selTrk.value );
-  _evtList = sngs.playTrack( _midiOut, _song, _track, selWhich.value ); 
-  
-  var evts = _evtList.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} for ${x.d}` );
-  loadSelect( selEvts, evts );
+  sngs.playEvents( _midiOut, _evtList );
 });
 
 loadSelect( selSong, sngs.songNames() );

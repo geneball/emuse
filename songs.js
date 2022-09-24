@@ -667,10 +667,16 @@ function asChord( nm, scale ){    // decode e.g. 'Im' or 'iii6(9)'
   return toChord( chd, scale[scdeg]);
 }
 function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
-  var off = 0;
+  var off = 0, adj = 0;
+  var lch = scdeg[scdeg.length-1];
+  if ( lch=='#' || lch=='b' ){
+    scdeg = scdeg.substr(0,scdeg.length-1);
+    adj = lch=='#'? 1 : -1;
+  }
+  scdeg = Number( scdeg );
   while ( scdeg < 1 ){ scdeg+=8; off-=12; }
   while ( scdeg > 8 ){ scdeg-=8; off+=12; }
-  return scale[scdeg] + off;
+  return scale[scdeg-1] + off;
 }
 const playChords = 0;
 const playMelody = 1;
@@ -689,7 +695,7 @@ function playChord( midi, chd, dur ){
   //     midi.noteOff(0, chd[i] );
   // }
 }
-function playTrack( midi, song, track, playwhich ){
+function trackEvents( song, track, playwhich ){
   if (playwhich==undefined) playwhich = playBoth;
   var bpb = song.beatsPerBar;
   var tpb = song.ticsPerBeat;
@@ -734,14 +740,51 @@ function playTrack( midi, song, track, playwhich ){
       } else {
           var [tics,scdeg] = n.split(':');
           tics = Number(tics);
-          if ( scdeg != 'r' )
+          if ( scdeg.toLowerCase() != 'r' )
             evts.push( {t:tic, nt: asNote( scdeg, scale ), d:tics } );
           tic += tics;
       }
     }
   }
   //console.log( evts );
-  evts.sort( (a,b) => (a.t - b.t) );
+  if ( playwhich=='Both' )
+    evts.sort( (a,b) => (a.t - b.t) );
   return evts;
 }
-module.exports = { songNames, findSong, trackNames,findTrack, playTrack };
+function playEvent( midi, evt ){
+  var dur = evt.d * _msPerTic;
+  if (evt.nt !=undefined ){
+    midi.noteOn( 0, evt.nt, 120 ).wait( dur ).noteOff( 0, evt.nt );
+  } else if (evt.chord !=undefined ){
+    for ( var i=0; i<evt.chord.length; i++ ){
+      midi.noteOn( 0, evt.chord[i], 120 ).wait( dur ).noteOff( 0, evt.chord[i] );
+    }  
+  }
+}
+function playEvtPromise( midi, evt ){
+  return new Promise( resolve => {
+    playEvent( midi, evt );
+  });
+}
+
+async function playEvtsSeq( midi, evts ){
+  let promises = evts.map( evt => () => playEvtPromise(midi, evt) );
+  for ( let job of promises )
+    await job();
+
+  //return playEvtPromise(  midi, evts.shift()).then( x => evts.length==0? x : playEvtsSeq( evts ));
+}
+//async function playEvtList( midi, evts ){
+  // for ( const e of evts ){
+  //   await playEvent( midi, e );
+  // }
+//}
+function playEvents( midi, evts ){
+  playEvtsSeq( midi, evts );
+}
+
+function playTrack( midi, song, track, playwhich ){
+    var evts = trackEvents( song, track, playwhich );
+    playEvts( midi, evts );
+}
+module.exports = { songNames, findSong, trackNames,findTrack, playEvent, playEvents, trackEvents, playTrack };
