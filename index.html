@@ -18,16 +18,49 @@
   <body>
     <h1>Emuse</h1>
     <div id="bars"> 
-      <span id="bar1"></span>
-      <span id="bar2"></span>
-      <span id="bar3"></span>
-      <span id="bar4"></span>
-      <span id="bar5"></span>
-      <span id="bar6"></span>
-      <span id="bar7"></span>
-      <span id="bar8"></span>
-      <span id="bar9"></span>
-      <span id="bar10"></span>
+	  <div id="rows">
+		  <div class="r0  sp1"></div>
+		  <div class="r1  sp2"></div>
+		  <div class="r2  sp3"></div>
+		  <div class="r3  sp4"></div>
+		  <div class="r4  sp5"></div>
+		  <div class="r5  sp6"></div>
+		  <div class="r6  sp7"></div>
+		  <div class="r7  sp1"></div>
+		  <div class="r8  sp2"></div>
+		  <div class="r9  sp3"></div>
+		  <div class="r10 sp4"></div>
+		  <div class="r11 sp5"></div>
+		  <div class="r12 sp6"></div>
+		  <div class="r13 sp7"></div>
+		  <div class="r14 sp1"></div>
+		  <div class="r15 sp2"></div>
+		  <div class="r16 sp3"></div>
+		  <div class="r17 sp4"></div>
+		  <div class="r18 sp5"></div>
+		  <div class="r19 sp6"></div>
+	  </div>                
+      <div id="tics">
+        <div class="tic t1"></div>
+        <div class="tic t2"></div>
+        <div class="tic t3"></div>
+        <div class="bar t4"></div>
+        <div class="tic t5"></div>
+        <div class="tic t6"></div>
+        <div class="tic t7"></div>
+        <div class="bar t8"></div>
+	  </div>
+	  <div id="notes">
+        <div id="nt0" class="r8  n2 t0 ln2"></div>
+        <div id="nt1" class="r11 n5 t2 ln1"></div>
+        <div id="nt2" class="r15 n2 t3 ln4"></div>
+        <div id="nt3" class="r12 n6 t7 ln2"></div>
+      </div>
+	  <div id="chords">
+        <div id="chd0-0" class="r0 n1 t0 ln1"></div>
+        <div id="chd0-4" class="r4 n5 t0 ln1"></div>
+        <div id="chd0-7" class="r7 n1 t0 ln1"></div>
+	  </div>
     </div>
 
   <p> <b>Key</b>: <select id="selectRoot">
@@ -79,6 +112,12 @@
   Events:
   <select id="selectEvents" >
   </select>
+  <select id="selChdOff" >
+    <option> 0 </option> 
+    <option> -12 </option>
+    <option> -24 </option>
+  </select>
+  
   <button id="btnPlay">Play</button>
   </p>
 

@@ -682,20 +682,7 @@ const playChords = 0;
 const playMelody = 1;
 const playBoth = 2;
 
-function playChord( midi, chd, dur ){
-  dur = dur==undefined? 1000 : dur;
-  const information = document.getElementById('info')
-  information.innerText = `playChord( [${chd}], ${dur} )`
-  
-  for ( var i=0; i<chd.length; i++ ){
-    midi.noteOn(0, chd[i], 120 ).wait(dur).noteOff(0, chd[i]);
-  }
-  // midi.wait( dur );
-  // for ( var i=0; i<chd.length; i++ ){
-  //     midi.noteOff(0, chd[i] );
-  // }
-}
-function trackEvents( song, track, playwhich ){
+function trackEvents( song, track, playwhich, chordOffset ){
   if (playwhich==undefined) playwhich = playBoth;
   var bpb = song.beatsPerBar;
   var tpb = song.ticsPerBeat;
@@ -716,7 +703,7 @@ function trackEvents( song, track, playwhich ){
           var [tics,chordname] = c.split(':');
           if ( chd != 'r' ){
             var chd = asChord( chordname, scale );
-
+            chd = chd.map( x => x + chordOffset );
             if ( tics % song.ticsPerBeat != 0 ) 
               console.log( `chords: tics(${tics}) not at beat (${song.ticsPerBeat}) ` )
             var beats = tics / song.ticsPerBeat;
@@ -751,40 +738,51 @@ function trackEvents( song, track, playwhich ){
     evts.sort( (a,b) => (a.t - b.t) );
   return evts;
 }
-function playEvent( midi, evt ){
+var _midi;
+var _stop;
+var _chordVelocity = 100;
+var _melodyVelocity = 120;
+var _start;
+var _actuals;
+function playEvent( evt ){
   var dur = evt.d * _msPerTic;
-  if (evt.nt !=undefined ){
-    midi.noteOn( 0, evt.nt, 120 ).wait( dur ).noteOff( 0, evt.nt );
-  } else if (evt.chord !=undefined ){
-    for ( var i=0; i<evt.chord.length; i++ ){
-      midi.noteOn( 0, evt.chord[i], 120 ).wait( dur ).noteOff( 0, evt.chord[i] );
+  let till = evt.t * _msPerTic;
+  setTimeout( function() { 
+    if (_stop ) return;
+    if (evt.nt !=undefined ){
+      _actuals.push( {tic: ((Date.now()-_start)/_msPerTic).toFixed(1), nt:evt.nt})
+      _midi.noteOn( 0, evt.nt, _melodyVelocity ).wait( dur ).noteOff( 0, evt.nt );
+    } else if (evt.chord !=undefined ){
+      for ( var i=0; i<evt.chord.length; i++ ){
+        _actuals.push( {tic: ((Date.now()-_start)/_msPerTic).toFixed(1), nt:evt.chord[i]})
+        _midi.noteOn( 0, evt.chord[i], _chordVelocity ).wait( dur ).noteOff( 0, evt.chord[i] );
     }  
+  }}, till );
+}
+function playEvents( midi, evts ){
+  _midi = midi;
+  stopPlay();
+
+  _stop = false;
+  _start = Date.now();
+  _actuals = [];
+  for ( let e of evts ){
+    playEvent( e );
   }
 }
-function playEvtPromise( midi, evt ){
-  return new Promise( resolve => {
-    playEvent( midi, evt );
-  });
+function stopPlay(){
+  _stop = true;
+  _midi.allNotesOff(0);
 }
-
-async function playEvtsSeq( midi, evts ){
-  let promises = evts.map( evt => () => playEvtPromise(midi, evt) );
-  for ( let job of promises )
-    await job();
-
-  //return playEvtPromise(  midi, evts.shift()).then( x => evts.length==0? x : playEvtsSeq( evts ));
+function setVelocity( chd, mel ){
+  _chordVelocity = chd;
+  _melodyVelocity = mel;
 }
-//async function playEvtList( midi, evts ){
-  // for ( const e of evts ){
-  //   await playEvent( midi, e );
-  // }
-//}
-function playEvents( midi, evts ){
-  playEvtsSeq( midi, evts );
-}
-
-function playTrack( midi, song, track, playwhich ){
-    var evts = trackEvents( song, track, playwhich );
-    playEvts( midi, evts );
-}
-module.exports = { songNames, findSong, trackNames,findTrack, playEvent, playEvents, trackEvents, playTrack };
+// function playTrack( midi, song, track, playwhich ){
+//     stopPlay();
+//     var evts = trackEvents( song, track, playwhich );
+ 
+//     playEvts( evts );
+// }
+module.exports = { songNames, findSong, trackNames,findTrack, trackEvents,
+  playEvents, stopPlay, setVelocity };
