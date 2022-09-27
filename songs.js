@@ -655,6 +655,13 @@ function toSD( s ){
   console.log(`toSD: unrec ${s}`);
   return 0;
 }
+function scDeg( nt, root, scale ){ // return scDeg (1..7) from keynum given root & scale
+
+}
+function toRow( nt, lowest, scale ){ // map keynum to row, given scale & lowest note
+
+
+}
 function asChord( nm, scale ){    // decode e.g. 'Im' or 'iii6(9)'
   var i = 0;
   nm = nm + ' ';  

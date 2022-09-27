@@ -19,7 +19,7 @@
         --C16: #FFFAC8;      --C17: #AAFFC3;
         --C19: #DCEBFF;
      }
-     body { background-color:  rgb(115, 115, 124); }
+     body { background-color:  rgb(105, 105, 156); }
      .inner { position:absolute; bottom:0; left:0; width:16px; 
              text-align:center;  border-radius: 50%;
             }
@@ -31,30 +31,52 @@
      #selectTrack    { width:10em; }
      #selWhich       { width:5em; }
      #selectChord    { width:5em; }
-     #bars { position:relative; border: 1px solid white; width:1000px; height:302px; }
-	 .tic { position: absolute; bottom:1px; height:300px; width:1px; background-color: white; }
-	 .bar { position: absolute; bottom:1px; height:300px; width:1px; background-color: gray; }
+     #selChdOff      { width:3em; }
+     #bars { position:relative; border: 1px solid white; width:1000px; height:302px;
+            overflow: auto; }
+
+     .tic { position: absolute; bottom:1px; height:300px; width:1px; background-color: white; }
+     .bar { position: absolute; bottom:1px; height:300px; width:1px; background-color: gray; }
 	 
-     .r0 { position: absolute; bottom: 01px; height:15px; }
-     .r1 { position: absolute; bottom: 16px; height:15px; }
-     .r2 { position: absolute; bottom: 31px; height:15px; }
-     .r3 { position: absolute; bottom: 46px; height:15px; }
-     .r4 { position: absolute; bottom: 61px; height:15px; }
-     .r5 { position: absolute; bottom: 76px; height:15px; }
-     .r6 { position: absolute; bottom: 91px; height:15px; }
-     .r7 { position: absolute; bottom:106px; height:15px; }
-     .r8 { position: absolute; bottom:121px; height:15px; }
-     .r9 { position: absolute; bottom:136px; height:15px; }
-     .r10{ position: absolute; bottom:151px; height:15px; }
-     .r11{ position: absolute; bottom:166px; height:15px; }
-     .r12{ position: absolute; bottom:181px; height:15px; }
-     .r13{ position: absolute; bottom:196px; height:15px; }
-     .r14{ position: absolute; bottom:211px; height:15px; }
-     .r15{ position: absolute; bottom:226px; height:15px; }
-     .r16{ position: absolute; bottom:241px; height:15px; }
-     .r17{ position: absolute; bottom:256px; height:15px; }
-     .r18{ position: absolute; bottom:271px; height:15px; }
-     .r19{ position: absolute; bottom:286px; height:15px; }
+     .r0  { position: absolute; bottom: 01px; height:15px; }
+     .r0p { position: absolute; bottom: 08px; height:15px; }
+     .r1  { position: absolute; bottom: 16px; height:15px; }
+     .r1p { position: absolute; bottom: 23px; height:15px; }
+     .r2  { position: absolute; bottom: 31px; height:15px; }
+     .r2p { position: absolute; bottom: 38px; height:15px; }
+     .r3  { position: absolute; bottom: 46px; height:15px; }
+     .r3p { position: absolute; bottom: 53px; height:15px; }
+     .r4  { position: absolute; bottom: 61px; height:15px; }
+     .r4p { position: absolute; bottom: 68px; height:15px; }
+     .r5  { position: absolute; bottom: 76px; height:15px; }
+     .r5p { position: absolute; bottom: 83px; height:15px; }
+     .r6  { position: absolute; bottom: 91px; height:15px; }
+     .r6p { position: absolute; bottom: 98px; height:15px; }
+     .r7  { position: absolute; bottom:106px; height:15px; }
+     .r7p { position: absolute; bottom:113px; height:15px; }
+     .r8  { position: absolute; bottom:121px; height:15px; }
+     .r8p { position: absolute; bottom:128px; height:15px; }
+     .r9  { position: absolute; bottom:136px; height:15px; }
+     .r9p { position: absolute; bottom:143px; height:15px; }
+     .r10 { position: absolute; bottom:151px; height:15px; }
+     .r10p{ position: absolute; bottom:158px; height:15px; }
+     .r11 { position: absolute; bottom:166px; height:15px; }
+     .r11p{ position: absolute; bottom:173px; height:15px; }
+     .r12 { position: absolute; bottom:181px; height:15px; }
+     .r12p{ position: absolute; bottom:188px; height:15px; }
+     .r13 { position: absolute; bottom:196px; height:15px; }
+     .r13p{ position: absolute; bottom:203px; height:15px; }
+     .r14 { position: absolute; bottom:211px; height:15px; }
+     .r14p{ position: absolute; bottom:218px; height:15px; }
+     .r15 { position: absolute; bottom:226px; height:15px; }
+     .r15p{ position: absolute; bottom:233px; height:15px; }
+     .r16 { position: absolute; bottom:241px; height:15px; }
+     .r16p{ position: absolute; bottom:248px; height:15px; }
+     .r17 { position: absolute; bottom:256px; height:15px; }
+     .r17p{ position: absolute; bottom:263px; height:15px; }
+     .r18 { position: absolute; bottom:271px; height:15px; }
+     .r18p{ position: absolute; bottom:278px; height:15px; }
+     .r19 { position: absolute; bottom:286px; height:15px; }
 
      .sp1 { width:1000px; background-color: var(--L0); }
      .sp2 { width:1000px; background-color: var(--L1); }
@@ -90,3 +112,40 @@
      .t10 { left: 200px; }
      .t11 { left: 220px; }
      .t12 { left: 240px; }
+     .t13 { left: 260px; }
+     .t14 { left: 280px; }
+     .t15 { left: 300px; }
+     .t16 { left: 320px; }
+     .t17 { left: 340px; }
+     .t18 { left: 360px; }
+     .t19 { left: 380px; }
+     .t20 { left: 400px; }
+     .t21 { left: 420px; }
+     .t22 { left: 440px; }
+     .t23 { left: 460px; }
+     .t24 { left: 480px; }
+     .t25 { left: 500px; }
+     .t26 { left: 520px; }
+     .t27 { left: 540px; }
+     .t28 { left: 560px; }
+     .t29 { left: 580px; }
+     .t30 { left: 600px; }
+     .t31 { left: 620px; }
+     .t32 { left: 640px; }
+     .t33 { left: 660px; }
+     .t34 { left: 680px; }
+     .t35 { left: 700px; }
+     .t36 { left: 720px; }
+     .t37 { left: 740px; }
+     .t38 { left: 760px; }
+     .t39 { left: 780px; }
+     .t40 { left: 800px; }
+     .t41 { left: 820px; }
+     .t42 { left: 840px; }
+     .t43 { left: 860px; }
+     .t44 { left: 880px; }
+     .t45 { left: 900px; }
+     .t46 { left: 920px; }
+     .t47 { left: 940px; }
+     .t48 { left: 960px; }
+     .t49 { left: 980px; }

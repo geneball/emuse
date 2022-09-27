@@ -119,7 +119,7 @@ loadSelect( selChd, em.chordNames() );
 
 const sngs = require('./songs.js');
 var _song, _track, _evtList, _msPerTic;
-var _lowestNote, _highestNote;
+var _lowestNote, _highestNote, _maxtic;
    
 selRoot.addEventListener("change", function() {
     playCurrChord( _midiOut, 500);
@@ -141,13 +141,17 @@ function evalTrack(){
   _evtList = sngs.trackEvents( _song, _track, selWhich.value, _chordOffset ); 
   _lowestNote = 127;
   _highestNote = 0;
+  _maxtic = 0;
   for ( var e of _evtList ){
-    if ( e.nt != undefined && e.nt < _lowestNote )
-      _lowestNote = e.nt;
-    else if ( e.chord != undefined ){
-      for ( var nt of e.chord )
-        if ( nt < _lowestNote )
-          _lowestNote = nt;
+   if ( e.t + e.d >  _maxtic ) _maxtic = e.t + e.d + 1; 
+   if ( e.nt != undefined ){
+      if ( e.nt < _lowestNote )  _lowestNote = e.nt;
+      if ( e.nt > _highestNote ) _highestNote = e.nt;
+    } else if ( e.chord != undefined ){
+      for ( var nt of e.chord ){
+        if ( nt < _lowestNote )  _lowestNote = nt;
+        if ( nt > _highestNote ) _highestNote = nt;  
+      }
     }
   }
   stat.innerText = `Lowest: ${_lowestNote}`;
@@ -161,12 +165,36 @@ function showEventList(){
   let html = '';  
   let root = em.toKeyNum( _song.root );
   let scale = em.toScale( _song.mode, root );
-  let sp = 1;
+  let rw = 0; sp = 1;
   for (let i=_lowestNote; i<=_highestNote; i++){
-    html += `<div class="r0 sp${sp}"></div>`;
+    html += `<div class="r${rw} sp${sp}"></div>`;
     sp = sp==7? 1 : sp+1;
+    rw++;
   }
   divRows.innerHTML = html;
+
+  html = '';
+  let beat = 0;
+  for( i=0; i<_maxtic; i++ ){
+    let mrk =  (beat % _song.ticsPerBeat)==0? 'bar' : 'tic';
+    html += `<div class="${mrk} t${i}"></div>`;
+    beat++;
+  }
+  divTics.innerHTML =  html;
+
+  html = '';
+  let chtml = '';
+  for ( var e of _evtList ){
+    if ( e.t + e.d >  _maxtic ) _maxtic = e.t + e.d + 1; 
+    if ( e.nt != undefined ){
+       html += `<div id="nt" class="r${e.nt-_lowestNote}  n${_song.scDeg(e.nt)} t${e.t} ln${e.d}"></div>`;
+     } else if ( e.chord != undefined ){
+       for ( var nt of e.chord ){
+         if ( nt < _lowestNote )  _lowestNote = nt;
+         if ( nt > _highestNote ) _highestNote = nt;  
+       }
+     }
+   }
 }
 selTrk.addEventListener("change", function() {
   evalTrack();

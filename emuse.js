@@ -24,12 +24,13 @@
 		if (!isNaN(parseFloat(nt))) return nt;
 		var oct = parseFloat( nt[nt.length-1] );	// octave number if present
 		if ( isNaN( oct )) 
-      oct = 4; 
-    else 
-      nt = nt.substring(0,nt.length-1);
-		for (var i=0; i < noteDefs.length; i++)
+      		oct = 4; 
+		else 
+			nt = nt.substring(0,nt.length-1);
+		for (var i=0; i < noteDefs.length; i++){
 			if ( nt.toUpperCase()=== noteDefs[i].nm.toUpperCase() ) 
 				return noteDefs[i].midi4 + (oct-4)*12;
+		}
 		console.log(`toKeyNum: unrecognized note ${nt}`);
 		return 60;
 	}
@@ -51,6 +52,22 @@
 	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], nm: 'Harmonic minor'     },
 	 { scale:[ 0, 2, 3, 5, 7, 9, 11, 12 ], nm: 'Melodic minor'      },
 	 { scale:[ 0, 2, 4, 5, 7, 9, 10, 12 ], nm: 'Phryrgian Dominant' }
+	];
+	const modeDefs2 = 
+	[
+		//     0    1    2    3    4    5    6    7    8    9    10   11   12 
+	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '6#','7', '8' ], // 'Ionian'
+	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '6#','7', '8' ], // 'Major'  
+	   scdeg:['1', '1#','2', '3', '3#','4', '4#','5', '5#','6', '7', '7#','8' ], // 'Dorian' 
+	   scdeg:['1', '2', '2#','3', '3#','4', '4#','5', '6', '6#','7', '7#','8' ], // 'Phrygian' 
+	   scdeg:['1', '1#','2', '2#','3', '3#','4', '5', '5#','6', '7', '7#','8' ], // 'Lydian' 
+	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '7', '7#','8' ], // 'Mixolydian' 
+	   scdeg:['1', '1#','2', '3','3#', '4', '4#','5', '6','6#', '7', '7#','8' ], // 'Aeolian' 
+	   scdeg:['1', '1#','2', '3','3#', '4', '4#','5', '6','6#', '7', '7#','8' ], // 'Minor' 
+	   scdeg:['1', '2', '2#', '3','3#', '4', '5','5#', '6','6#', '7', '7#','8' ], // 'Locrian' 
+	   scdeg:['1', '1#', '2', '3','3#', '4', '4#','5', '6','6#', '7b', '7','8' ], // 'Harmonic minor' 
+	   scdeg:['1', '1#', '2', '3','3#', '4', '4#','5', '5#','6', '6#', '7','8' ], // 'Melodic minor' 
+	   scdeg:['1', '1#', '2', '2#','3', '4', '4#','5', '5#','6', '7', '7#','8' ], // 'Phryrgian Dominant' 
 	];
 	function toScale( md, root ){
         if (root==undefined) root = 0;
