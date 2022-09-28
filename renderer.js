@@ -3,6 +3,7 @@ const information = document.getElementById('info')
 const stat = document.getElementById('status')
 
 const { shell } = require('electron');
+const { info } = require('jzz');
 
 var JZZ = require('jzz');
 require('jzz-synth-tiny')(JZZ);
@@ -75,6 +76,7 @@ const selWhich = document.getElementById('selWhich');
 const selChdOff = document.getElementById('selChdOff');
 const btnPlay = document.getElementById('btnPlay');
 
+const divBars = document.getElementById('bars');
 const divRows = document.getElementById('rows');
 const divTics = document.getElementById('tics');
 const divNotes = document.getElementById('notes');
@@ -139,43 +141,37 @@ function evalTrack(){
 
   _track = sngs.findTrack( _song, selTrk.value );
   _evtList = sngs.trackEvents( _song, _track, selWhich.value, _chordOffset ); 
-  _lowestNote = 127;
-  _highestNote = 0;
-  _maxtic = 0;
-  for ( var e of _evtList ){
-   if ( e.t + e.d >  _maxtic ) _maxtic = e.t + e.d + 1; 
-   if ( e.nt != undefined ){
-      if ( e.nt < _lowestNote )  _lowestNote = e.nt;
-      if ( e.nt > _highestNote ) _highestNote = e.nt;
-    } else if ( e.chord != undefined ){
-      for ( var nt of e.chord ){
-        if ( nt < _lowestNote )  _lowestNote = nt;
-        if ( nt > _highestNote ) _highestNote = nt;  
-      }
-    }
-  }
-  stat.innerText = `Lowest: ${_lowestNote}`;
   showEventList();
 
   var evts = _evtList.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} * ${x.d}` );
   loadSelect( selEvts, evts );
   btnPlay.innerText = 'Play';
 }
+var _rows = [];
+var _notes = [];
+var _chords = [];
 function showEventList(){
   let html = '';  
   let root = em.toKeyNum( _song.root );
   let scale = em.toScale( _song.mode, root );
+  let [ lo, hi ] = sngs.trackLoHi();
+  let maxtic = sngs.maxTic();
+
+  stat.innerText = `Notes: ${lo}..${hi}  Tics: 0..${maxtic} `;
+  let rows = sngs.trackRowMap();
   let rw = 0; sp = 1;
-  for (let i=_lowestNote; i<=_highestNote; i++){
-    html += `<div class="r${rw} sp${sp}"></div>`;
-    sp = sp==7? 1 : sp+1;
-    rw++;
+  for (let i=lo; i<=hi; i++){
+    let rw = rows[i];
+    if ( rw.inscale ){   // nt i is in scale
+      html += `<div class="r${rw.rw} sp${rw.deg}"></div>`;
+      _rows[ rw.rw ] = `${em.asStr(i)} = ${em.asDeg(rw.deg)}`;
+    }
   }
   divRows.innerHTML = html;
 
   html = '';
   let beat = 0;
-  for( i=0; i<_maxtic; i++ ){
+  for( i=0; i < maxtic; i++ ){
     let mrk =  (beat % _song.ticsPerBeat)==0? 'bar' : 'tic';
     html += `<div class="${mrk} t${i}"></div>`;
     beat++;
@@ -183,19 +179,37 @@ function showEventList(){
   divTics.innerHTML =  html;
 
   html = '';
-  let chtml = '';
+  let chtml = '', cnt=0, ccnt=0;
   for ( var e of _evtList ){
-    if ( e.t + e.d >  _maxtic ) _maxtic = e.t + e.d + 1; 
-    if ( e.nt != undefined ){
-       html += `<div id="nt" class="r${e.nt-_lowestNote}  n${_song.scDeg(e.nt)} t${e.t} ln${e.d}"></div>`;
+     if ( e.nt != undefined ){
+       let rw = rows[ e.nt ];
+       if ( rw.inscale ){
+          html += `<div id="nt${cnt}" class="r${rw.rw} n${rw.deg} t${e.t} ln${e.d}"></div>`;
+       } else {
+          let deg = Math.trunc(rw.deg);
+          html += `<div id="nt${cnt} class="r${Math.trunc(rw.rw)}h n${deg}${deg+1} t${e.t} ln${e.d}"></div>`;
+       }
+       _notes[cnt] = `${cnt}: ${em.asDeg(rw.deg)}`;
+       cnt++;
      } else if ( e.chord != undefined ){
-       for ( var nt of e.chord ){
-         if ( nt < _lowestNote )  _lowestNote = nt;
-         if ( nt > _highestNote ) _highestNote = nt;  
+       for ( var i=0; i< e.chord.length; i++ ){
+         let nt = e.chord[i];
+         let rw = rows[ e.nt ];
+         if (rw==undefined) rw = { rw:-1, deg: -1};
+         chtml += `<div id="chd${ccnt-i}" class="r${rw.rw} n${rw.deg} t${e.t} ln${e.d}"></div>`;
        }
      }
    }
+   divNotes.innerHTML = html;
+   divChords.innerHTML = chtml;
 }
+
+divBars.addEventListener("click", function(evt){
+  let tgt = evt.target;
+  information.innerHTML = `#${tgt.id}.${tgt.className}`;
+
+
+});
 selTrk.addEventListener("change", function() {
   evalTrack();
 });

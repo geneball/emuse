@@ -1,4 +1,4 @@
-const { toChord, toKeyNum, toScale } = require("./emuse");
+const { toChord, toKeyNum, toScale, scaleRows } = require("./emuse");
 
 const songs = 
 [
@@ -650,7 +650,7 @@ function findTrack( song, nm ){
 }
 function toSD( s ){
   var roman = [ 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii' ];
-  for (var i=0; i<roman.length; i++)
+  for (let i=0; i<roman.length; i++)
     if ( s.toLowerCase() == roman[i] ) return i;
   console.log(`toSD: unrec ${s}`);
   return 0;
@@ -663,19 +663,19 @@ function toRow( nt, lowest, scale ){ // map keynum to row, given scale & lowest 
 
 }
 function asChord( nm, scale ){    // decode e.g. 'Im' or 'iii6(9)'
-  var i = 0;
+  let i = 0;
   nm = nm + ' ';  
   for(; i<nm.length; i++){
     if (!'IViv'.includes(nm[i])) break;
   }
-  var scdeg = i==0? 0 : toSD( nm.substr(0,i));
-  var chd = nm.substr(i);
+  let scdeg = i==0? 0 : toSD( nm.substr(0,i));
+  let chd = nm.substr(i);
   if (chd=='') chd = 'M';
   return toChord( chd, scale[scdeg]);
 }
 function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
-  var off = 0, adj = 0;
-  var lch = scdeg[scdeg.length-1];
+  let off = 0, adj = 0;
+  let lch = scdeg[scdeg.length-1];
   if ( lch=='#' || lch=='b' ){
     scdeg = scdeg.substr(0,scdeg.length-1);
     adj = lch=='#'? 1 : -1;
@@ -685,111 +685,173 @@ function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
   while ( scdeg > 8 ){ scdeg-=8; off+=12; }
   return scale[scdeg-1] + off;
 }
-const playChords = 0;
-const playMelody = 1;
-const playBoth = 2;
 
-function trackEvents( song, track, playwhich, chordOffset ){
-  if (playwhich==undefined) playwhich = playBoth;
-  var bpb = song.beatsPerBar;
-  var tpb = song.ticsPerBeat;
-  var msPerTic = 60000 / song.tempo / tpb;
-  var ticsPerBar = bpb * tpb;
-  var root = toKeyNum( song.root );
-  var scale = toScale( song.mode, root );
 
-  var evts = [], tic = 0;
+var _trk = {    // state for last decoded track
+  bpb:      0,  // beatsPerBar
+  tpb:      0,  // ticsPerBeat
+  barTics:  0,  // tics / bar
+  msTic:    0,  // msPerTic
+  root:     0,  // keynum of root
+  scale:    0,  // semitones of mode
+  evts:     0,  // events
+  chdOff:   0,  // chord notes offset
+  Lo:       0,  // lowest event keynum
+  Hi:       0,  // highest event keynum
+  maxTic:   0,  // maxTic in track
+  rowMap: []    // [chdLo..ntHi] => [0..x] with .5 for non-scale notes
+};
+
+function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0..] with .5 rows for notes outside scale
+  let lo = _trk.Lo;
+  let hi = _trk.Hi;
+  let scrows = scaleRows( _trk.scale );   
+  // _trk.root  = keynum of scale root (60..71) which corresponds to semitone 0 in scale[]
+  // find scale semitone for lo 
+  let loroot = _trk.root;  
+  while ( loroot > lo ) loroot -= 12;
+  let scidx = lo - loroot;    // lo as semitone idx within scale
+  let rws= [], oct = 0;
+  for (let i = lo; i <= hi; i++ ){
+    scrw = scrows[scidx];
+    rws[ i ] = { inscale: scrw.inscale, rw: scrw.rw + oct, deg: scrw.deg };
+    scidx++;
+    if ( scidx> 12 ){
+      scidx = 0;
+      oct += 8;
+    }
+  }
+  _trk.rowMap = rws;
+}
+function trackLoHi(){
+  return [ _trk.Lo, _trk.Hi ];
+}
+function maxTic(){ 
+  return _trk.maxTic;
+}
+function trackRowMap(){
+  calcRowMap();
+  return _trk.rowMap;
+}
+function trackEvents( song, track, playwhich, chordOffset ){  // calc events for song & track, Chords/Melody/Both, chord notes offset
+  if ( chordOffset==undefined ) chordOffset = 0;
+  _trk.bpb = song.beatsPerBar;
+  let tpb = _trk.tpb = song.ticsPerBeat;
+  _trk.msTic = 60000 / song.tempo / tpb;
+  _trk.barTics = _trk.bpb * tpb;
+  _trk.root = toKeyNum( song.root );
+  _trk.scale = toScale( song.mode, _trk.root );
+  _trk.chdOff = chordOffset;
+
+  _trk.evts = [];
+  let tic = 0;
+  _trk.Lo = 127;
+  _trk.Hi = 0;
   if (playwhich=='Chords' || playwhich=='Both'){
-    var chdseq = track.chords.join(' ').split(' ');
-    for ( var c of chdseq ){
+    let chdseq = track.chords.join(' ').split(' ');
+    for ( let c of chdseq ){
       if (c[0]=='|'){
-        var mtic = (parseFloat(c.substr(1))-1) *ticsPerBar;
+        let mtic = (parseFloat(c.substr(1))-1) *_trk.barTics;
         if ( tic != mtic )
           console.log( `chords ${c} at tic ${tic} not ${mtic}` );
       } else {
-          var [tics,chordname] = c.split(':');
-          if ( chd != 'r' ){
-            var chd = asChord( chordname, scale );
-            chd = chd.map( x => x + chordOffset );
-            if ( tics % song.ticsPerBeat != 0 ) 
-              console.log( `chords: tics(${tics}) not at beat (${song.ticsPerBeat}) ` )
-            var beats = tics / song.ticsPerBeat;
-            for( var i=0; i<beats; i++ ){
-              evts.push( {t: tic, chord: chd, d:song.ticsPerBeat } );
-              tic += song.ticsPerBeat;
+          let [tics,chordname] = c.split(':');
+          if ( chordname != 'r' ){
+            let chd = asChord( chordname, _trk.scale );
+            chd = chd.map( x => x + _trk.chdOff );
+            if ( tics % tpb != 0 ) 
+              console.log( `chords: tics(${tics}) not at beat (${tpb}) ` )
+            let beats = tics / tpb;
+            for( let i=0; i<beats; i++ ){
+              _trk.evts.push( { t: tic, chord: chd, d: tpb } );
+              for ( let n of chd ){
+                if ( n < _trk.Lo ) _trk.Lo = n;
+                if ( n > _trk.Hi ) _trk.Hi = n;
+              }
+              tic += tpb;
             }
-          } else 
+          } else {
             tic += tics;
+          }
       }
     }
+    if ( tic > _trk.maxTic ) _trk.maxTic = tic;
   }
   if (playwhich=='Melody' || playwhich=='Both'){
-    var mseq = track.melody.join(' ').split(' ');
+    let mseq = track.melody.join(' ').split(' ');
     tic = 0;
-    for ( var n of mseq ){
+    for ( let n of mseq ){
       if (n[0]=='|'){
-        var mtic = (parseFloat(n.substr(1))-1) * ticsPerBar;
+        let mtic = (parseFloat(n.substr(1))-1) * _trk.barTics;
         if ( tic != mtic )
           console.log( `melody ${n} at tic ${tic} not ${mtic}` );
       } else {
-          var [tics,scdeg] = n.split(':');
+          let [tics,scdeg] = n.split(':');
           tics = Number(tics);
-          if ( scdeg.toLowerCase() != 'r' )
-            evts.push( {t:tic, nt: asNote( scdeg, scale ), d:tics } );
+          if ( scdeg.toLowerCase() != 'r' ){
+            let n = asNote( scdeg, _trk.scale );
+            _trk.evts.push( { t:tic, nt: n, d:tics } );
+            if ( n < _trk.Lo ) _trk.Lo = n;
+            if ( n > _trk.Hi ) _trk.Hi = n;
+          }
           tic += tics;
       }
     }
+    if ( tic > _trk.maxTic ) _trk.maxTic = tic;
   }
   //console.log( evts );
-  if ( playwhich=='Both' )
-    evts.sort( (a,b) => (a.t - b.t) );
-  return evts;
+
+  if ( playwhich=='Both' ){
+    _trk.evts.sort( (a,b) => (a.t - b.t) );
+  }
+  return _trk.evts;
 }
-var _midi;
-var _stop;
-var _chordVelocity = 100;
-var _melodyVelocity = 120;
-var _start;
-var _actuals;
+
+
+var _plyr = {
+  midi:  null,
+  chordVelocity: 100,
+  melodyVelocity: 120,
+
+  stop: false,
+  msStart: 0,   // tstamp of playing start
+  hist: []      // list of events actually played
+};
 function playEvent( evt ){
-  var dur = evt.d * _msPerTic;
-  let till = evt.t * _msPerTic;
+  var dur = evt.d * _trk.msTic;
+  let till = evt.t * _trk.msTic;
   setTimeout( function() { 
-    if (_stop ) return;
+    if (_plyr.stop ) return;
     if (evt.nt !=undefined ){
-      _actuals.push( {tic: ((Date.now()-_start)/_msPerTic).toFixed(1), nt:evt.nt})
-      _midi.noteOn( 0, evt.nt, _melodyVelocity ).wait( dur ).noteOff( 0, evt.nt );
+      _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.nt})
+      _plyr.midi.noteOn( 0, evt.nt, _plyr.melodyVelocity ).wait( dur ).noteOff( 0, evt.nt );
     } else if (evt.chord !=undefined ){
       for ( var i=0; i<evt.chord.length; i++ ){
-        _actuals.push( {tic: ((Date.now()-_start)/_msPerTic).toFixed(1), nt:evt.chord[i]})
-        _midi.noteOn( 0, evt.chord[i], _chordVelocity ).wait( dur ).noteOff( 0, evt.chord[i] );
+        _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.chord[i]})
+        _plyr.midi.noteOn( 0, evt.chord[i], _plyr.chordVelocity ).wait( dur ).noteOff( 0, evt.chord[i] );
     }  
   }}, till );
 }
-function playEvents( midi, evts ){
-  _midi = midi;
+function playEvents( midi, playWhich ){
+  _plyr.midi = midi;
   stopPlay();
 
-  _stop = false;
-  _start = Date.now();
-  _actuals = [];
+  _plyr.stop = false;
+  _plyr.msStart = Date.now();
+  _plyr.hist = [];
+  let evts = playWhich=='Melody'? _trk.ntEvts : ( playWhich=='Chords'? _trk.chdEvts : _trk.bothEvts );
   for ( let e of evts ){
     playEvent( e );
   }
 }
 function stopPlay(){
-  _stop = true;
-  _midi.allNotesOff(0);
+  _plyr.stop = true;
+  _plyr.midi.allNotesOff(0);
 }
 function setVelocity( chd, mel ){
-  _chordVelocity = chd;
-  _melodyVelocity = mel;
+  _plyr.chordVelocity = chd;
+  _plyr.melodyVelocity = mel;
 }
-// function playTrack( midi, song, track, playwhich ){
-//     stopPlay();
-//     var evts = trackEvents( song, track, playwhich );
- 
-//     playEvts( evts );
-// }
-module.exports = { songNames, findSong, trackNames,findTrack, trackEvents,
+
+module.exports = { songNames, findSong, trackNames, findTrack, trackEvents, trackRowMap, trackLoHi, maxTic,
   playEvents, stopPlay, setVelocity };

@@ -14,11 +14,11 @@
 	  { nm: 'A#',  midi4: 70 },
 	  { nm: 'B',   midi4: 71 },
 
-	  { nm: 'Db',  midi4: 61 },
-    { nm: 'Eb',  midi4: 63 },
-    { nm: 'Gb',  midi4: 66 },
-    { nm: 'Ab',  midi4: 68 },  
-    { nm: 'Bb',  midi4: 70 }
+	  { nm: 'Db',  midi4: 61 },		// duplicate sharps as flats 
+   	  {	nm: 'Eb',  midi4: 63 },
+      { nm: 'Gb',  midi4: 66 },
+      { nm: 'Ab',  midi4: 68 },  
+      { nm: 'Bb',  midi4: 70 }
 	];
 	function toKeyNum( nt ){
 		if (!isNaN(parseFloat(nt))) return nt;
@@ -53,23 +53,22 @@
 	 { scale:[ 0, 2, 3, 5, 7, 9, 11, 12 ], nm: 'Melodic minor'      },
 	 { scale:[ 0, 2, 4, 5, 7, 9, 10, 12 ], nm: 'Phryrgian Dominant' }
 	];
-	const modeDefs2 = 
-	[
-		//     0    1    2    3    4    5    6    7    8    9    10   11   12 
-	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '6#','7', '8' ], // 'Ionian'
-	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '6#','7', '8' ], // 'Major'  
-	   scdeg:['1', '1#','2', '3', '3#','4', '4#','5', '5#','6', '7', '7#','8' ], // 'Dorian' 
-	   scdeg:['1', '2', '2#','3', '3#','4', '4#','5', '6', '6#','7', '7#','8' ], // 'Phrygian' 
-	   scdeg:['1', '1#','2', '2#','3', '3#','4', '5', '5#','6', '7', '7#','8' ], // 'Lydian' 
-	   scdeg:['1', '1#','2', '2#','3', '4', '4#','5', '5#','6', '7', '7#','8' ], // 'Mixolydian' 
-	   scdeg:['1', '1#','2', '3','3#', '4', '4#','5', '6','6#', '7', '7#','8' ], // 'Aeolian' 
-	   scdeg:['1', '1#','2', '3','3#', '4', '4#','5', '6','6#', '7', '7#','8' ], // 'Minor' 
-	   scdeg:['1', '2', '2#', '3','3#', '4', '5','5#', '6','6#', '7', '7#','8' ], // 'Locrian' 
-	   scdeg:['1', '1#', '2', '3','3#', '4', '4#','5', '6','6#', '7b', '7','8' ], // 'Harmonic minor' 
-	   scdeg:['1', '1#', '2', '3','3#', '4', '4#','5', '5#','6', '6#', '7','8' ], // 'Melodic minor' 
-	   scdeg:['1', '1#', '2', '2#','3', '4', '4#','5', '5#','6', '7', '7#','8' ], // 'Phryrgian Dominant' 
-	];
-	function toScale( md, root ){
+	function scaleRows( scale ){	// return map of all semitones [0..12] => [ 0..8 ] with .5 entries for non-scale notes
+		let rw = [], sc = 0, r = 0;
+		let off = scale[0];
+		scale = scale.map( x => x-off );
+		for ( let i=0; i <= 12; i++ ){
+			if ( i==scale[sc] ){ // semitone i is in scale
+				rw.push( { inscale: true, rw: r, deg: sc } );	// assign next full row to scale degree sc
+				r++;   
+				sc++;
+			} else {	// semitone i is non-scale
+				rw.push ( { inscale: false, rw: r-0.5, deg: sc-0.5 } );	// insert a half-row for a non-scale scale degree
+			}
+		}
+		return rw;
+	}
+	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
         if (root==undefined) root = 0;
 		if ( md===undefined ) return modeDefs[0];
 		if ( md instanceof Array && md.length >= 8 ) 
@@ -171,6 +170,10 @@
 	  { nm: 'vi',     idx: 5,  major: false },
 	  { nm: 'vii',    idx: 6,  major: false },
 	];
+	function asDeg( scDeg ){	// 0, 0.5, 1, 2, 2.5, ..6 => '1','1#','2','2#', .. 7
+		let deg = Math.trunc( scDeg );
+		return `${deg}${scDeg>deg? '#':'' }`;
+	}
 	
 	function asStr( chd ){
 		if ( chd instanceof Array ){
@@ -208,9 +211,5 @@
         }
 	}
 
-    function chordProgression( song ){
-
-
-    }
 	
-module.exports = { toKeyNum, toScale, chordNames, toChord, chordName, asStr, chordProgression, test }; 
+module.exports = { toKeyNum, toScale, scaleRows, chordNames, toChord, chordName, asStr, asDeg, test }; 
