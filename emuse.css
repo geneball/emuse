@@ -31,8 +31,8 @@
      #selectTrack    { width:10em; }
      #selWhich       { width:5em; }
      #selectChord    { width:5em; }
-     #selChdOff      { width:3em; }
-     #bars { position:relative; border: 1px solid white; width:1000px; height:302px;
+     #selChdOff      { width:4em; }
+     #bars { position:relative; border: 1px solid white; width:1000px; height:320px;
             overflow: auto; }
 
      .tic { position: absolute; bottom:1px; height:300px; width:1px; background-color: white; }
@@ -97,26 +97,40 @@
      .n4  { background-color: var(--D4); }
      .n45 { background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 10px, var(--D5) 10px, var(--D5) 20px); }
      .n5  { background-color: var(--D5); }
-     .n56 { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 10px, var(--D6) 10px, var(--D6) 20px); }
+     .n56 { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 5px, var(--D6) 5px, var(--D6) 10px); }
      .n6  { background-color: var(--D6); }
      .n60 { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D7) 10px, var(--D7) 20px); }
    
-     .ln1 { width: 20px; }
-     .ln2 { width: 40px; }
-     .ln3 { width: 60px; }
-     .ln4 { width: 80px; }
-     .ln5 { width: 100px; }
-     .ln6 { width: 120px; }
+     .ln1  { width:  19px; }
+     .ln2  { width:  39px; }
+     .ln3  { width:  59px; }
+     .ln4  { width:  79px; }
+     .ln5  { width:  99px; }
+     .ln6  { width: 119px; }
+     .ln7  { width: 139px; }
+     .ln8  { width: 159px; }
+     .ln9  { width: 179px; }
+     .ln10 { width: 199px; }
+	 .ln11 { width: 219px; } 
+     .ln12 { width: 239px; } 
+     .ln13 { width: 259px; } 
+     .ln14 { width: 279px; } 
+     .ln15 { width: 299px; } 
+     .ln16 { width: 319px; } 
+     .ln17 { width: 339px; } 
+     .ln18 { width: 359px; } 
+     .ln19 { width: 379px; } 
+     .ln20 { width: 399px; } 
 	 
-     .t1   { left: 20px; }
-     .t2   { left: 40px; }
-     .t3   { left: 60px; }
-     .t4   { left: 80px; }
-     .t5   { left: 100px; }
-     .t6   { left: 120px; }
-     .t7   { left: 140px; }
-     .t8   { left: 160px; }
-     .t9   { left: 180px; }
+	 .t1   { left: 20px; }	 
+	 .t2   { left: 40px; }	 
+	 .t3   { left: 60px; }	 
+	 .t4   { left: 80px; }	 
+	 .t5   { left: 100px; }	 
+	 .t6   { left: 120px; }	 
+	 .t7   { left: 140px; }	 
+	 .t8   { left: 160px; }	 
+	 .t9   { left: 180px; }	 
      .t10  { left: 200px; }
      .t11  { left: 220px; }
      .t12  { left: 240px; }

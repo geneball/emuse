@@ -53,11 +53,11 @@
 	 { scale:[ 0, 2, 3, 5, 7, 9, 11, 12 ], nm: 'Melodic minor'      },
 	 { scale:[ 0, 2, 4, 5, 7, 9, 10, 12 ], nm: 'Phryrgian Dominant' }
 	];
-	function scaleRows( scale ){	// return map of all semitones [0..12] => [ 0..8 ] with .5 entries for non-scale notes
+	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
 		let rw = [], sc = 0, r = 0;
 		let off = scale[0];
 		scale = scale.map( x => x-off );
-		for ( let i=0; i <= 12; i++ ){
+		for ( let i=0; i < 12; i++ ){
 			if ( i==scale[sc] ){ // semitone i is in scale
 				rw.push( { inscale: true, rw: r, deg: sc } );	// assign next full row to scale degree sc
 				r++;   

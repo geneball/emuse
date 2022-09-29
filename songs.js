@@ -17,7 +17,7 @@ const songs =
           '|1 8:1 4:1 |2 2:5 8:5 2:5 |3 6:2 2:3 4:2 |4 12:1 |5 12:R',
           '|6 4:R 4:5 4:7 |7 8:8 4:7 |8 4:5 4:6 4:4 |9 36:5 |12 8:R 4:8', 
           '|13 8:8 4:8 |14 8:7 8:5 4:4 4:3 |16 2:2 16:0 6:R', 
-          '8:1 4:5 | 8:4 4:3 | 4:2 4:1 4:0 | 36:1'
+          '8:1 4:5 8:4 4:3 4:2 4:1 4:0 36:1'
         ], 
         chords:
         [
@@ -80,7 +80,7 @@ const songs =
           '|7 1:9 3:10 2:11 2:10 2:9 2:10 3:11 1:9',  
           '|8 2:8 2:6 1:8 3:6 2:8 4:6 1:8 1:10 9:10 10:r 2:6 1:10 1:10 1:10 1:10 2:11 2:10 1:8 1:9',  
           '|11 1:10 2:10 1:10 1:10 3:10 3:11 1:10 1:8 1:6 2:r',  
-          '|12 2:8 2:8 3:8 1:7 1:6 2:8 2:r 3:8 1:9 2:10 2:13 2:12 2:10 4:e 2:12', 
+          '|12 2:8 2:8 3:8 1:7 1:6 2:8 2:r 3:8 1:9 2:10 2:13 2:12 2:10 4:r 2:12', 
           '|14 2:13 1:12 2:12 1:10 1:11 1:10 3:8 1:7 4:6', 
           '|15 3:9 1:10 1:11 1:10 2:10 1:9 3:10 2:9 2:r', 
           '|16 2:10 2:10 2:10 2:10 3:10 1:10 1:9 1:8 1:6 1:8',  
@@ -683,7 +683,7 @@ function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
   scdeg = Number( scdeg );
   while ( scdeg < 1 ){ scdeg+=8; off-=12; }
   while ( scdeg > 8 ){ scdeg-=8; off+=12; }
-  return scale[scdeg-1] + off;
+  return scale[scdeg-1] + off + adj;
 }
 
 
@@ -716,9 +716,9 @@ function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0
     scrw = scrows[scidx];
     rws[ i ] = { inscale: scrw.inscale, rw: scrw.rw + oct, deg: scrw.deg };
     scidx++;
-    if ( scidx> 12 ){
+    if ( scidx > 11 ){
       scidx = 0;
-      oct += 8;
+      oct += 7;
     }
   }
   _trk.rowMap = rws;
@@ -736,7 +736,7 @@ function trackRowMap(){
 function trackEvents( song, track, playwhich, chordOffset ){  // calc events for song & track, Chords/Melody/Both, chord notes offset
   if ( chordOffset==undefined ) chordOffset = 0;
   _trk.bpb = song.beatsPerBar;
-  let tpb = _trk.tpb = song.ticsPerBeat;
+  let tpb = _trk.tpb = Number( song.ticsPerBeat );
   _trk.msTic = 60000 / song.tempo / tpb;
   _trk.barTics = _trk.bpb * tpb;
   _trk.root = toKeyNum( song.root );
@@ -747,6 +747,7 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
   let tic = 0;
   _trk.Lo = 127;
   _trk.Hi = 0;
+  _trk.maxTic = 0;
   if (playwhich=='Chords' || playwhich=='Both'){
     let chdseq = track.chords.join(' ').split(' ');
     for ( let c of chdseq ){
@@ -756,6 +757,7 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
           console.log( `chords ${c} at tic ${tic} not ${mtic}` );
       } else {
           let [tics,chordname] = c.split(':');
+          tics = Number( tics );
           if ( chordname != 'r' ){
             let chd = asChord( chordname, _trk.scale );
             chd = chd.map( x => x + _trk.chdOff );
@@ -763,7 +765,7 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
               console.log( `chords: tics(${tics}) not at beat (${tpb}) ` )
             let beats = tics / tpb;
             for( let i=0; i<beats; i++ ){
-              _trk.evts.push( { t: tic, chord: chd, d: tpb } );
+              _trk.evts.push( { t: Number(tic), chord: chd, d: tpb } );
               for ( let n of chd ){
                 if ( n < _trk.Lo ) _trk.Lo = n;
                 if ( n > _trk.Hi ) _trk.Hi = n;
@@ -782,7 +784,8 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
     tic = 0;
     for ( let n of mseq ){
       if (n[0]=='|'){
-        let mtic = (parseFloat(n.substr(1))-1) * _trk.barTics;
+        let bar = parseFloat(n.substr(1));
+        let mtic = (bar-1) * _trk.barTics;
         if ( tic != mtic )
           console.log( `melody ${n} at tic ${tic} not ${mtic}` );
       } else {
@@ -790,6 +793,7 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
           tics = Number(tics);
           if ( scdeg.toLowerCase() != 'r' ){
             let n = asNote( scdeg, _trk.scale );
+            if (isNaN(n)) debugger; 
             _trk.evts.push( { t:tic, nt: n, d:tics } );
             if ( n < _trk.Lo ) _trk.Lo = n;
             if ( n > _trk.Hi ) _trk.Hi = n;
@@ -810,7 +814,7 @@ function trackEvents( song, track, playwhich, chordOffset ){  // calc events for
 
 var _plyr = {
   midi:  null,
-  chordVelocity: 100,
+  chordVelocity: 80,
   melodyVelocity: 120,
 
   stop: false,
@@ -818,7 +822,7 @@ var _plyr = {
   hist: []      // list of events actually played
 };
 function playEvent( evt ){
-  var dur = evt.d * _trk.msTic;
+  var dur = evt.d * _trk.msTic - 2; 
   let till = evt.t * _trk.msTic;
   setTimeout( function() { 
     if (_plyr.stop ) return;
@@ -832,15 +836,16 @@ function playEvent( evt ){
     }  
   }}, till );
 }
-function playEvents( midi, playWhich ){
+function setPlayer( midi ){
   _plyr.midi = midi;
+}
+function startPlay( midi ){
   stopPlay();
 
   _plyr.stop = false;
   _plyr.msStart = Date.now();
   _plyr.hist = [];
-  let evts = playWhich=='Melody'? _trk.ntEvts : ( playWhich=='Chords'? _trk.chdEvts : _trk.bothEvts );
-  for ( let e of evts ){
+  for ( let e of _trk.evts ){
     playEvent( e );
   }
 }
@@ -854,4 +859,4 @@ function setVelocity( chd, mel ){
 }
 
 module.exports = { songNames, findSong, trackNames, findTrack, trackEvents, trackRowMap, trackLoHi, maxTic,
-  playEvents, stopPlay, setVelocity };
+  setPlayer, playEvent, startPlay, stopPlay, setVelocity };
