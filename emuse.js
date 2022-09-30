@@ -138,13 +138,14 @@
 		console.log(`toChord: unrecognized chord "${chd}"`);
 		return chordDefs[0].nts.map( x => x + root );		// default major triad
 	}
-	function chordName( chd ){
+	function chordName( chd, astype ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
+		if (astype==undefined) astype == false;
 		if ( !(chd instanceof Array)) 
             return "?";
 		var rt = chd[0], nt = '';
 		if ( rt>0 ){
             chd = chd.map( x => x-rt );
-            nt = asStr(rt);
+            nt = asStr( astype? rt%12 : rt);
         }
 		for (var i=0; i < chordDefs.length; i++){
 			if (chd.length === chordDefs[i].nts.length && 
@@ -175,7 +176,7 @@
 		return `${deg}${scDeg>deg? '#':'' }`;
 	}
 	
-	function asStr( chd ){
+	function asStr( chd ){		// 60 => "C4"  0=>"C"
 		if ( chd instanceof Array ){
 			var s = '[ ';
 			for ( var i=0; i < chd.length; i++ )
