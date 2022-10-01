@@ -26,12 +26,16 @@
      
      .on { background-color: #e6294b; }
      select { width:16em; }
+     btn{ border: 1px solid black; }
      #selectRoot     { width:3em; }
      #selectMode     { width:10em; }
      #selectTrack    { width:10em; }
      #selWhich       { width:5em; }
      #selectChord    { width:5em; }
+     #selMelOff      { width:4em; }
      #selChdOff      { width:4em; }
+     #selMelVel      { width:4em; }
+     #selChdVel      { width:4em; }
      #bars { position:relative; border: 1px solid white; width:1000px; height:320px;
             overflow: auto; }
 

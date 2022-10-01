@@ -39,9 +39,14 @@ var _midiOut = null;
 // JZZ() engine must be started after jazz-midi-electron is initialized
 var keybd ={
  // Z:'C5', S:'C#5', X:'D5', D:'D#5', C:'E5', V:'F5', G:'F#5', B:'G5', H:'Ab5', N:'A5', J:'Bb5', M:'B5'
-  z:'C4', s:'C#4', x:'D4', d:'D#4', c:'E4', v:'F4', g:'F#4',
-  b:'G4', h:'G#4', n:'A4', j:'A#4', m:'B4', ',':'C5',
-  l:'C#5', '.':'D5', ';':'D#5', '/':'E5'
+ '~.':'C3', '~,':'C#3', '~;':'D3', '~:':'D#3', '~-':'E3', '~+':'F3', '~=':'F#3',
+ '~*':'G3', '~#':'G#3', '~!':'A3', '~$':'A#3', '~%':'B3', 
+    z:'C4',    s:'C#4',    x:'D4',    d:'D#4',    c:'E4',    v:'F4',    g:'F#4',
+    b:'G4',    h:'G#4',    n:'A4',    j:'A#4',    m:'B4',  
+  ',':'C5',    l:'C#5',  '.':'D5',  ';':'D#5',  '/':'E5',  "'":'F5', ':=':'F#5', 
+ ':*':'G5', ':#':'G#5', ':!':'A5', '::':'A#5', ':%':'B5',
+ '-.':'C6', '-,':'C#6', '-;':'D6', '-:':'D#6', '--':'E6', '-+':'F6', '-=':'F#6',
+ '.*':'G6', '.#':'G#6', '.!':'A6', '.$':'A#6', '.%':'B6', '.+':'C7'
 };
 JZZ.input.ASCII(keybd).connect(piano);
     // var midiin = JZZ.gui.SelectMidiIn({ at: 'selectmidiin', none: 'HTML Piano' });
@@ -75,10 +80,14 @@ const sngs = require('./songs.js');
 const selRoot = document.getElementById('selectRoot');
 const selMode = document.getElementById('selectMode');
 const selChd = document.getElementById('selectChord');
+const divChdBtns = document.getElementById('chdButtons');
 const selSong = document.getElementById('selectSong');
 const selTrk = document.getElementById('selectTrack');
 const selEvts = document.getElementById('selectEvents');
 const selWhich = document.getElementById('selWhich');
+const selMelVel = document.getElementById('selMelVel');
+const selChdVel = document.getElementById('selChdVel');
+const selMelOff = document.getElementById('selMelOff');
 const selChdOff = document.getElementById('selChdOff');
 const btnPlay = document.getElementById('btnPlay');
 
@@ -99,19 +108,62 @@ for ( oct of [3,4,5,6,7]){
 }
 for( const k in keybd ){
   keyspan[ em.toKeyNum(keybd[k]) ].innerHTML = k;
-}//keyspan[60].innerHTML = "Z";
+}
 
+function removeClass( el, cls ){
+  if ( el==null || el==undefined ) return;
+
+  if ( el.classList.contains( cls ) ){
+    el.classList.remove( cls );
+  }
+}
+function addClass( el, cls ){
+  if ( el==null || el==undefined ) return; //debugger;
+
+  if ( el.classList.contains( cls ) ) return;
+  el.classList.add( cls );
+}
+function clearKeyMarkers(){
+  for (let ks of keyspan ){
+    removeClass( ks, 'on' );
+  }
+}
 function playCurrChord( midi, dur ){
   const root = em.toKeyNum( selRoot.value );
   const chd = em.toChord( selChd.value, root );
-  ep.playEvent( {t:0, chord: chd, d: dur} );
+  playEvent( {t:0, chord: chd, d: dur} );
+}
+function playEvent( e ){
+  clearKeyMarkers();
+  if ( e.nt != undefined ){
+    setNoteOn( e.t, e.nt, e.d, _plyr.melodyVelocity );
+  }
+  if ( e.chord != undefined ){
+    for ( let nt of e.chord ){
+      setNoteOn( e.t, nt, e.d, _plyr.chordVelocity );
+    }
+  }
+  setTimeout( ()=>{ 
+    _midiOut.allNotesOff(0);
+    }, 800 );
 }
 loadSelect( selChd, em.chordNames() );
 
+function addButtons( el, nms ){
+  let html = '';
+  for ( let n of nms ){
+    html += `<button>${n}</button>`;
+  }
+  el.innerHTML = html;
+}
+addButtons( divChdBtns, em.chordNames() );
+divChdBtns.addEventListener("click", function(e){
+  const root = em.toKeyNum( selRoot.value );
+  const chd = em.toChord( e.target.innerText, root );
+  playEvent( { t:0, chord: chd, d: 800 } );
+});
 
-ep.setPlayer( _midiOut );
-var _song, _track, _evtList;
-   
+var _song, _track;  
 selRoot.addEventListener("change", function() {
     playCurrChord( _midiOut, 500);
 });
@@ -135,12 +187,10 @@ selSong.addEventListener("change", function() {
   selTrk.dispatchEvent( new Event('change') );
 });
 function evalTrack(){
+  resetPlyr( 0 );
   _song = sngs.findSong( selSong.value );
-  _msPerTic = 60000 / _song.tempo / _song.ticsPerBeat;
-  _chordOffset = Number( selChdOff.value );
   _track = ep.findTrack( _song, selTrk.value );
-  _trk = ep.evalTrack( _song, _track, selWhich.value, _chordOffset ); 
-  _plyr.currBeat = 0;
+  _trk = ep.evalTrack( _song, _track, selWhich.value, _plyr.melodyOffset, _plyr.chordOffset ); 
   showEventList();
 
   var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} * ${x.d}` );
@@ -150,6 +200,7 @@ function evalTrack(){
 var _rows = [];
 var _notes = [];
 var _chords = [];
+var _rowdefs = {};
 function inBeats( tics ){
   let bts = Math.trunc( tics / _song.ticsPerBeat );
   let fr = tics % _song.ticsPerBeat;
@@ -167,6 +218,7 @@ function asBar( tics ){
   return `|${bar}.${tics % tpm}`;
 }
 function showEventList(){
+  clearKeyMarkers();
   let html = '';  
   let root = em.toKeyNum( _song.root );
   let scale = em.toScale( _song.mode, root );
@@ -178,11 +230,14 @@ function showEventList(){
   let rw = 0; sp = 1, lblRw = 0;;
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
     let rw = rows[i];
+    let r = `r${rw.rw}`;
     if ( rw.inscale ){   // nt i is in scale
-      html += `<div class="r${rw.rw} rw sp${rw.deg}"></div>`;
+      html += `<div id="rw${rw.rw}" class="${r} rw sp${rw.deg}"></div>`;
       _rows[ rw.rw ] = `R${rw.rw}: ${i}=${em.asStr(i)} = ${em.asDeg(rw.deg)}`;
       lblRw = rw.rw+1;
-    }
+    } else
+      r = `r${Math.trunc(rw.rw)}p`;  // between scale degrees
+    _rowdefs[r] = { nt: em.asStr(i), deg: em.asDeg(rw.deg) };
   }
   divRows.innerHTML = html;
   // set up label bar
@@ -231,7 +286,7 @@ function showEventList(){
           let brow = Math.trunc(rw.rw);
           html += `<div id="nt${cnt}" class="r${brow}p rw n${deg}${deg+1} t${e.t} ln${e.d}"></div>`;
        }
-       _notes[cnt] = `[${cnt}] ${asBar(e.t)}: ${em.asStr(e.nt)} (${em.asDeg(rw.deg)}) for ${inBeats(e.d)}`;
+       _notes[cnt] = `mel[${cnt}] ${asBar(e.t)}: ${em.asStr(e.nt)} (${em.asDeg(rw.deg)}) for ${inBeats(e.d)}`;
        cnt++;
      } else if ( e.chord != undefined ){
        for ( i=0; i < e.chord.length; i++ ){
@@ -244,7 +299,7 @@ function showEventList(){
             lastChd = chdname;
             lblhtml += `<div class="r${lblRw+1} t${e.t}">${lastChd}</div>`;
           }
-          _chords[ccnt] = `[${ccnt}] ${asBar(e.t)}: ${chdname} for ${inBeats(e.d)}`;
+          _chords[ccnt] = `chd[${ccnt}] ${asBar(e.t)}: ${em.asStr(e.chord)} for ${inBeats(e.d)}`;
        }
        ccnt++;
      }
@@ -257,32 +312,32 @@ function showEventList(){
 
 var _plyr = {
   midi:  null,
-  chordVelocity: 80,
-  melodyVelocity: 120,
-
-  stop: false,
-  currBeat: 0,
-  currEvtIdx: 0, // index of next e in _trk.evts[]
-  msStart: 0,   // tstamp of playing start
-  msMax: 0,     // maxTic in ms
-  notesOn: [],  // list of notes currently on
-  hist: []      // list of events actually played
+  melodyVelocity: 128,
+  chordVelocity:  48,
+  melodyOffset:   0,
+  chordOffset:    -12,
+  stop:           false,
+  currBeat:       0,
+  currEvtIdx:     0,   // index of next e in _trk.evts[]
+  msStart:        0,   // tstamp of playing start
+  msMax:          0,   // maxTic in ms
+  notesOn:        [],  // list of notes currently on
+  hist:           []   // list of events actually played
 };
-function playEvent( evt ){
-  var dur = evt.d * _trk.msTic - 2; 
-  let till = evt.t * _trk.msTic;
-  setTimeout( function() { 
-    if (_plyr.stop ) return;
-    if (evt.nt !=undefined ){
-      _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.nt});
-
-      _plyr.midi.noteOn( 0, evt.nt, _plyr.melodyVelocity ).wait( dur ).noteOff( 0, evt.nt );
-    } else if (evt.chord !=undefined ){
-      for ( var i=0; i<evt.chord.length; i++ ){
-        _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.chord[i]})
-        _plyr.midi.noteOn( 0, evt.chord[i], _plyr.chordVelocity ).wait( dur ).noteOff( 0, evt.chord[i] );
-    }  
-  }}, till );
+function resetPlyr( bt ){
+  _plyr.stop = false;
+  _plyr.notesOn = [];
+  if ( bt != undefined ){
+    _plyr.currBeat = bt;
+  }
+  _plyr.currEvtIdx = 0;
+  _plyr.notesOn = [];
+  _plyr.hist = [];
+  _plyr.melodyOffset = Number( selMelOff.value );
+  _plyr.chordOffset = Number( selChdOff.value );
+  _plyr.melodyVelocity = Number( selMelVel.value );
+  _plyr.chordVelocity = Number( selChdVel.value );
+  clearKeyMarkers();
 }
 function asNtChd( e ){
   if ( e.nt != undefined ) return em.asStr(e.nt);
@@ -290,11 +345,8 @@ function asNtChd( e ){
 }
 function setTic( tic ){
   let bt = Math.trunc( tic / _song.ticsPerBeat );
-//if ( _plyr.currBeat==bt ) return;
-
   let divBeat = document.getElementById( `beat${_plyr.currBeat}` );
-  if ( divBeat==null || divBeat.classList==null ) debugger;
-  if ( divBeat.classList.contains('on') ) divBeat.classList.remove('on');
+  removeClass( divBeat, 'on' );
   let eIdx = _plyr.currEvtIdx;
   if ( _plyr.currBeat < bt ) eIdx = 0;
   _plyr.currEvtIdx = -1;
@@ -306,41 +358,37 @@ function setTic( tic ){
       break;
     }
   }
-  if ( _plyr.currEvtIdx < 0 ) debugger;
+  if ( _plyr.currEvtIdx < 0 ){ 
+    bt = 0;     // restart
+  };
   
   stat.innerHTML = `${asBar(tic)} { ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }`;
   
   _plyr.currBeat = bt;
-  divBeat = document.getElementById( `beat${_plyr.currBeat}` );
-  if ( divBeat==null || divBeat.classList==null ) debugger;
-  divBeat.classList.add('on');
+  divBeat = document.getElementById( `beat${bt}` );
+  divBeat.scrollIntoView();
+  if ( bt+5 <= _trk.maxTic/_trk.tpb ) 
+    document.getElementById( `beat${bt+5}`).scrollIntoView();
+
+  addClass( divBeat, 'on' );
 }
 function addHist( msg ){
   let currMs = (Date.now()-_plyr.msStart)/_trk.msTic;
   _plyr.hist.push( { ms:`${currMs.toFixed(2)}`, m: msg } );
 }
-function setNoteOn( tic, nt, d ){
+function setNoteOn( tic, nt, d, vel ){
   _plyr.notesOn.push( { t:tic, nt: nt, d: d });
-  _midiOut.noteOn( 0, nt, _plyr.chordVelocity );
-  let k = keyspan[ nt ];
-  if ( !k.classList.contains('on') ){
-    k.classList.add( 'on' );
-  }
+  _midiOut.noteOn( 0, nt, vel);
+  addClass( keyspan[ nt ], 'on' );
   addHist( `noteOn(${nt} ${d})`);
 }
 function setNoteOff( nt, idx ){
   _midiOut.noteOff( 0, nt );
-  let k = keyspan[ nt ];
-  if ( k.classList.contains('on') ){
-    k.classList.remove( 'on' );
-  }
-  _plyr.notesOn.splice( idx, 1 );   // remove note
+  removeClass( keyspan[ nt ], 'on' );
   addHist( `noteOff( ${nt} )`);
 }
 function startPlay( midi ){
-  _plyr.stop = false;
-  _plyr.hist = [];
-  _plyr.notesOn = [];
+  resetPlyr();  // leave currBeat intact
   _plyr.msStart = Date.now();
   _plyr.msMax = _plyr.msStart + _trk.maxTic * _trk.msTic;
   var beat = _plyr.currBeat;
@@ -349,22 +397,26 @@ function startPlay( midi ){
   function playtic(){
     addHist( asBar(tic) );
     setTic( tic );
-    for ( let i=0; i < _plyr.notesOn.length; i++ ){
-      _plyr.notesOn[i].d = _plyr.notesOn[i].d - 1;
-      if ( _plyr.notesOn[i].d == 0 ){
-        setNoteOff( _plyr.notesOn[i].nt, i );
+    let ntson = _plyr.notesOn;
+    _plyr.notesOn = [];
+    for ( let n of ntson ){
+      let nnt = { t: n.t, nt: n.nt, d: n.d-1 };  // one less tic
+      if (nnt.d==0){
+        setNoteOff( nnt.nt, i );
+      } else {
+        _plyr.notesOn.push( nnt );
       }
     }
-
+  
     for ( let i=_plyr.currEvtIdx; i<_trk.evts.length; i++ ){
       let e = _trk.evts[ i ];
-      if ( e.t > tic ) break;
+      if ( e==null || e.t > tic ) break;
       if ( e.nt != undefined ){
-        setNoteOn( tic, e.nt, e.d );
+        setNoteOn( tic, e.nt, e.d, _plyr.melodyVelocity );
       }
       if ( e.chord != undefined ){
         for ( let nt of e.chord ){
-          setNoteOn( tic, nt, e.d );
+          setNoteOn( tic, nt, e.d, _plyr.chordVelocity );
         }
       }
     }
@@ -382,24 +434,27 @@ function stopPlay( ){
   _plyr.stop = true;
   _midiOut.allNotesOff(0);
   _plyr.notesOn = [];
-  for ( let k of keyspan )
-    if ( k!==null && k!==undefined && k.classList.contains('on') ){
-      k.classList.remove('on');
-    }
   btnPlay.innerText = 'Play';
 }
-
 divBars.addEventListener("click", function(evt){
   let tgt = evt.target;
+  let rw = null;
+  for ( let cl of tgt.className.split(' ') )
+    if (  _rowdefs[cl] != undefined ){
+      rw = _rowdefs[cl];
+    }
+
   let tip = `#${tgt.id}.${tgt.className} `;
+  if ( rw!=null ) tip = `${rw.nt} (${rw.deg}) `;
   if (tgt.id.startsWith('nt')){
-    tip = _notes[tgt.id.substring(2)];
+    tip += _notes[tgt.id.substring(2)];
   } else if (tgt.id.startsWith('chd')){
     let ich = tgt.id.substring(3).split('-')[0];
-    tip = _chords[ich];
+    tip += _chords[ich];
   } else if (tgt.id.startsWith('beat')){
     setTic( Number(tgt.id.substring(4))*_song.ticsPerBeat );
-  }
+    return;
+  } 
   information.innerHTML = tip;
 });
 selTrk.addEventListener("change", function() {
@@ -408,7 +463,16 @@ selTrk.addEventListener("change", function() {
 selWhich.addEventListener("change", function() {
   evalTrack();
 });
+selMelOff.addEventListener("change", function() {
+  evalTrack();
+});
 selChdOff.addEventListener("change", function() {
+  evalTrack();
+});
+selMelVel.addEventListener("change", function() {
+  evalTrack();
+});
+selChdVel.addEventListener("change", function() {
   evalTrack();
 });
 selEvts.addEventListener("change", function() {
@@ -426,6 +490,5 @@ btnPlay.addEventListener("click", function(){
   }
 });
 
-selChdOff.value = -12;
 loadSelect( selSong, sngs.songNames() );
 selSong.dispatchEvent( new Event('change') );

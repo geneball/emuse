@@ -93,15 +93,15 @@ function trackRowMap(){
   calcRowMap();
   return _trk.rowMap;
 }
-function evalTrack( song, track, playwhich, chordOffset ){  // calc events for song & track, Chords/Melody/Both, chord notes offset
-  if ( chordOffset==undefined ) chordOffset = 0;
+function evalTrack( song, track, playwhich, melOffset, chdOffset ){  // calc events for song & track, Chords/Melody/Both, chord notes offset
   _trk.bpb = song.beatsPerBar;
   let tpb = _trk.tpb = Number( song.ticsPerBeat );
   _trk.msTic = 60000 / song.tempo / tpb;
   _trk.barTics = _trk.bpb * tpb;
   _trk.root = toKeyNum( song.root );
   _trk.scale = toScale( song.mode, _trk.root );
-  _trk.chdOff = chordOffset;
+  _trk.melOff = melOffset? melOffset : 0;
+  _trk.chdOff = chdOffset? chdOffset : 0;
 
   _trk.evts = [];
   let tic = 0;
@@ -152,7 +152,7 @@ function evalTrack( song, track, playwhich, chordOffset ){  // calc events for s
           let [tics,scdeg] = n.split(':');
           tics = Number(tics);
           if ( scdeg.toLowerCase() != 'r' ){
-            let n = asNote( scdeg, _trk.scale );
+            let n = asNote( scdeg, _trk.scale ) + _trk.melOff;
             if (isNaN(n)) debugger; 
             _trk.evts.push( { t:tic, nt: n, d:tics } );
             if ( n < _trk.Lo ) _trk.Lo = n;
