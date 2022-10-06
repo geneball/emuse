@@ -74,8 +74,9 @@ function loadSelect( sel, nms ){
 
 const em = require('./emuse.js');
 //em.test();
-const ep= require('./eplay.js');
+const et= require('./etrack.js');
 const sngs = require('./songs.js');
+const { saveTrack } = require("./egene");
 
 const selRoot = document.getElementById('selectRoot');
 const selMode = document.getElementById('selectMode');
@@ -90,6 +91,7 @@ const selChdVel = document.getElementById('selChdVel');
 const selMelOff = document.getElementById('selMelOff');
 const selChdOff = document.getElementById('selChdOff');
 const btnPlay = document.getElementById('btnPlay');
+const btnSave = document.getElementById('btnSave');
 
 const divBars = document.getElementById('bars');
 const divBeats = document.getElementById('beats');
@@ -149,14 +151,16 @@ function playEvent( e ){
 }
 loadSelect( selChd, em.chordNames() );
 
-function addButtons( el, nms ){
+function asBtnHtml( nms ){
   let html = '';
   for ( let n of nms ){
     html += `<button>${n}</button>`;
   }
-  el.innerHTML = html;
+  return html;
 }
-addButtons( divChdBtns, em.chordNames() );
+divChdBtns.innerHTML = `<div id='triads'>${asBtnHtml(em.chordNames(3))}</div>` +
+`<div id='quartads'>${asBtnHtml(em.chordNames(4))}</div>` +
+`<div id='quintads'>${asBtnHtml(em.chordNames(5))}</div>`;
 divChdBtns.addEventListener("click", function(e){
   const root = em.toKeyNum( selRoot.value );
   const chd = em.toChord( e.target.innerText, root );
@@ -182,15 +186,15 @@ function setKey( song ){
 }
 selSong.addEventListener("change", function() {
   _song = sngs.findSong( selSong.value );
-  loadSelect( selTrk, ep.trackNames( _song ));
+  loadSelect( selTrk, et.trackNames( _song ));
   setKey( _song );
   selTrk.dispatchEvent( new Event('change') );
 });
 function evalTrack(){
   resetPlyr( 0 );
   _song = sngs.findSong( selSong.value );
-  _track = ep.findTrack( _song, selTrk.value );
-  _trk = ep.evalTrack( _song, _track, selWhich.value, _plyr.melodyOffset, _plyr.chordOffset ); 
+  _track = et.findTrack( _song, selTrk.value );
+  _trk = et.evalTrack( _song, _track, selWhich.value, _plyr.melodyOffset, _plyr.chordOffset ); 
   showEventList();
 
   var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? em.asStr(x.chord) : em.asStr(x.nt)} * ${x.d}` );
@@ -222,11 +226,11 @@ function showEventList(){
   let html = '';  
   let root = em.toKeyNum( _song.root );
   let scale = em.toScale( _song.mode, root );
-  let [ lo, hi ] = ep.trackLoHi();
-  let maxtic = ep.maxTic();
+  let [ lo, hi ] = et.trackLoHi();
+  let maxtic = et.maxTic();
 
   stat.innerText = `Notes: ${lo}..${hi}  Tics: 0..${maxtic} `;
-  let rows = ep.trackRowMap();
+  let rows = et.trackRowMap();
   let rw = 0; sp = 1, lblRw = 0;;
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
     let rw = rows[i];
@@ -289,6 +293,7 @@ function showEventList(){
        _notes[cnt] = `mel[${cnt}] ${asBar(e.t)}: ${em.asStr(e.nt)} (${em.asDeg(rw.deg)}) for ${inBeats(e.d)}`;
        cnt++;
      } else if ( e.chord != undefined ){
+       chtml += `<div id="chd${ccnt}">`;
        for ( i=0; i < e.chord.length; i++ ){
          let nt = e.chord[ i ];
          let rw = rows[ nt ];
@@ -301,6 +306,7 @@ function showEventList(){
           }
           _chords[ccnt] = `chd[${ccnt}] ${asBar(e.t)}: ${em.asStr(e.chord)} for ${inBeats(e.d)}`;
        }
+       chtml += '</div>';
        ccnt++;
      }
    }
@@ -322,7 +328,8 @@ var _plyr = {
   msStart:        0,   // tstamp of playing start
   msMax:          0,   // maxTic in ms
   notesOn:        [],  // list of notes currently on
-  hist:           []   // list of events actually played
+  hist:           [],   // list of events actually played
+  selEl:          null  // currently selected element
 };
 function resetPlyr( bt ){
   _plyr.stop = false;
@@ -436,6 +443,11 @@ function stopPlay( ){
   _plyr.notesOn = [];
   btnPlay.innerText = 'Play';
 }
+function selectEl( el ){
+  removeClass( _plyr.selEl, 'sel' );
+  _plyr.selEl = el;
+  addClass( el, 'sel' );
+}
 divBars.addEventListener("click", function(evt){
   let tgt = evt.target;
   let rw = null;
@@ -448,9 +460,11 @@ divBars.addEventListener("click", function(evt){
   if ( rw!=null ) tip = `${rw.nt} (${rw.deg}) `;
   if (tgt.id.startsWith('nt')){
     tip += _notes[tgt.id.substring(2)];
+    selectEl( tgt );
   } else if (tgt.id.startsWith('chd')){
     let ich = tgt.id.substring(3).split('-')[0];
     tip += _chords[ich];
+    selectEl( tgt.parentElement );
   } else if (tgt.id.startsWith('beat')){
     setTic( Number(tgt.id.substring(4))*_song.ticsPerBeat );
     return;
@@ -477,17 +491,20 @@ selChdVel.addEventListener("change", function() {
 });
 selEvts.addEventListener("change", function() {
   var evt = _trk.evts[ selEvts.selectedIndex ];
-  ep.playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
+  playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
 });
 btnPlay.addEventListener("click", function(){
   if ( btnPlay.innerText=='Play' ){
     btnPlay.innerText = 'Stop';
-   // ep.startPlay( );
-      startPlay();
+    startPlay();
   } else {
     btnPlay.innerText = 'Play';
       stopPlay();
   }
+});
+btnSave.addEventListener("click", function(){
+  saveTrack( _song, _track, _trk ); 
+  information.innerText = `Saved track '${_track.nm}' of '${_song.nm}'`;
 });
 
 loadSelect( selSong, sngs.songNames() );

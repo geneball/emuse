@@ -90,14 +90,17 @@
     <option> Melodic minor </option>
     <option> Phryrgian Dominant </option>
   </select>
-  Chords: 
-  <select id="selectChord" >
-  </select>
-  <div id="chdButtons"></div>
+  <span id="info" class="info"> info </span>
   Events:
   <select id="selectEvents" >
   </select>
   </p>
+
+  <div id="chdButtons">  Chords: 
+  <select id="selectChord" >
+  </select>
+  </div>
+
 
   <p>
   Song: 
@@ -112,6 +115,7 @@
     <option> Melody </option>
   </select>
   <button id="btnPlay">Play</button>
+  <button id="btnSave">Save</button>
   </p>
   Vel-M/C:
   <select id="selMelVel" >
@@ -155,7 +159,6 @@
 
 	<p id=piano> piano </p>
 
-  <span id="info" class="info"> info </span>
   <span id="status"> status </span>
   </body>
   <script src="./renderer.js"></script>

@@ -38,8 +38,10 @@
      #selChdVel      { width:4em; }
      #bars { position:relative; border: 1px solid white; width:1000px; height:320px;
             overflow: auto; }
-
-     .tic { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
+     .sel { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 6px, white 6px, black 8px, black 8px); }
+     div.sel div { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 6px, white 6px, black 8px, black 8px); }
+ 
+      .tic { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
      .bar { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
      .lbl { width: 5000px; height:40px; background-color: white;}
      .info{ width: 400px; display: inline-block; }
@@ -106,6 +108,33 @@
      .r25p{ position: absolute; bottom:383px; }
      .r26 { position: absolute; bottom:391px; }
      .r26p{ position: absolute; bottom:398px; }
+     .r27 { position: absolute; bottom:406px; }
+     .r27p{ position: absolute; bottom:413px; }
+     .r28 { position: absolute; bottom:421px; }
+     .r28p{ position: absolute; bottom:428px; }
+     .r29 { position: absolute; bottom:436px; }
+     .r29p{ position: absolute; bottom:443px; }
+     .r30 { position: absolute; bottom:451px; }
+     .r30p{ position: absolute; bottom:458px; }
+     .r31 { position: absolute; bottom:466px; }
+     .r31p{ position: absolute; bottom:473px; }
+     .r32 { position: absolute; bottom:481px; }
+     .r32p{ position: absolute; bottom:488px; }
+     .r33 { position: absolute; bottom:496px; }
+     .r33p{ position: absolute; bottom:503px; }
+     .r34 { position: absolute; bottom:511px; }
+     .r34p{ position: absolute; bottom:518px; }
+     .r35 { position: absolute; bottom:526px; }
+     .r35p{ position: absolute; bottom:533px; }
+     .r36 { position: absolute; bottom:541px; }
+     .r36p{ position: absolute; bottom:548px; }
+     .r37 { position: absolute; bottom:556px; }
+     .r37p{ position: absolute; bottom:563px; }
+     .r38 { position: absolute; bottom:571px; }
+     .r38p{ position: absolute; bottom:578px; }
+     .r39 { position: absolute; bottom:586px; }
+     .r39p{ position: absolute; bottom:593px; }
+     .r40 { position: absolute; bottom:601px; }
 
      .sp0 { width: 5000px; background-color: var(--L0); }
      .sp1 { width: 5000px; background-color: var(--L1); }
@@ -115,20 +144,27 @@
      .sp5 { width: 5000px; background-color: var(--L5); }
      .sp6 { width: 5000px; background-color: var(--L6); }
 
-     .n0  { background-color: var(--D0); }
+     .n0  { background-color: var(--D0) !important; }
+     .n01.sel { background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 4px, white 4px, white 6px, var(--D1) 6px, var(--D1) 10px); }
      .n01 { background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 10px, var(--D1) 10px, var(--D1) 20px); }
-     .n1  { background-color: var(--D1); }
+     .n1  { background-color: var(--D1) !important; }
+     .n12.sel { background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 4px, white 4px, white 6px, var(--D2) 6px, var(--D2) 10px); } 
      .n12 { background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 10px, var(--D2) 10px, var(--D2) 20px); }
-     .n2  { background-color: var(--D2); }
+     .n2  { background-color: var(--D2) !important; }
+     .n23.sel { background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 4px, white 4px, white 6px, var(--D3) 6px, var(--D3) 10px); } 
      .n23 { background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 10px, var(--D3) 10px, var(--D3) 20px); }
-     .n3  { background-color: var(--D3); }
+     .n3  { background-color: var(--D3) !important; }
+     .n34.sel { background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 4px, white 4px, white 6px, var(--D4) 6px, var(--D4) 10px); } 
      .n34 { background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 10px, var(--D4) 10px, var(--D4) 20px); }
-     .n4  { background-color: var(--D4); }
+     .n4  { background-color: var(--D4) !important; }
+     .n45.sel { background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 4px, white 4px, white 6px, var(--D5) 6px, var(--D5) 10px); } 
      .n45 { background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 10px, var(--D5) 10px, var(--D5) 20px); }
-     .n5  { background-color: var(--D5); }
+     .n5  { background-color: var(--D5) !important; }
+     .n56.sel { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 4px, white 4px, white 6px, var(--D6) 6px, var(--D6) 10px); } 
      .n56 { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 5px, var(--D6) 5px, var(--D6) 10px); }
-     .n6  { background-color: var(--D6); }
-     .n60 { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D7) 10px, var(--D7) 20px); }
+     .n6  { background-color: var(--D6) !important; }
+     .n60.sel { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 4px, white 4px, white 6px, var(--D0) 6px, var(--D0) 10px); } 
+     .n60 { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D0) 10px, var(--D0) 20px); }
    
      .ln1  { width:   9px; }
      .ln2  { width:  19px; }

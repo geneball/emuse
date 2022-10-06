@@ -19,9 +19,8 @@ const songs =
           '8:1 4:5 8:4 4:3 4:2 4:1 4:0 36:1'
         ], 
         chords:
-        [
-          '60:i 12:III 12:i 4:III 8:IV', 
-          '60:i 24:III 24:VII 12:i 24:VII 48:i'
+        [ '24:im 12:VIIM 24:im 12:IIIM 12:im 3:IIIM 8:IVM 48:im',
+          '|13 12:im 24:IIIM 24:VIIM |18 12:im 24:VIIM 48:im'
         ]
       }
     ],
@@ -617,9 +616,10 @@ const songs =
     tracks:
     [ 
       { nm: 'Intro',
-        melody: [
+        melody: [ '8:1 8:1# 8:2 8:2# 8:3 8:3# 8:4 8:5 8:5# 8:6 8:7 8:7#'
         ],
         chords: [
+          '8:I 8:II 8:III 8:IV 8:V 8:VI 8:VII 8:im 8:iim 8:iiim 8:ivm 8:vm 8:vim 8:viim'
         ]
       }
     ],

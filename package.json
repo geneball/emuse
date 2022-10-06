@@ -30,5 +30,8 @@
     "jzz-gui-select": "^1.0.7",
     "jzz-input-kbd": "^1.2.4",
     "jzz-synth-tiny": "^1.2.9"
+  },
+  "dependencies": {
+    "fs-jetpack": "^5.0.0"
   }
 }

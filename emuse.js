@@ -51,8 +51,39 @@
 	 { scale:[ 0, 1, 3, 5, 6, 8, 10, 12 ], nm: 'Locrian'            },
 	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], nm: 'Harmonic minor'     },
 	 { scale:[ 0, 2, 3, 5, 7, 9, 11, 12 ], nm: 'Melodic minor'      },
-	 { scale:[ 0, 2, 4, 5, 7, 9, 10, 12 ], nm: 'Phryrgian Dominant' }
+
+
+	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], 	nm: 'Harmonic minor' }, // 1 2 ♭3 4 5 ♭6 7
+	 { scale:[ 0, 1, 4, 6, 8, 9, 11 ], 		nm: 'Phryrgian Dominant' },
+	 { scale:[ 0, 2, 3, 6, 8, 10, 12 ], 	nm: 'Ascending melodic minor' },
+	 { scale:[ 0, 1, 3, 6, 8, 10, 11 ], 	nm: 'Phrygian ♯6' },
+	 { scale:[ 0, 2, 4, 7, 9, 10, 12 ], 	nm: 'Lydian augmented' },
+	{ scale:[ 0, 2, 4, 7, 8, 10, 11 ], 		nm: 'Lydian dominant' },
+	{ scale:[ 0, 2, 4, 6, 8, 9, 11 ], 		nm: 'Aeolian dominant' },
+	{ scale:[ 0, 2, 3, 6, 7, 9, 11 ], 		nm: 'Half-diminished' },
+	{ scale:[ 0, 1, 3, 6, 7, 10, 11 ], 		nm: 'Locrian ♯6' },
+	{ scale:[ 0, 2, 4, 6, 9, 10, 12 ], 		nm: 'Ionian ♯5' },
+	{ scale:[ 0, 2, 3, 7, 8, 10, 11 ], 		nm: 'Ukrainian Dorian' },
+	{ scale:[ 0, 3, 4, 7, 8, 10, 12 ], 		nm: 'Lydian ♯2' },
+	{ scale:[ 0, 1, 3, 5, 7, 9, 12 ], 		nm: 'Altered Diminished' },
+	{ scale:[ 0, 2, 4, 6, 8, 9, 12 ], 		nm: 'Harmonic major' },
+	{ scale:[ 0, 2, 3, 6, 7, 10, 11 ], 		nm: 'Dorian ♭5' },
+	{ scale:[ 0, 1, 3, 5, 8, 9, 11 ], 		nm: 'Phrygian ♭4' },
+	{ scale:[ 0, 2, 3, 7, 8, 10, 12 ], 		nm: 'Lydian ♭3' },
+	{ scale:[ 0, 1, 4, 6, 8, 10, 11 ], 		nm: 'Mixolydian ♭2' },
+	{ scale:[ 0, 3, 4, 7, 9, 10, 12 ], 		nm: 'Lydian Augmented ♯2' },
+	{ scale:[ 0, 1, 3, 6, 7, 9, 12 ], 		nm: 'Locrian 7' },
+	{ scale:[ 0, 1, 4, 6, 8, 9, 12 ], 		nm: 'Double harmonic' },
+	{ scale:[ 0, 3, 4, 7, 8, 11, 12 ], 		nm: 'Lydian ♯2 ♯6' },
+	{ scale:[ 0, 1, 3, 5, 8, 9, 10 ], 		nm: 'Phrygian ♭♭7 ♭4' },
+	{ scale:[ 0, 2, 3, 7, 8, 9, 12  ], 		nm: 'Hungarian minor' },
+	{ scale:[ 0, 1, 4, 6, 7, 10, 11 ], 		nm: 'Locrian ♮6 ♮3' },
+	{ scale:[ 0, 3, 4, 6, 9, 10, 12 ], 		nm: 'Ionian ♯5 ♯2' }, //  0, 2, 4, 5, 7, 9, 11, 12 
+	{ scale:[ 0, 1, 2, 6, 7, 9, 10 ], 		nm: 'Locrian ♭♭3 ♭♭7' }
 	];
+    function modeNames( ){
+	    return modeDefs.map( x => x.nm );
+    }
 	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
 		let rw = [], sc = 0, r = 0;
 		let off = scale[0];
@@ -123,7 +154,17 @@
 	  { nm: '7sus4',   nts:[0,5,7,10]      },  // 1 4b 5  6#       7sus4
 	  { nm: '7sus2',   nts:[0,2,7]         },  // 1 2b 5           7sus2
 	];
-    function chordNames(){
+	var triads = [ 'M', 'm', 'dim', 'aug', 'b5', '7sus2', 'sus4' ];
+	var quartads = [ 'M7', 'm7', '7', '7aug', '7b5', 'mM7', 'm7b5', 'dim7',
+	 '6', 'M7b5', 'M7aug', 'm6', 'mM7b5', 'm(9)', '(9)', '7sus4' ];
+
+	var quintads = [ '6(9)', '7(9)', 'M7(9)', 'M7(#11)', 'm7(9)', 
+			'mM7(9)', '7(b9)', '7(b13)', '7(13)', '7(#9)', 'm7(11)', '7(#11)' ];
+
+    function chordNames( numNotes ){
+		if ( numNotes==3 ) return triads;
+		if ( numNotes==4 ) return quartads;
+		if ( numNotes==5 ) return quintads;
         return chordDefs.map( x => x.nm );
     }
 	function toChord( chd, root ){
@@ -213,4 +254,4 @@
 	}
 
 	
-module.exports = { toKeyNum, toScale, scaleRows, chordNames, toChord, chordName, asStr, asDeg, test }; 
+module.exports = { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, asStr, asDeg, test }; 
