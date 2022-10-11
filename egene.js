@@ -273,7 +273,7 @@ function decodeCodon( g ){      // decode g.codons[ g._dst.iCdn..] & update g._d
         case 'CS':  _dst.ctic += val;                   break;  // chord silence  0..88 in tics
 
         case 'PC':  g.evts.push( { t: _dst.ctic, chord: toChord(  _dst.chdkind, _dst.chdrt ), d: _dst.cdur } );  
-    
+                    _dst.iEvt++;     
                     _dst.ctic += _dst.cdur;
                     _decHist.push( { e: g.evts.length, t: _dst.ctic, op: 'PC', nt: _dst.nt, nd: _dst.ntdur, rt: _dst.chdrt, cd: _dst.cdur }); 
        
@@ -296,8 +296,8 @@ function genEvts( gene ){
 //**************************************** */
 function saveTrack( song, trk, _trk ){
 
-    jetpack.cwd( './data' );
-    jetpack.write( `${song.nm}.json`, song );
+    let data = jetpack.cwd( './data' );
+    data.write( `${song.nm}.json`, song );
 
     let gene = {
         nm: `${song.nm}_${trk.nm}`,
@@ -308,10 +308,10 @@ function saveTrack( song, trk, _trk ){
         tempo: song.tempo,
         codons: '',
         orig_events: _trk.evts,
-        evts: [],
-        hist: []
+        evts: []
     };
     genCodons( gene );
+    delete gene.orig_events;        // since gene.evts matches
 
     jetpack.write( `${song.nm}_${trk.nm}_gene.json`, gene )
 }

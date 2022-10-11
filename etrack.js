@@ -120,16 +120,17 @@ function evalTrack( song, track, playwhich, melOffset, chdOffset ){  // calc eve
           if ( chordname != 'r' ){
             let chd = asChord( chordname, _trk.scale );
             chd = chd.map( x => x + _trk.chdOff );
-            if ( tics % tpb != 0 ) 
-              console.log( `chords: tics(${tics}) not at beat (${tpb}) ` )
-            let beats = tics / tpb;
-            for( let i=0; i<beats; i++ ){
-              _trk.evts.push( { t: Number(tic), chord: chd, d: tpb } );
+          //  if ( tics % tpb != 0 ) 
+          //    console.log( `chords: tics(${tics}) not at beat (${tpb}) ` )
+            while ( tics > 0 ){
+              let dur = tics > tpb? tpb : tics; 
+              tics -= dur;
+              _trk.evts.push( { t: Number(tic), chord: chd, d: dur } );
               for ( let n of chd ){
                 if ( n < _trk.Lo ) _trk.Lo = n;
                 if ( n > _trk.Hi ) _trk.Hi = n;
               }
-              tic += tpb;
+              tic += dur;
             }
           } else {
             tic += tics;
