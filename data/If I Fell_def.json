@@ -1,0 +1,105 @@
+{
+  "nm": "If I Fell",
+  "root": "D#",
+  "mode": "Minor",
+  "beatsPerBar": 4,
+  "tempo": 105,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Intro",
+      "melody": [
+		'|1 12:r 2:8 2:9 2:10 2:11 2:8 2:9 4:10 2:8 2:9',
+		'|3 2:10 2:11 2:7# 2:8# 6:10 2:7#'
+		'|4 4:7 12:14 2:13# 4:12 6:9 2:8 2:9',
+		'|6 2:10 2:11 2:9 2:10 4:11 2:9 2:10',
+		'|7 2:10 2:11 2:7# 2:8# 6:10 2:7#'
+		'|8 12:12 2:8 2:9'
+      ],
+      "chords": [
+		'|1 16:r 16:D#m 16:D 16:C# 16:A#m 16:D#m 16:D 16:A7'
+      ]
+    },
+    {
+      "nm": "Verse",
+      "melody": [
+		'|1 8:8 8:9 8:7 4:r 4:6',
+		'|3 10:8 4:r 2:6 4:8 4:7 4:6 2:6 2:7'
+      ],
+      "chords": [
+		'|1 8:D 8:Em 16:F#m 16:Em7 16:A7'
+      ]
+    },
+    {
+      "nm": "Verse & Pre-chorus",
+      "melody": [
+		'|1 8:3 8:4 12:5 4:4# 14:4 2:6',
+		'|4 4:8 4:7 4:6 2:1 2:2 8:3 8:4',
+		'|6 12:5 4:4# 16:4 2:6 4:8 4:7 4:6 4:7',
+		'|9 16:5 12:r 2:1 2:2 8:3 8:4',
+		'|12 12:5 4:4# 14:4 2:6 4:8 4:7 4:6 2:1 2:2',
+		'|15 8:3 8:4 12:5 4:4# 14:4 2:6 4:8 4:7 4:6 4:7'
+      ],
+      "chords": [
+		'|1 8:D 8:Em 16:F#m 16:Em 16:A 8:D 8:Em',
+		'|6 16:F#m 16:Em 16:A',
+		'|9 16:D 8:Gm 8:A 8:D 8:Em 16:F#m 16:Em',
+		'|14 16:A 8:D 8:Em 16:F#m 16:Em 16:A'
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+		"If I fell in love with you",
+		"Would you promise to be true",
+		"And help me",
+		"Understand",
+		"'Cause I've been in love before",
+		"And I found that love was more",
+		"Than just",
+		"Holding hands"
+    ],
+    "Verse2": [
+		"If I give my heart",
+		"To you",
+		"I must be sure",
+		"From the very start",
+		"That you",
+		"Would love me more than her"
+    ],
+    "Verse2": [
+		"If I trust in you",
+		"Oh please",
+		"Don't run and hide",
+		"If I love you too",
+		"Oh please",
+		"Don't hurt my pride like her"
+    ],
+    "Pre-chorus1": [
+		"'Cause I couldn't stand the pain",
+		"And I",
+		"Would be sad",
+		"If our new love was in vain"
+    ],
+    "Chorus": [
+		"So I hope you see",
+		"That I",
+		"Would love to love you",
+		"And that she",
+		"Will cry",
+		"When she learns we are two",
+		"'Cause I couldn't stand the pain",
+		"And I",
+		"Would be sad",
+		"If our new love was in vain"
+    ],
+    "Chorus": [
+		"So I hope you see",
+		"That I",
+		"Would love to love you",
+		"And that she will cry",
+		"When she learns we are two",
+		"If I fell in love with you..."
+	]
+  }
+}

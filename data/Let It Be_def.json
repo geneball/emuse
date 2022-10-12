@@ -1,0 +1,70 @@
+{
+  "nm": "Let It Be",
+  "root": "C",
+  "mode": "Major",
+  "beatsPerBar": 4,
+  "tempo": 75,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Verse",
+      "melody": [
+		'|1 14:r 2:5 3:5 2:6 2:3 3:5 2:5 1:8 2:9 1:r',
+		'|3 1:10 1:10 4:10 1:9 2:9 1:8 2:8 4:r'
+		'|4 1:10 3:10 2:11 1:10 2:10 2:9 2:r 1:10 1:9 2:9 2:8 13:r'
+      ],
+      "chords": [
+		'16:r 8:C 8:G 8:Am 4:FM7 4:F6 8:C 8:G 4:F 2:C/E 2:Dm7 8:C'
+      ]
+    },
+    {
+      "nm": "Chorus",
+      "melody": [
+		'|1 12:r 1:10 1:9 6:8 1:10 1:12 2:13 4:r 1:12 1:12 1:10 4:9 1:8 1:6 2:5 3:10 6:r',
+		'|4 1:r 1:10 1:10 3:11 1:10 2:10 2:9 2:r 1:10 1:9 2:9 3:8 12:r'
+      ],
+      "chords": [
+		'16:r 8:Am 8:G6 8:FM7 16:C 8:G 4:F 2:C/E 2:Dm 8:C'
+      ]
+    },
+	{
+      "nm": "Bridge",
+      "melody": [
+		'|1 8:11 2:10 2:r 2:9 2:r 8:8 4:6# 2:6 2:r',
+		'|3 8:5 8:4 16:3'
+      ],
+      "chords": [
+		'8:F 4:Em 4:Dm 8:C 4:Bb 4:Am 8:G 8:F 16:C'
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+		"When I find myself in times of trouble, Mother Mary comes to me",
+		"Speaking words of wisdom, let it be",
+		"And in my hour of darkness she is standing right in front of me",
+		"Speaking words of wisdom, let it be"
+    ],
+    "Chorus": [
+		"Let it be, let it be, let it be, let it be",
+		"Whisper words of wisdom, let it be"
+	],
+    "Verse2": [
+		"And when the broken hearted people living in the world agree",
+		"There will be an answer, let it be",
+		"For though they may be parted, there is still a chance that they will see",
+		"There will be an answer, let it be"
+    ],
+    "Chorus2": [ ],
+    "Chorus3": [ ],
+    "Chorus4": [ ],
+    "Verse3": [
+		"And when the night is cloudy there is still a light that shines on me",
+		"Shinin' until tomorrow, let it be",
+		"I wake up to the sound of music, Mother Mary comes to me",
+		"Speaking words of wisdom, let it be"
+    ],
+    "Chorus5": [    ],
+    "Chorus6": [    ],
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "nm": "",
+  "root": "",
+  "mode": "",
+  "beatsPerBar": ,
+  "tempo": ,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Verse",
+      "melody": [
+		'|1 ',
+		'|3 '
+		'|4 '
+      ],
+      "chords": [
+		'|1 '
+      ]
+    },
+    {
+      "nm": "Chorus",
+      "melody": [
+		'|1 ',
+		'|4 '
+      ],
+      "chords": [
+		'|1 '
+      ]
+    },
+	{
+      "nm": "Bridge",
+      "melody": [
+		'|1 ',
+		'|3 '
+      ],
+      "chords": [
+		'|1 '
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+		"
+		"
+		"
+		"
+    ],
+    "Chorus": [
+		"
+		"
+	],
+    "Verse2": [
+		"
+    ],
+    "Chorus2": [ ],
+    "Chorus3": [ ],
+    "Chorus4": [ ],
+    "Verse3": [
+    ],
+    "Chorus5": [    ],
+    "Chorus6": [    ],
+  }
+}

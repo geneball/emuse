@@ -1,0 +1,68 @@
+{
+  "nm": "We Are Family",
+  "root": "A",
+  "mode": "Mixolodian",
+  "beatsPerBar": 4,
+  "tempo": 119,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Verse1",
+      "melody": [
+		'|1 10:r 2:8 2:7 2:8',
+		'|2 2:r 2:7 2:r 2:7 2:r 2:5 2:4 4:5 2:3 6:r 2:1 2:1 2:1',
+		'|4 2:r 4:9 4:8 2:8 4:r 4:8 6:r 2:8 2:7 2:8 2:r',
+		'|6 2:7 2:5 4:7 2:5 2:4 4:5 2:3 6:r 2:1 2:1 2:1','
+		'|8 2:r 4:9 4:8 6:r',
+		'|9 4:8 4:r 2:8 2:8 2:8 4:8 2:7 2:r 2:5 2:5 2:5 2:4 4:5 2:3 6:r 2:1 2:3 2:3',
+		'|12 2:1 2:1 14:r 2:10 2:9 2:8 2:9 2:8 2:8 4:6 4:8 10:r',
+		'|15 2:4 2:6 2:8 2:9 2:8 2:8 2:9 2:9# 2:9 10:8 4:r'
+      ],
+      "chords": [
+		'14:A 10:Em7 8:D(add9) 14:A 10:Em7 8:D(add9)',
+		'|5 14:A 10:Em7 8:D(add9) 14:A 10:Em7 8:D(add9)',
+		'|9  14:A 10:Em7 8:D(add9) 14:A 10:Em7 8:D(add9)',
+		'|13  14:A 10:Em7 8:D(add9) 14:A 10:Em7 8:D(add9)'
+      ]
+    },
+    {
+      "nm": "Chorus",
+      "melody": [
+		'4:8 4:7 4:7 2:7 3:8 15:r',
+		'|3 2:7 2:7  2:7 2:7 2:7 2:7 2:7 3:8 15:r',
+		'|5 4:8 4:7 4:7 2:7 3:8 15:r',
+		'|7 2:7 2:7 2:7 2:5 2:7 2:5 2:7 3:8 15:r'
+      ],
+      "chords": [
+		'14:A7 16:G 16:D 16:G7sus4 16:A7 16:G 16:D 18:G7sus4'
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+		"Ev'ryone can see we're together",
+		"As we walk on by",
+		"(Fly!) and we fly just like birds of a feather",
+		"I won't tell no lie",
+		"(All!) all of the people around us they say",
+		"Can they be that close",
+		"Just let me state for the record",
+		"We're giving love in a family dose",
+		"Living life is fun and we've just begun",
+		"To get our share of the world's delights",
+		"(High!) high hopes we have for the future",
+		"And our goal's in sight",
+		"(We!) no we don't get depressed",
+		"Here's what we call our golden rule",
+		"Have faith in you and the things you do",
+		"You won't go wrong",
+		"This is our family jewel"
+    ],
+    "Chorus": [
+		"We are family",
+		"I got all my sisters with me",
+		"We are family",
+		"Get up ev'rybody and sing"
+    ]
+  }
+}
