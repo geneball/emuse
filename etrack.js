@@ -77,7 +77,7 @@ function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0
     scidx++;
     if ( scidx > 11 ){
       scidx = 0;
-      oct += 7;
+      oct += 12;
     }
   }
   _trk.rowMap = rws;

@@ -1,6 +1,7 @@
 const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, asStr, asDeg, test } = require("./emuse");
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic } = require("./etrack");
 const jetpack = require("fs-jetpack");
+const { find } = require("fs-jetpack");
 
 
 var codon_maps = null;          // codon op & arg mappings
@@ -26,7 +27,7 @@ const codon_ops = [
 ];
 const codon_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+~,./;<>?:[]{}|';
 const roots = [  // for TN
-    'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B' 
+    'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'Db', 'Eb', 'Gb', 'Ab', 'Bb' 
 ];
 function int_arr( lo, hi, step ){
     let a = [];
@@ -150,7 +151,8 @@ function melodyRest( dur ){     addCodon( 'MR', dur  ); }
 function chordRest( dur ){      addCodon( 'CS', dur  ); }
 function chordRoot( nt  ){      addCodon( 'CR', nt - _est.chdrt ); _est.chdrt = nt; }
 function chordKind( kind ){ 
-    let chdnm = chordName( kind, true ).substring(1);
+    let chdnm = chordName( kind, true );
+    chdnm = (chdnm[1]=='#' || chdnm[1]=='b')? chdnm.substring(2) : chdnm.substring(1);
     if ( chdnm=='' ) chdnm = 'M';
     addCodon( 'CK', chdnm ); 
     _est.chdkind = chdnm;
@@ -213,7 +215,9 @@ function checkDecode( gene ){         // decode codons up to this point & make s
         decodeCodon( gene );
     }
     Object.keys( _dst ).forEach( k => {
-        if ( k!='gene' && _dst[k] != _est[k] ) debugger;
+        if ( k!='gene' && _dst[k] != _est[k] ){
+            if ( k!='tempo' || Math.abs(_dst[k]-_est[k])>1 ) debugger;
+        }
     });
     while ( _dst.iEvt < gene.evts.length ){
         let e = gene.evts[ _dst.iEvt ];
@@ -297,7 +301,7 @@ function genEvts( gene ){
 function saveTrack( song, trk, _trk ){
 
     let data = jetpack.cwd( './data' );
-    data.write( `${song.nm}.json`, song );
+    data.write( `${song.nm}_def.json`, song );
 
     let gene = {
         nm: `${song.nm}_${trk.nm}`,
@@ -315,7 +319,29 @@ function saveTrack( song, trk, _trk ){
 
     jetpack.write( `${song.nm}_${trk.nm}_gene.json`, gene )
 }
+var songs = [];
+var song_paths = [];
+var song_names = [];
 
+function findSongs( ){
+    let data = jetpack.cwd( './data' );
+    song_paths = data.find( { matching: '*_def.json'} );
+    for ( let p of song_paths ){
+        songs.push( data.read( p, 'json' ) );
+    }
+    song_names = songs.map( x => x.nm );
+}
+function findSong( nm ){
+    if ( song_paths.length==0 ) findSongs();
+    for ( let s of songs ){
+        if ( nm == s.nm ) return s;
+    }
+    console.log( `findSong: didn't find ${nm}` );
+}
+function songNames(){
+    if ( song_paths.length==0 ) findSongs();
+    return song_names;
+}
 
-module.exports = { saveTrack };
-// const { saveTrack } = require("./egene");
+module.exports = { saveTrack, findSong, songNames };
+// const { saveTrack, findSong, songNames } = require("./egene");

@@ -75,8 +75,9 @@ function loadSelect( sel, nms ){
 const em = require('./emuse.js');
 //em.test();
 const et= require('./etrack.js');
-const sngs = require('./songs.js');
-const { saveTrack } = require("./egene");
+//const sngs = require('./songs.js');
+//const { saveTrack } = require("./egene");
+const { saveTrack, findSong, songNames } = require("./egene");
 
 const selRoot = document.getElementById('selectRoot');
 const selMode = document.getElementById('selectMode');
@@ -185,14 +186,14 @@ function setKey( song ){
   selMode.value = mode;
 }
 selSong.addEventListener("change", function() {
-  _song = sngs.findSong( selSong.value );
+  _song = findSong( selSong.value );
   loadSelect( selTrk, et.trackNames( _song ));
   setKey( _song );
   selTrk.dispatchEvent( new Event('change') );
 });
 function evalTrack(){
   resetPlyr( 0 );
-  _song = sngs.findSong( selSong.value );
+  _song = findSong( selSong.value );
   _track = et.findTrack( _song, selTrk.value );
   _trk = et.evalTrack( _song, _track, selWhich.value, _plyr.melodyOffset, _plyr.chordOffset ); 
   showEventList();
@@ -238,10 +239,15 @@ function showEventList(){
     if ( rw.inscale ){   // nt i is in scale
       html += `<div id="rw${rw.rw}" class="${r} rw sp${rw.deg}"></div>`;
       _rows[ rw.rw ] = `R${rw.rw}: ${i}=${em.asStr(i)} = ${em.asDeg(rw.deg)}`;
-      lblRw = rw.rw+1;
-    } else
-      r = `r${Math.trunc(rw.rw)}p`;  // between scale degrees
-    _rowdefs[r] = { nt: em.asStr(i), deg: em.asDeg(rw.deg) };
+      _rowdefs[r] = { nt: em.asStr(i), deg: em.asDeg(rw.deg) };
+        // lblRw = rw.rw+1;
+    } else {
+      html += `<div id="rw${rw.rw}" class="${r} rw spx"></div>`;
+      _rows[ rw.rw ] = `R${rw.rw}: ${i}=${em.asStr(i)} = ${em.asDeg(rw.deg)}`;
+    //  r = `r${Math.trunc(rw.rw)}p`;  // between scale degrees
+      _rowdefs[r] = { nt: em.asStr(i), deg: em.asDeg(rw.deg) };
+    }
+    lblRw = rw.rw+1;
   }
   divRows.innerHTML = html;
   // set up label bar
@@ -288,7 +294,7 @@ function showEventList(){
        } else {
           let deg = Math.trunc(rw.deg);
           let brow = Math.trunc(rw.rw);
-          html += `<div id="nt${cnt}" class="r${brow}p rw n${deg}${deg+1} t${e.t} ln${e.d}"></div>`;
+          html += `<div id="nt${cnt}" class="r${brow} rw n${deg}${deg+1} t${e.t} ln${e.d}"></div>`;
        }
        _notes[cnt] = `mel[${cnt}] ${asBar(e.t)}: ${em.asStr(e.nt)} (${em.asDeg(rw.deg)}) for ${inBeats(e.d)}`;
        cnt++;
@@ -507,5 +513,5 @@ btnSave.addEventListener("click", function(){
   information.innerText = `Saved track '${_track.nm}' of '${_song.nm}'`;
 });
 
-loadSelect( selSong, sngs.songNames() );
+loadSelect( selSong, songNames() );
 selSong.dispatchEvent( new Event('change') );

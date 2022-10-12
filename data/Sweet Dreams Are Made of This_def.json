@@ -1,0 +1,91 @@
+{
+  "nm": "Sweet Dreams Are Made of This",
+  "root": "C",
+  "mode": "Harmonic minor",
+  "timeSig": "4/4",
+  "beatsPerBar": 4,
+  "tempo": 125,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Intro",
+      "melody": [
+        "|1 2:1 2:1 2:15 2:15 2:10 2:17 2:8 2:15",
+        "|2 2:6 2:6 2:13 2:15 2:5 2:12 2:14 2:15",
+        "|3 2:1 2:1 2:15 2:15 2:10 2:17 2:8 2:15",
+        "|4 2:6 2:6 2:13 2:15 2:5 2:12 2:14 2:15"
+      ],
+      "chords": [
+        "16:i 8:VI 8:V 16:i 8:VI 8:V"
+      ]
+    },
+    {
+      "nm": "Verse",
+      "melody": [
+        "|1 4:r 4:3 4:3 2:1 4:3 4:3 4:3 4:2 2:r",
+        "|3 2:3 2:3 2:1 6:3 4:1",
+        "|4 2:3 6:4 2:3 2:2 2:r 2:1",
+        "|5 2:3 2:3 2:1 6:3 2:3 2:1",
+        "|6 2:3 4:3 2:3 4:1 4:r",
+        "|7 4:3 2:1 4:3 6:1",
+        "|8 2:3 2:3 2:4 4:3 4:2"
+      ],
+      "chords": [
+        "|1 16:i 8:VI 8:V 16:i",
+        "|4 8:VI 8:V 16:i 8:VI 8:V",
+        "|7 16:i 8:VI 8:V"
+      ]
+    },
+    {
+      "nm": "Bridge",
+      "melody": [],
+      "chords": [
+        "|1 16:VI 8:VI4.2 8:V",
+        "|3 16:i 16:iv 16:VI 16:V"
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Some of them want to use you",
+      "Some of them want to get used by you",
+      "Some of them want to abuse you",
+      "Some of them want to be abused",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Hold your head up, keep your head up, movin' on",
+      "Hold your head up, movin' on, keep your head up, movin' on",
+      "Hold your head up, movin' on, keep your head up, movin' on",
+      "Hold your head up, movin' on, keep your head up",
+      "Some of them want to use you",
+      "Some of them want to get used by you",
+      "Some of them want to abuse you",
+      "Some of them want to be abused",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas",
+      "Everybody's looking for something",
+      "Sweet dreams are made of this",
+      "Who am I to disagree",
+      "I travel the world and the seven seas"
+    ]
+  }
+}

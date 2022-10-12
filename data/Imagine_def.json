@@ -1,0 +1,75 @@
+{
+  "nm": "Imagine",
+  "root": "C",
+  "mode": "Major",
+  "timeSig": "4/4",
+  "beatsPerBar": 4,
+  "tempo": 76,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Verse",
+      "melody": [
+        "|1 3:r 1:5 1:5 3:5 4:5 2:7 1:7 2:6 11:r 1:6 1:6# 2:7",
+        "|3 3:r 1:6 2:6 2:6 2:6 3:7 1:7 4:6 10:r 1:6 1:6# 2:7",
+        "|5 4:r 2:5 6:5 2:7 1:7 3:6 10:r 1:6 1:6# 2:7",
+        "|7 7:r 1:5 1:5 3:5 2:6 2:7 4:6"
+      ],
+      "chords": [
+        "|1 12:I 4:I7 16:IV 12:I 4:I7 16:IV",
+        "|5 12:I 4:I7 16:IV 12:I 4:I7 16:IV"
+      ]
+    },
+    {
+      "nm": "Chorus lead-out",
+      "melody": [
+        "|1 3:r 1:6 2:8 2:6 4:8 2:10 2:10",
+        "|2 1:9 1:8 4:6 10:r",
+        "|3 2:7 6:7 4:7 2:8 9:9 1:9 2:10 4:12 1:10 1:9",
+        "|5 1:8 4:r 1:6 2:8 2:7 1:8 1:7 2:6 1:6 1:7",
+        "|6 2:8 4:8 15:r 1:6 2:8 2:7 1:7 2:6 1:6 4:3 14:r",
+        "|9 3:r 1:6 2:6 2:8 2:7 1:8 1:7 2:6 2:7",
+        "|10 2:8 1:8 1:6 2:5 10:r",
+        "|11 6:r 1:8 1:8 2:9 1:10 1:9 2:8 2:9 1:10 1:8 6:8"
+      ],
+      "chords": [
+        "|1 8:F 8:Am/E 8:Dm7 8:F/C 12:G 4:C/G 16:G7",
+        "|5 8:F 8:G 4:C 4:CM7 4:E 4:E7",
+        "|7 8:F 8:G 4:C 4:CM7 4:E 4:E7",
+        "|9 8:F 8:G 4:C 4:CM7 4:E 4:E7",
+        "|11 8:F 8:G 16:C"
+      ]
+    }
+  ],
+  "lyrics": {
+    "Verse1": [
+      "Imagine there's no heaven",
+      "It's easy if you try",
+      "No hell below us",
+      "Above us, only sky",
+      "Imagine all the people",
+      "Livin' for today",
+      "Ah",
+      "Imagine there's no countries",
+      "It isn't hard to do",
+      "Nothing to kill or die for",
+      "And no religion, too",
+      "Imagine all the people",
+      "Livin' life in peace",
+      "You may say I'm a dreamer",
+      "But I'm not the only one",
+      "I hope someday you'll join us",
+      "And the world will be as one",
+      "Imagine no possessions",
+      "I wonder if you can",
+      "No need for greed or hunger",
+      "A brotherhood of man",
+      "Imagine all the people",
+      "Sharing all the world",
+      "You may say I'm a dreamer",
+      "But I'm not the only one",
+      "I hope someday you'll join us",
+      "And the world will live as one"
+    ]
+  }
+}

@@ -17,7 +17,7 @@
         --C12: #911EB4;      --C13: #F032E6;
         --C14: #FABED4;      --C15: #FFD8B1;
         --C16: #FFFAC8;      --C17: #AAFFC3;
-        --C19: #DCEBFF;
+        --C19: #DCEBFF;      --C20: #EEEEEE;
      }
      body { background-color:  rgb(105, 105, 156); }
      .inner { position:absolute; bottom:0; left:0; width:16px; 
@@ -143,6 +143,7 @@
      .sp4 { width: 5000px; background-color: var(--L4); }
      .sp5 { width: 5000px; background-color: var(--L5); }
      .sp6 { width: 5000px; background-color: var(--L6); }
+     .spx { width: 5000px; background-color: var(--C20); }
 
      .n0  { background-color: var(--D0) !important; }
      .n01.sel { background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 4px, white 4px, white 6px, var(--D1) 6px, var(--D1) 10px); }

@@ -1,4 +1,6 @@
 
+  const { chordParserFactory } = require( 'chord-symbol' );
+
     const noteDefs =   // 0=='C-1' .. 127='G8'
 	[
 	  { nm: 'C',   midi4: 60 },     // C4
@@ -94,7 +96,8 @@
 				r++;   
 				sc++;
 			} else {	// semitone i is non-scale
-				rw.push ( { inscale: false, rw: r-0.5, deg: sc-0.5 } );	// insert a half-row for a non-scale scale degree
+				rw.push ( { inscale: false, rw: r, deg: sc-0.5 } );	// insert a half-row for a non-scale scale degree
+				r++;
 			}
 		}
 		return rw;
@@ -154,11 +157,11 @@
 	  { nm: '7b5',     nts:[0,4,6,10]      },  // 1 3  5b 6#       7b5
 	  { nm: '7aug',    nts:[0,4,8,10]      },  // 1 3  5# 6#       7aug
 	  { nm: '7sus4',   nts:[0,5,7,10]      },  // 1 4b 5  6#       7sus4
-	  { nm: '7sus2',   nts:[0,2,7]         },  // 1 2b 5           7sus2
+	  { nm: '7sus2',   nts:[0,7,10,14]     },  // 1 5 b7 9         7sus2  9(omit3)
 	];
-	var triads = [ 'M', 'm', 'dim', 'aug', 'b5', '7sus2', 'sus2', 'sus4' ];
+	var triads = [ 'M', 'm', 'dim', 'aug', 'b5',  'sus2', 'sus4' ];
 	var quartads = [ 'M7', 'm7', '7', '7aug', '7b5', 'mM7', 'm7b5', 'dim7',
-	 '6', 'M7b5', 'M7aug', 'm6', 'mM7b5', 'm(9)', '(9)', '7sus4' ];
+	 '6', 'M7b5', 'M7aug', 'm6', 'mM7b5', 'm(9)', '(9)', '7sus2', '7sus4' ];
 
 	var quintads = [ '9', '6(9)', '7(9)', 'M7(9)', 'M7(#11)', 'm7(9)', 
 			'mM7(9)', '7(b9)', '7(b13)', '7(13)', '7(#9)', 'm7(11)', '7(#11)' ];
@@ -169,8 +172,18 @@
 		if ( numNotes==5 ) return quintads;
         return chordDefs.map( x => x.nm );
     }
+
+	var parseChord = chordParserFactory();
+
 	function toChord( chd, root ){
-        root = toKeyNum(root);
+		let chnm = asStr( root % 12 ) + chd;
+		if ( 'ABCDEFG'.includes( chd[0]) ) chnm = chd;
+		const chord = parseChord( chnm.trim() );
+		if ( chord.error==undefined )
+			return chord.normalized.semitones.map( x => x + root );
+		else { console.log( `parseChord( ${chnm} ) => ${chord.error[0].message}` ); debugger }
+
+      /*  root = toKeyNum(root);
 		if ( chd instanceof Array ) 
 			return chd.map( x => x + root );
 		chd = chd.trim();
@@ -181,6 +194,7 @@
 			
 		console.log(`toChord: unrecognized chord "${chd}"`);
 		return chordDefs[0].nts.map( x => x + root );		// default major triad
+		*/
 	}
 	function chordName( chd, astype ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
 		if (astype==undefined) astype == false;
@@ -232,6 +246,7 @@
 		if ( !isNaN( keynum )){  // treat as keyNum
 		  var oct = Math.trunc(keynum/12)-1;
           var scdeg = keynum % 12;
+		  if ( noteDefs[scdeg]==undefined ) debugger;
 		  return noteDefs[scdeg].nm + (oct<0? '' : `${oct}`);		// treat -1 as no octave
 		}
 		return `? ${chd}`;

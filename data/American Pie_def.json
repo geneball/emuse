@@ -1,0 +1,192 @@
+{
+  "nm": "American Pie",
+  "root": "G",
+  "mode": "Major",
+  "timeSig": "4/4",
+  "beatsPerBar": 4,
+  "tempo": 78,
+  "ticsPerBeat": 4,
+  "tracks": [
+    {
+      "nm": "Intro",
+      "melody": [
+        "|1 15:r 1:5 |2 4:12 4:12 1:12 1:10 4:8 2:r",
+        "|3 1:11 3:9 2:11 2:11 1:10 3:9 1:8 3:7",
+        "|4 2:8 2:7 2:r 1:8 1:7 2:8 2:7 12:5 7:r 1:5",
+        "|6 1:12 1:10 1:12 1:12 2:12 2:12 1:13 4:8 2:r 1:8",
+        "|7 1:9 3:10 2:11 2:10 2:9 2:10 3:11 1:9",
+        "|8 2:8 2:6 1:8 3:6 2:8 4:6 1:8 9:10 10:r 2:6 1:10 1:10 1:10 1:10 2:11 2:10 1:8 1:9 2:r",
+        "|11 1:10 2:10 1:10 1:10 3:10 3:11 1:10 1:8 1:6 2:r",
+        "|12 2:8 2:8 3:8 1:7 2:6 2:8 2:r 3:8 1:9 2:10 2:13 2:12 2:10 4:r 2:12",
+        "|14 2:13 1:12 2:12 1:10 1:11 1:10 3:8 1:7 4:6",
+        "|15 3:9 1:10 1:11 1:10 2:10 1:9 3:10 2:9 2:r",
+        "|16 2:10 2:10 2:10 2:10 3:10 1:10 1:9 1:8 1:6 1:8",
+        "|17 6:5 2:8 4:11 4:10",
+        "|18 8:8"
+      ],
+      "chords": [
+        "|1 16:r 4:I 4:V6 8:vi7 8:ii 8:IV",
+        "|4 12:vi 20:V 4:I 4:V6 8:vi7",
+        "|7 8:ii 8:IV 8:vi 8:IV 16:V",
+        "|10 8:vi 8:ii 8:vi 8:ii 4:IV 4:I6 8:ii",
+        "|13 8:IV 8:V 4:I 4:V6 8:vi",
+        "|15 8:ii7 8:V 4:I 4:V6 8:vi 8:IV 8:V7",
+        "|18 16:I"
+      ]
+    },
+    {
+      "nm": "Verse",
+      "melody": [
+        "|1 4:r 2:12 2:13 2:13 4:12 4:12 4:11 2:10 2:9 2:9 2:10 4:11 6:10 4:11 4:10",
+        "|4 4:11 2:10 2:8 4:9 8:r 2:8 2:8 4:8 2:7 2:8",
+        "|6 4:7 2:7 6:5 14:r 2:13 2:12 4:13 2:12 2:12 4:12 2:10 4:10",
+        "|9 2:12 4:12 6:13 4:10 2:12 2:9 6:r 3:12 4:11 2:10 4:9 2:11 2:10 2:10 2:9 1:r",
+        "|12 6:r 2:8 2:6 4:8 4:6 2:8 2:6 6:8 2:r 6:10 4:9 6:10 1:11 1:10 2:9 2:10 12:r",
+        "|16 4:6 2:3 4:3 6:3 4:4 2:3 4:5 2:4 4:3",
+        "|18 2:r 4:6 2:3 4:3 4:3 4:4 2:3 1:5 1:4 4:3 2:r 2:3",
+        "|20 4:4 4:3 2:2 2:1 2:1 4:3 2:2 6:r 2:8 8:8 4:8 2:8 2:8 2:9 1:7 1:6",
+        "|23 6:5 4:12 2:10 2:8 2:6 2:8 2:6 2:5 4:5 2:5 4:3",
+        "|25 4:5 2:5 2:6 4:r 2:2 6:2 2:3 4:4 2:3 2:4 2:3",
+        "|27 2:5 1:3 3:2 2:3 6:r 6:3 2:8 2:6 4:5 2:5 4:5 2:6 2:5 2:2 4:r 2:1 2:1",
+        "|30 12:r 2:3 12:4 4:3 6:1 12:r"
+      ],
+      "chords": [
+        "|1 16:I 16:ii 16:IV 16:ii 16:vi 32:VI",
+        "|8 8:I 8:V6 16:vi 16:ii7 16:IV",
+        "|12 16:vi 16:II7",
+        "|14 32:V 16:vi 16:V 16:vi 16:V 8:IV 8:I6 16:II7",
+        "|22 16:IV 16:V7 8:I 8:V6 16:vi 16:ii 16:IV 8:I 8:V6 16:vi",
+        "|30 16:IV 16:V7 8:I 8:IV"
+      ]
+    },
+    {
+      "nm": "Chorus",
+      "melody": [
+        "|1 6:12 2:11 4:11 2:11 2:11",
+        "|2 2:10 2:9 2:8 2:9 2:R 4:12 4:12 2:12 2:12 2:11 2:11 2:11 2:11 4:10 2:9 2:8 1:7 1:6 2:5 4:r 4:12 4:12 4:11 2:11 2:11 4:10 2:9 2:8 6:9 2:10 2:9",
+        "|7 2:8 2:6 2:8 1:6 3:8 1:7 5:6 8:9 8:r",
+        "|9 2:8 2:6 2:8 1:6 3:8 1:7 5:6 1:7 1:6 6:5 24:r"
+      ],
+      "chords": [
+        "|1 8:I 8:IV 8:I 8:V 8:I 8:IV 8:I 8:V 8:I 8:IV 8:I 8:V 16:vi 16:II7",
+        "|9 16:vi 32:V7"
+      ]
+    }
+  ],
+  "lyrics": {
+    "Intro": [
+      "A long long time ago I can still remember",
+      "How that music used to make me smile",
+      "And I knew if I had my chance",
+      "That I could make those people dance",
+      "And maybe they'd be happy for a while",
+      "But February made me shiver",
+      "With every paper I'd deliver",
+      "Bad news on the doorstep",
+      "I couldn't take one more step",
+      "I can't remember if I cried",
+      "When I read about his widowed bride",
+      "But something touched me deep inside",
+      "The day the music died",
+      "So"
+    ],
+    "Chorus": [
+      "bye-bye, Miss American Pie",
+      "Drove my Chevy to the levee",
+      "But the levee was dry",
+      "Them good old boys were drinking whiskey and rye",
+      "Singing, This'll be the day that I die",
+      "This will be the day that I die"
+    ],
+    "Verse1": [
+      "Did you write the Book of Love?",
+      "And do you have faith in God above?",
+      "If the Bible tells you so",
+      "Do you believe in rock 'n roll?",
+      "Can music save your mortal soul?",
+      "And can you teach me how to dance real slow?",
+      "Well I know that you're in love with him",
+      "'Cause I saw you dancing in the gym",
+      "You both kicked off your shoes",
+      "Then I dig those rhythm and blues",
+      "I was a lonely teenage broncin' buck",
+      "With a pink carnation and a pickup truck",
+      "But I knew I was out of luck",
+      "The day the music died",
+      "I started singing"
+    ],
+    "Chorus2": [],
+    "Verse2": [
+      "Now for ten years we've been on our own",
+      "And moss grows fat on a rolling stone",
+      "But that's not how it used to be",
+      "When the jester sang for the King and Queen",
+      "In a coat he borrowed from James Dean",
+      "And a voice that came from you and me",
+      "Oh and while the King was looking down",
+      "The jester stole his thorny crown",
+      "The courtroom was adjourned",
+      "No verdict was returned",
+      "And while Lenin read a book of Marx",
+      "The Quartet practiced in the park",
+      "And we sang dirges in the dark",
+      "The day the music died",
+      "We were singing"
+    ],
+    "Chorus3": [],
+    "Verse3": [
+      "Helter skelter in the summer swelter",
+      "The birds flew off with a fallout shelter",
+      "Eight miles high and falling fast",
+      "It landed foul on the grass, the players tried for a forward pass",
+      "With the jester on the sidelines in a cast",
+      "Now the halftime air was sweet perfume",
+      "While the sergeants played a marching tune",
+      "We all got up to dance",
+      "Oh, but we never got the chance",
+      "'Cause the players tried to take the field",
+      "The marching band refused to yield",
+      "Do you recall what was revealed",
+      "The day the music died?",
+      "We started singing"
+    ],
+    "Chorus4": [],
+    "Verse4": [
+      "Oh, and there we were all in one place",
+      "A generation lost in space",
+      "With no time left to start again",
+      "So come on, Jack be nimble, Jack be quick",
+      "Jack Flash sat on a candlestick",
+      "'Cause fire is the devil's only friend",
+      "Oh, and as I watched him on the stage",
+      "My hands were clenched in fists of rage",
+      "No angel born in Hell",
+      "Could break that Satan's spell",
+      "And as the flames climbed high into the night",
+      "To light the sacrificial rite",
+      "I saw Satan laughing with delight",
+      "The day the music died",
+      "He was singing bye-bye"
+    ],
+    "Chorus5": [],
+    "Verse5": [
+      "I met a girl who sang the blues",
+      "And I asked her for some happy news",
+      "But she just smiled and turned away",
+      "I went down to the sacred store",
+      "Where I'd heard the music years before",
+      "But the man there said the music wouldn't play",
+      "And in the streets, the children screamed",
+      "The lovers cried and the poets dreamed",
+      "But not a word was spoken",
+      "The church bells all were broken",
+      "And the three men I admire most",
+      "The Father, Son, and the Holy Ghost",
+      "They caught the last train for the coast",
+      "The day the music died",
+      "And they were singing"
+    ],
+    "Chorus6": [],
+    "Chorus7": []
+  }
+}
