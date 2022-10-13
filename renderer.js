@@ -2,6 +2,9 @@
 const information = document.getElementById('info')
 const stat = document.getElementById('status')
 
+function msg( s ){
+  information.innerHTML = s;
+}
 const { shell } = require('electron');
 const { info } = require('jzz');
 
@@ -60,6 +63,8 @@ JZZ.input.ASCII(keybd).connect(piano);
 //});
 
 function loadSelect( sel, nms ){
+  if ( sel==null )  debugger;
+  if ( !nms instanceof Array ) debugger;
    var i, L = sel.options.length - 1;
    for(i = L; i >= 0; i--) {
       sel.remove(i);
@@ -77,11 +82,11 @@ const em = require('./emuse.js');
 const et= require('./etrack.js');
 //const sngs = require('./songs.js');
 //const { saveTrack } = require("./egene");
-const { saveTrack, findSong, songNames } = require("./egene");
+const  eg = require("./egene");
+const  { saveTrack, findSong, songNames } = eg;
 
 const selRoot = document.getElementById('selectRoot');
 const selMode = document.getElementById('selectMode');
-const selChd = document.getElementById('selectChord');
 const divChdBtns = document.getElementById('chdButtons');
 const selSong = document.getElementById('selectSong');
 const selTrk = document.getElementById('selectTrack');
@@ -131,11 +136,11 @@ function clearKeyMarkers(){
     removeClass( ks, 'on' );
   }
 }
-function playCurrChord( midi, dur ){
-  const root = em.toKeyNum( selRoot.value );
-  const chd = em.toChord( selChd.value, root );
-  playEvent( {t:0, chord: chd, d: dur} );
-}
+// function playCurrChord( midi, dur ){
+//   const root = em.toKeyNum( selRoot.value );
+//   const chd = em.toChord( selChd.value, root );
+//   playEvent( {t:0, chord: chd, d: dur} );
+// }
 function playEvent( e ){
   clearKeyMarkers();
   if ( e.nt != undefined ){
@@ -150,7 +155,7 @@ function playEvent( e ){
     _midiOut.allNotesOff(0);
     }, 800 );
 }
-loadSelect( selChd, em.chordNames() );
+//loadSelect( selChd, em.chordNames() );
 
 function asBtnHtml( nms ){
   let html = '';
@@ -172,9 +177,9 @@ var _song, _track;
 selRoot.addEventListener("change", function() {
     playCurrChord( _midiOut, 500);
 });
-selChd.addEventListener("change", function() {
-      playCurrChord( _midiOut, 500);
-});
+// selChd.addEventListener("change", function() {
+//       playCurrChord( _midiOut, 500);
+// });
 function setKey( song ){
   let root = song.root;
   let mode = song.mode;
@@ -186,14 +191,14 @@ function setKey( song ){
   selMode.value = mode;
 }
 selSong.addEventListener("change", function() {
-  _song = findSong( selSong.value );
+  _song = eg.findSong( selSong.value );
   loadSelect( selTrk, et.trackNames( _song ));
   setKey( _song );
   selTrk.dispatchEvent( new Event('change') );
 });
 function evalTrack(){
   resetPlyr( 0 );
-  _song = findSong( selSong.value );
+  _song = eg.findSong( selSong.value );
   _track = et.findTrack( _song, selTrk.value );
   _trk = et.evalTrack( _song, _track, selWhich.value, _plyr.melodyOffset, _plyr.chordOffset ); 
   showEventList();
@@ -475,7 +480,7 @@ divBars.addEventListener("click", function(evt){
     setTic( Number(tgt.id.substring(4))*_song.ticsPerBeat );
     return;
   } 
-  information.innerHTML = tip;
+  msg( tip );
 });
 selTrk.addEventListener("change", function() {
   evalTrack();
@@ -510,8 +515,12 @@ btnPlay.addEventListener("click", function(){
 });
 btnSave.addEventListener("click", function(){
   saveTrack( _song, _track, _trk ); 
-  information.innerText = `Saved track '${_track.nm}' of '${_song.nm}'`;
+  msg( `Saved track '${_track.nm}' of '${_song.nm}'` );
 });
 
-loadSelect( selSong, songNames() );
+if ( typeof eg.songNames == 'function' )
+  loadSelect( selSong, eg.songNames() );
 selSong.dispatchEvent( new Event('change') );
+
+//module.exports = { msg }; 
+// const { msg } = require("./renderer.js");

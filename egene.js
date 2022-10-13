@@ -2,7 +2,7 @@ const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName,
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic } = require("./etrack");
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
-
+const { msg } = require("./renderer.js");
 
 var codon_maps = null;          // codon op & arg mappings
 const codon_ops = [ 
@@ -327,7 +327,14 @@ function findSongs( ){
     let data = jetpack.cwd( './data' );
     song_paths = data.find( { matching: '*_def.json'} );
     for ( let p of song_paths ){
-        songs.push( data.read( p, 'json' ) );
+        let sng = null;
+        try {  
+            sng = data.read( p, 'json' );
+            songs.push(  sng );
+        } catch ( err ){
+            console.log( `Err parsing ${p} ${err}` );
+            if ( typeof msg == 'function' ) msg( `Err parsing ${p} ${err}` );
+        }
     }
     song_names = songs.map( x => x.nm );
 }

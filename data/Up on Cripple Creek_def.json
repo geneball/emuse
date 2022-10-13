@@ -9,11 +9,11 @@
     {
       "nm": "Intro",
       "melody": [
-		'2:8 4:8 4:8 2:5 8:8 4:8 4:10 6:8 4:8 4:8 2:6 8:8 4:6 4:8 4:6',
-		'|5 2:7 4:7 4:7 2:5 8:7 2:7 2:7 4:9 2:5 2:7 2:8 4:8 2:8 4:6 2:6 2:8 2:9 2:9 4:11 8:6#'
+		"2:8 4:8 4:8 2:5 8:8 4:8 4:10 6:8 4:8 4:8 2:6 8:8 4:6 4:8 4:6",
+		"|5 2:7 4:7 4:7 2:5 8:7 2:7 2:7 4:9 2:5 2:7 2:8 4:8 2:8 4:6 2:6 2:8 2:9 2:9 4:11 8:6#"
       ],
       "chords": [
-		'32:A 32:D 32:E 16:F#m 16:G'
+		"32:A 32:D 32:E 16:F#m 16:G"
       ]
     }
   ],
@@ -21,9 +21,9 @@
     "Verse1": [
 		"When I get off of this mountain",
 		"You know where I wanna go?",
-		"Straight down the Mississippi River",",
-		"To the Gulf of Mexico",",
-		"To Lake Charles, Louisiana",",
+		"Straight down the Mississippi River",
+		"To the Gulf of Mexico",
+		"To Lake Charles, Louisiana",
 		"Little Bessie, girl that I once knew",
 		"And she told me just to come on by",
 		"If there's anything she could do"

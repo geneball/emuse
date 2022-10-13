@@ -9,21 +9,21 @@
     {
       "nm": "Chorus",
       "melody": [
-		'4:r 2:6 2:6 3:6 1:5 2:5 1:4 2:5 12:r 1:6 4:6 1:6 1:6 2:6 1:5 1:4 2:6 2:5 2:5 1:4 1:4 4:3 11:r 1:6 2:6',
-		'|5 2:6 1:6 2:8 1:6 1:5 2:8 2:6 2:5 1:4 2:5 |6 14:r 1:3 1:3 |7 1:4 2:4 2:4 1:3 2:4 2:4 2:3 2:1 4:1 14:r'
+		"4:r 2:6 2:6 3:6 1:5 2:5 1:4 2:5 12:r 1:6 4:6 1:6 1:6 2:6 1:5 1:4 2:6 2:5 2:5 1:4 1:4 4:3 11:r 1:6 2:6",
+		"|5 2:6 1:6 2:8 1:6 1:5 2:8 2:6 2:5 1:4 2:5 |6 14:r 1:3 1:3 |7 1:4 2:4 2:4 1:3 2:4 2:4 2:3 2:1 4:1 14:r"
       ],
       "chords": [
-		'4:F 4:C/E 4:Dm7 4:G7sus4 16:C 4:F 4:C/E 4:Dm7 4:G7sus4 16:C',
-		'|5 4:F 4:C/E 4:Dm7 4:G7sus4 16:C 4:Bb 4:F/A 4:Gsus4 4:Gm 16:C7sus2'
+		"4:F 4:C/E 4:Dm7 4:G7sus4 16:C 4:F 4:C/E 4:Dm7 4:G7sus4 16:C",
+		"|5 4:F 4:C/E 4:Dm7 4:G7sus4 16:C 4:Bb 4:F/A 4:Gsus4 4:Gm 16:C7sus2"
       ]
     }
   ],
   "lyrics": {
   "Verse1": [
 	"Just yesterday mornin', they let me know you were gone",
-	Suzanne, the plans they made put an end to you",
-	I walked out this morning and I wrote down this song",
-	I just can't remember who to send it to" ],
+	"Suzanne, the plans they made put an end to you",
+	"I walked out this morning and I wrote down this song",
+	"I just can't remember who to send it to" ],
   "Chorus": [
 	"I've seen fire and I've seen rain",
 	"I've seen sunny days that I thought would never end",
