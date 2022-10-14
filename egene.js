@@ -2,7 +2,7 @@ const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName,
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic } = require("./etrack");
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
-const { msg } = require("./renderer.js");
+const { msg } = require( './msg.js' );
 
 var codon_maps = null;          // codon op & arg mappings
 const codon_ops = [ 

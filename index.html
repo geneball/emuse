@@ -62,7 +62,63 @@
 	  </div>
     </div>
 
-  <p> <b>Key</b>: <select id="selectRoot">
+  <p>
+    <button id="btnPlay">Play</button>
+    <button id="btnSave">Save</button>
+
+    Song: 
+    <select id="selectSong" >
+    </select>
+    <select id="selectTrack" >
+    </select>
+     
+    <select id="selWhich" >
+      <option> Both </option> 
+      <option> Chords </option>
+      <option> Melody </option>
+    </select>
+  
+    Vel-M/C:
+    <select id="selMelVel" >
+      <option> 0 </option> 
+      <option> 16 </option>
+      <option> 32 </option>
+      <option> 48 </option>
+      <option> 64 </option>
+      <option> 80 </option>
+      <option> 96 </option>
+      <option> 112 </option>
+      <option selected> 127 </option>
+      </select>
+      <select id="selChdVel" >
+        <option> 0 </option> 
+        <option> 16 </option>
+        <option> 32 </option>
+        <option selected> 48 </option>
+        <option> 64 </option>
+        <option> 80 </option>
+        <option> 96 </option>
+        <option> 112 </option>
+        <option> 128 </option>
+        </select>
+      Off-M/C:
+      <select id="selMelOff" >
+        <option> 24 </option>
+        <option> 12 </option>
+        <option selected> 0 </option> 
+        <option> -12 </option>
+        <option> -24 </option>
+      </select>
+      <select id="selChdOff" >
+        <option> 24 </option>
+        <option> 12 </option>
+        <option> 0 </option> 
+        <option selected> -12 </option>
+        <option> -24 </option>
+      </select>
+   </p>
+       
+   <p> <b>Key</b>: <select id="selectRoot">
     <option> C </option>
     <option> C#/Db </option>
     <option> D </option>
@@ -102,60 +158,7 @@
   </div>
 
 
-  <p>
-  Song: 
-  <select id="selectSong" >
-  </select>
-  <select id="selectTrack" >
-  </select>
  
-  <select id="selWhich" >
-    <option> Both </option> 
-    <option> Chords </option>
-    <option> Melody </option>
-  </select>
-  <button id="btnPlay">Play</button>
-  <button id="btnSave">Save</button>
-  </p>
-  Vel-M/C:
-  <select id="selMelVel" >
-    <option> 0 </option> 
-    <option> 16 </option>
-    <option> 32 </option>
-    <option> 48 </option>
-    <option> 64 </option>
-    <option> 80 </option>
-    <option> 96 </option>
-    <option> 112 </option>
-    <option selected> 127 </option>
-    </select>
-    <select id="selChdVel" >
-      <option> 0 </option> 
-      <option> 16 </option>
-      <option> 32 </option>
-      <option selected> 48 </option>
-      <option> 64 </option>
-      <option> 80 </option>
-      <option> 96 </option>
-      <option> 112 </option>
-      <option> 128 </option>
-      </select>
-    Off-M/C:
-    <select id="selMelOff" >
-      <option> 24 </option>
-      <option> 12 </option>
-      <option selected> 0 </option> 
-      <option> -12 </option>
-      <option> -24 </option>
-    </select>
-    <select id="selChdOff" >
-      <option> 24 </option>
-      <option> 12 </option>
-      <option> 0 </option> 
-      <option selected> -12 </option>
-      <option> -24 </option>
-    </select>
-      
 
 	<p id=piano> piano </p>
 

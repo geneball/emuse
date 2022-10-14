@@ -12,7 +12,7 @@
 		"|3 4:7 4:7 4:8 4:r 4:8# 4:8# 4:8 4:r 4:7 4:7 4:8 4:r"
       ],
       "chords": [
-		"|1 8:r 4:Bb7 4:Eb/Bb 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D",
+		"|1 8:r 4:Bb7 4:Eb/Bb 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D"
       ]
     },
     { "nm": "Intro & Verse",
@@ -103,7 +103,7 @@
 		"|2 2:4 2:4 2:3 2:3 4:2# 2:5 2:5",
 		"|3 4:8 2:5 2:5 4:8 2:5 2:5",
 		"|4 2:4# 2:4# 4:5 4:6 4:5",
-		"|5 2:5# 2:5# 2:5# 2:5# 4:6 4:6 2:6# 2:6# 2:6# 2:6# 4:7 4:7",
+		"|5 2:5# 2:5# 2:5# 2:5# 4:6 4:6 2:6# 2:6# 2:6# 2:6# 4:7 4:7"
       ],
       "chords": [
 		"|1"
@@ -173,7 +173,8 @@
 		"Caught in a landside,",
 		"No escape from reality",
 		"Open your eyes,",
-		"Look up to the skies and see,",		"I'm just a poor boy, I need no sympathy,",
+		"Look up to the skies and see,",
+		"I'm just a poor boy, I need no sympathy,",
 		"Because I'm easy come, easy go,",
 		"Little high, little low,",
 		"Any way the wind blows doesn't really matter to",

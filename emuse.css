@@ -23,7 +23,7 @@
      .inner { position:absolute; bottom:0; left:0; width:16px; 
              text-align:center;  border-radius: 50%;
             }
-     
+     #piano          { font-size: x-small; }
      .on { background-color: #e6294b; }
      select { width:16em; }
      btn{ border: 1px solid black; }
