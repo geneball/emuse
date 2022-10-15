@@ -376,7 +376,7 @@ function setTic( tic ){
     bt = 0;     // restart
   };
   
-  if ( e==null ) debugger;
+  if ( e==null ) return;
   stat.innerHTML = `${asBar(tic)} { ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }`;
   
   _plyr.currBeat = bt;
@@ -514,7 +514,11 @@ btnSave.addEventListener("click", function(){
   saveTrack( _song, _track, _trk ); 
   msg( `Saved track '${_track.nm}' of '${_song.nm}'` );
 });
-
+const adjMelody = document.getElementById("adjMelody");
+adjMelody.addEventListener('click', ev => {
+  const melDialog = document.getElementById( "melodyCtrl" );
+  melDialog.showModal();
+});
 if ( typeof eg.songNames == 'function' )
   loadSelect( selSong, eg.songNames() );
 selSong.dispatchEvent( new Event('change') );

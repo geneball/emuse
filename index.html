@@ -71,7 +71,8 @@
     </select>
     <select id="selectTrack" >
     </select>
-     
+    <button id="adjMelody"> Melody </button>
+    <button id="adjHarmony"> Harmony </button>
     <select id="selWhich" >
       <option> Both </option> 
       <option> Chords </option>
@@ -94,9 +95,9 @@
         <option> 0 </option> 
         <option> 16 </option>
         <option> 32 </option>
-        <option selected> 48 </option>
+        <option> 48 </option>
         <option> 64 </option>
-        <option> 80 </option>
+        <option selected> 80 </option>
         <option> 96 </option>
         <option> 112 </option>
         <option> 128 </option>
@@ -118,7 +119,9 @@
       </select>
    </p>
        
-   <p> <b>Key</b>: <select id="selectRoot">
+   <p>
+    <label for="selRoot"> <b>Key</b>: </label> 
+    <select id="selectRoot" name="selRoot">
     <option> C </option>
     <option> C#/Db </option>
     <option> D </option>
@@ -156,13 +159,46 @@
   <select id="selectChord" >
   </select>
   </div>
-
-
  
 
 	<p id=piano> piano </p>
 
   <span id="status"> status </span>
+
+  <dialog id="melodyCtrl">
+  Melody: 
+  <div>
+    <input type="range" id="m_velocity" name="mvel"
+           min="0" max="128">
+    <label for="mvel">Velocity</label>
+    <select id="selMelVel" >
+      <option> 0 </option> 
+      <option> 16 </option>
+      <option> 32 </option>
+      <option> 48 </option>
+      <option> 64 </option>
+      <option> 80 </option>
+      <option> 96 </option>
+      <option> 112 </option>
+      <option selected> 127 </option>
+    </select>
+    <label class="mute">
+      <input type="checkbox">
+      <span class="toggle"></span>
+    </label>
+    <label class="octave">
+      <input type="checkbox">
+      <span class="octave">0</span>
+    </label>
+    <select id="selMelOff" >
+      <option> 24 </option>
+      <option> 12 </option>
+      <option selected> 0 </option> 
+      <option> -12 </option>
+      <option> -24 </option>
+    </select>
+  </div>
+  </dialog>
   </body>
   <script src="./renderer.js"></script>
 </html>
