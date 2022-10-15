@@ -66,19 +66,22 @@
     <button id="btnPlay">Play</button>
     <button id="btnSave">Save</button>
 
-    Song: 
+    
+    <label for="selectSong"> <b>Song</b>: </label> 
     <select id="selectSong" >
     </select>
+    <label for="selectTrack"> <b>Track</b>: </label> 
     <select id="selectTrack" >
     </select>
     <button id="adjMelody"> Melody </button>
     <button id="adjHarmony"> Harmony </button>
+
     <select id="selWhich" >
       <option> Both </option> 
       <option> Chords </option>
       <option> Melody </option>
     </select>
-  
+    <!--  
     Vel-M/C:
     <select id="selMelVel" >
       <option> 0 </option> 
@@ -117,8 +120,9 @@
         <option selected> -12 </option>
         <option> -24 </option>
       </select>
-   </p>
-       
+  
+   -->   
+   </p> 
    <p>
     <label for="selRoot"> <b>Key</b>: </label> 
     <select id="selectRoot" name="selRoot">
@@ -166,38 +170,41 @@
   <span id="status"> status </span>
 
   <dialog id="melodyCtrl">
-  Melody: 
+  <div class="title"> Melody <button class="hdrclose" id="m_close"> x </button></div>
   <div>
-    <input type="range" id="m_velocity" name="mvel"
-           min="0" max="128">
-    <label for="mvel">Velocity</label>
-    <select id="selMelVel" >
-      <option> 0 </option> 
-      <option> 16 </option>
-      <option> 32 </option>
-      <option> 48 </option>
-      <option> 64 </option>
-      <option> 80 </option>
-      <option> 96 </option>
-      <option> 112 </option>
-      <option selected> 127 </option>
-    </select>
-    <label class="mute">
-      <input type="checkbox">
+    <div><label class="velocity">Velocity: 
+      <input type="range" id="m_velocity"   min="0" max="127" value="127">
+    </label></div>
+    <div><label class="mute"> Mute: 
+      <input type="checkbox" id="m_mute">
       <span class="toggle"></span>
-    </label>
-    <label class="octave">
-      <input type="checkbox">
-      <span class="octave">0</span>
-    </label>
-    <select id="selMelOff" >
-      <option> 24 </option>
-      <option> 12 </option>
-      <option selected> 0 </option> 
-      <option> -12 </option>
-      <option> -24 </option>
-    </select>
+    </label></div>
+    <div><label class="octave"> Octave: 
+      <input type="radio" name="m_oct" value="-24"> 2
+      <input type="radio" name="m_oct" value="-12"> 3
+      <input type="radio" name="m_oct" value="0" checked > 4
+      <input type="radio" name="m_oct" value="12"> 5
+      <input type="radio" name="m_oct" value="24"> 6
+    </label></div>
   </div>
+  </dialog>
+  <dialog id="harmonyCtrl">
+    <div class="title"> Harmony <button class="hdrclose" id="h_close"> x </button></div>
+    <div>
+      <div><label class="velocity">Velocity: 
+        <input type="range" id="h_velocity"   min="0" max="127" value="80">
+      </label></div>
+      <div><label class="mute"> Mute: 
+        <input type="checkbox" id="h_mute">
+      </label></div>
+      <div><label class="octave"> Octave: 
+        <input type="radio" name="h_oct" value="-24"> 2
+        <input type="radio" name="h_oct" value="-12" checked > 3
+        <input type="radio" name="h_oct" value="0"> 4
+        <input type="radio" name="h_oct" value="12"> 5
+        <input type="radio" name="h_oct" value="24"> 6
+      </label></div>
+    </div>
   </dialog>
   </body>
   <script src="./renderer.js"></script>

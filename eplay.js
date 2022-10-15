@@ -176,6 +176,8 @@ var _plyr = {
   midi:  null,
   chordVelocity: 80,
   melodyVelocity: 120,
+  chordMute: false,
+  melodyMute: false,
 
   stop: false,
   msStart: 0,   // tstamp of playing start
@@ -186,10 +188,10 @@ function playEvent( evt ){
   let till = evt.t * _trk.msTic;
   setTimeout( function() { 
     if (_plyr.stop ) return;
-    if (evt.nt !=undefined ){
+    if (evt.nt !=undefined && !_plyr.melodyMute ){
       _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.nt})
       _plyr.midi.noteOn( 0, evt.nt, _plyr.melodyVelocity ).wait( dur ).noteOff( 0, evt.nt );
-    } else if (evt.chord !=undefined ){
+    } else if (evt.chord !=undefined && !_plyr.chordMute ){
       for ( var i=0; i<evt.chord.length; i++ ){
         _plyr.hist.push( {tic: ((Date.now()-_plyr.msStart)/_trk.msTic).toFixed(1), nt:evt.chord[i]})
         _plyr.midi.noteOn( 0, evt.chord[i], _plyr.chordVelocity ).wait( dur ).noteOff( 0, evt.chord[i] );
@@ -217,6 +219,10 @@ function stopPlay(){
 function setVelocity( chd, mel ){
   _plyr.chordVelocity = chd;
   _plyr.melodyVelocity = mel;
+}
+function setMute( chd, mel ){
+    _plyr.chordMute = chd;
+    _plyr.melodyMute = mel;
 }
 
 module.exports = { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic,
