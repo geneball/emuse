@@ -41,8 +41,8 @@ function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
     adj = lch=='#'? 1 : -1;
   }
   scdeg = Number( scdeg );
-  while ( scdeg < 1 ){ scdeg+=8; off-=12; }
-  while ( scdeg > 8 ){ scdeg-=8; off+=12; }
+  while ( scdeg < 1 ){ scdeg+=7; off-=12; }
+  while ( scdeg > 7 ){ scdeg-=7; off+=12; }
   return scale[scdeg-1] + off + adj;
 }
 
@@ -73,7 +73,7 @@ function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0
   let rws= [], oct = 0;
   for (let i = lo; i <= hi; i++ ){
     scrw = scrows[scidx];
-    rws[ i ] = { inscale: scrw.inscale, rw: scrw.rw + oct, deg: scrw.deg };
+    rws[ i ] = { inscale: scrw.inscale, rw: scrw.rw + oct, key:i,  deg: scrw.scdeg };
     scidx++;
     if ( scidx > 11 ){
       scidx = 0;

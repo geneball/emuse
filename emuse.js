@@ -17,7 +17,7 @@
 	  { nm: 'B',   midi4: 71 },
 
 	  { nm: 'Db',  midi4: 61 },		// duplicate sharps as flats 
-   	  {	nm: 'Eb',  midi4: 63 },
+	  {	nm: 'Eb',  midi4: 63 },
       { nm: 'Gb',  midi4: 66 },
       { nm: 'Ab',  midi4: 68 },  
       { nm: 'Bb',  midi4: 70 }
@@ -83,20 +83,18 @@
 	{ scale:[ 0, 3, 4, 6, 9, 10, 12 ], 		nm: 'Ionian ♯5 ♯2' }, //  0, 2, 4, 5, 7, 9, 11, 12 
 	{ scale:[ 0, 1, 2, 6, 7, 9, 10 ], 		nm: 'Locrian ♭♭3 ♭♭7' }
 	];
-    function modeNames( ){
-	    return modeDefs.map( x => x.nm );
-    }
+    function modeNames( ){   return modeDefs.map( x => x.nm );    }
 	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
 		let rw = [], sc = 0, r = 0;
 		let off = scale[0];
 		scale = scale.map( x => x-off );
 		for ( let i=0; i < 12; i++ ){
 			if ( i==scale[sc] ){ // semitone i is in scale
-				rw.push( { inscale: true, rw: r, deg: sc } );	// assign next full row to scale degree sc
+				rw.push( { inscale: true, rw: r, deg: sc, scdeg:`${sc+1}` } );	// assign next full row to scale degree sc
 				r++;   
 				sc++;
 			} else {	// semitone i is non-scale
-				rw.push ( { inscale: false, rw: r, deg: sc-0.5 } );	// insert a half-row for a non-scale scale degree
+				rw.push ( { inscale: false, rw: r, deg: sc-0.5, scdeg:`${sc}#` } );	// insert a half-row for a non-scale scale degree
 				r++;
 			}
 		}
