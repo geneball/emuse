@@ -466,7 +466,8 @@ function selectEl( el ){
   _plyr.selEl = el;
   addClass( el, 'sel' );
 }
-divBars.addEventListener("click", function(evt){
+
+divBars.addEventListener("click", function(evt){    // click on Notes scroll
   let tgt = evt.target;
   let rw = null;
   for ( let cl of tgt.className.split(' ') )
@@ -496,28 +497,6 @@ divBars.addEventListener("click", function(evt){
 selTrk.addEventListener("change", function() {
   evalTrack();
 });
-// selWhich.addEventListener("change", function() {
-//   evalTrack();
-// });
-//selMelOff.addEventListener("change", function() {
-//  evalTrack();
-//});
-// selChdOff.addEventListener("change", function() {
-//   evalTrack();
-// });
-var m_octs = document.querySelectorAll('input[type=radio][name="m_oct"]');
-m_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
-m_velocity.addEventListener("change", function() {
-  evalTrack();
-});
-
-var h_octs = document.querySelectorAll('input[type=radio][name="h_oct"]');
-h_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
-h_velocity.addEventListener("change", function() {
-  evalTrack();
-});
-
-
 selEvts.addEventListener("change", function() {
   var evt = _trk.evts[ selEvts.selectedIndex ];
   playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
@@ -535,6 +514,31 @@ btnSave.addEventListener("click", function(){
   saveTrack( _song, _track, _trk ); 
   msg( `Saved track '${_track.nm}' of '${_song.nm}'` );
 });
+
+// selWhich.addEventListener("change", function() {
+//   evalTrack();
+// });
+//selMelOff.addEventListener("change", function() {
+//  evalTrack();
+//});
+// selChdOff.addEventListener("change", function() {
+//   evalTrack();
+// });
+
+// Melody/Harmony Adjust dialogues
+var m_octs = document.querySelectorAll('input[type=radio][name="m_oct"]');
+m_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
+m_velocity.addEventListener("change", function() {
+  evalTrack();
+});
+
+var h_octs = document.querySelectorAll('input[type=radio][name="h_oct"]');
+h_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
+h_velocity.addEventListener("change", function() {
+  evalTrack();
+});
+
+
 const adjMelody = document.getElementById("adjMelody");
 const m_dialog = document.getElementById( "melodyCtrl" );
 adjMelody.addEventListener('click', ev => {

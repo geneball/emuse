@@ -20,7 +20,7 @@
     <div id="beats">
       <div id="bt0" class="bt t0 r19 on"></div>
     </div>
-    <div id="labels">
+    <div id="labels" class="lbl">
       <div class="r18 t0">1</div>
       <div class="r18 t12">2</div>
       <div class="r19 t0">Cm</div>
@@ -62,69 +62,26 @@
 	  </div>
     </div>
 
-  <p>
-    <button id="btnPlay">Play</button>
-    <button id="btnSave">Save</button>
+    <button id="btnPlay"  class="blk">Play</button>
+    <button id="btnSave" class="blk">Save</button>
 
-    
-    <label for="selectSong"> <b>Song</b>: </label> 
-    <select id="selectSong" >
-    </select>
-    <label for="selectTrack"> <b>Track</b>: </label> 
-    <select id="selectTrack" >
-    </select>
-    <button id="adjMelody"> Melody </button>
-    <button id="adjHarmony"> Harmony </button>
+  <label class="blk"> Song:<br>
+      <select id="selectSong">     </select> 
+  </label> 
 
-    <select id="selWhich" >
-      <option> Both </option> 
-      <option> Chords </option>
-      <option> Melody </option>
-    </select>
-    <!--  
-    Vel-M/C:
-    <select id="selMelVel" >
-      <option> 0 </option> 
-      <option> 16 </option>
-      <option> 32 </option>
-      <option> 48 </option>
-      <option> 64 </option>
-      <option> 80 </option>
-      <option> 96 </option>
-      <option> 112 </option>
-      <option selected> 127 </option>
-      </select>
-      <select id="selChdVel" >
-        <option> 0 </option> 
-        <option> 16 </option>
-        <option> 32 </option>
-        <option> 48 </option>
-        <option> 64 </option>
-        <option selected> 80 </option>
-        <option> 96 </option>
-        <option> 112 </option>
-        <option> 128 </option>
-        </select>
-      Off-M/C:
-      <select id="selMelOff" >
-        <option> 24 </option>
-        <option> 12 </option>
-        <option selected> 0 </option> 
-        <option> -12 </option>
-        <option> -24 </option>
-      </select>
-      <select id="selChdOff" >
-        <option> 24 </option>
-        <option> 12 </option>
-        <option> 0 </option> 
-        <option selected> -12 </option>
-        <option> -24 </option>
-      </select>
-  
-   -->   
-   </p> 
-   <p>
-    <label for="selRoot"> <b>Key</b>: </label> 
+  <label class="blk"> Track: <br>
+      <select id="selectTrack">      </select> 
+  </label> 
+
+  <label class="blk"> Melody<br>
+    <button id="adjMelody"> Adj </button>
+  </label>
+
+  <label class="blk">Harmony <br>
+    <button id="adjHarmony"> Adj </button>
+  </label>
+
+  <label class="blk"> Key: <br>
     <select id="selectRoot" name="selRoot">
     <option> C </option>
     <option> C#/Db </option>
@@ -138,26 +95,30 @@
     <option> A </option>
     <option> A#/Bb </option>
     <option> B </option>
-  </select>
-  <select id="selectMode" >
-    <option> Major </option>
-    <option> Minor </option>
-    <option> Ionian (major)</option>
-    <option> Dorian </option>
-    <option> Phrygian </option>
-    <option> Lydian </option>
-    <option> Mixolydian </option>
-    <option> Aeolian (minor)</option>
-    <option> Locrian  </option>
-    <option> Harmonic minor </option>
-    <option> Melodic minor </option>
-    <option> Phryrgian Dominant </option>
-  </select>
+    </select>
+  </label>
+
+  <label class="blk"> Mode: <br>
+    <select id="selectMode" >
+      <option> Major </option>
+      <option> Minor </option>
+      <option> Ionian (major)</option>
+      <option> Dorian </option>
+      <option> Phrygian </option>
+      <option> Lydian </option>
+      <option> Mixolydian </option>
+      <option> Aeolian (minor)</option>
+      <option> Locrian  </option>
+      <option> Harmonic minor </option>
+      <option> Melodic minor </option>
+      <option> Phryrgian Dominant </option>
+    </select>
+  </label>
+  <label class="blk"> Events: <br>
+     <select id="selectEvents">  </select>
+  </label>
+  
   <span id="info" class="info"> info </span>
-  Events:
-  <select id="selectEvents" >
-  </select>
-  </p>
 
   <div id="chdButtons">  Chords: 
   <select id="selectChord" >

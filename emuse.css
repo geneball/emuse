@@ -25,11 +25,11 @@
             }
      #piano          { font-size: x-small; }
      .on { background-color: #e6294b; }
-     select { width:16em; }
+     select { width:8em; }
      btn{ border: 1px solid black; }
      #selectRoot     { width:3em; }
      #selectMode     { width:4em; }
-     #selectTrack    { width:10em; }
+     #selectTrack    { width:5em; }
      #selWhich       { width:5em; }
      #selectChord    { width:5em; }
      #selMelOff      { width:4em; }
@@ -43,8 +43,9 @@
  
       .tic { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
      .bar { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
-     .lbl { width: 5000px; height:40px; background-color: white;}
+     .lbl { width: 5000px; height:40px; background-color: white;  font-size: x-small; }
      .info{ width: 400px; display: inline-block; }
+     .blk{ display: inline-block; font-weight: bold; text-align: center;}
 
      .bt1 { width:10px; position: absolute; bottom:35px; height:5px; z-index: 2; }
      .bt2 { width:20px; position: absolute; bottom:35px; height:5px; z-index: 2; }
