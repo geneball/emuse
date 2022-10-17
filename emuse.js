@@ -140,7 +140,7 @@
 	  { nm: 'm7(9)',   nts:[0,2,3,7,10]    },  // 1 2  3b 5  6#    m7(9)
 	  { nm: 'm7(11)',  nts:[0,2,3,5,7,10]  },  // 1 2  3b 4  5 6#  m7(11)
 	  { nm: 'mM7',     nts:[0,3,7,11]      },  // 1 3b 5  7        mM7
-	  { nm: 'mM7(9)',  nts:[0,2,3,7,11]    },  // 1 2  3b 5  7     mM7(9)
+	//  { nm: 'mM7(9)',  nts:[0,2,3,7,11]    },  // 1 2  3b 5  7     mM7(9)
 	  { nm: 'm7b5',    nts:[0,3,6,10]      },  // 1 3b 5b 6#       m7b5
 	  { nm: 'mM7b5',   nts:[0,3,6,11]      },  // 1 3b 5b 7        mM7b5
 	  { nm: 'dim',     nts:[0,3,6]         },  // 1 3b 5b          dim
@@ -237,7 +237,7 @@
 			var s = '[ ';
 			for ( var i=0; i < chd.length; i++ )
 				s += asStr( chd[i] ) + ' ';
-			return s + ']=' + chordName(chd);
+			return s + ']'; // + chordName(chd);
 		}
     
         var keynum = parseFloat( chd );

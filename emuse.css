@@ -23,6 +23,31 @@
      .inner { position:absolute; bottom:0; left:0; width:16px; 
              text-align:center;  border-radius: 50%;
             }
+
+     #m_close {
+     width: 25px;
+     height: 25px;
+     background-color: red;
+     border: 1px solid black;
+     }
+     
+     .mdiv {
+     height: 25px;
+     width: 2px;
+     margin-left: 12px;
+     background-color: black;
+     transform: rotate(45deg);
+     Z-index: 1;
+     }
+     
+     .md {
+     height: 25px;
+     width: 2px;
+     background-color: black;
+     transform: rotate(90deg);
+     Z-index: 2;
+     }  
+
      #piano          { font-size: x-small; }
      .on { background-color: #e6294b; }
      select { width:8em; }

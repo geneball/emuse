@@ -139,6 +139,12 @@ function removeClass( el, cls ){
     el.classList.remove( cls );
   }
 }
+function rmClassFrChildren( el, cls ){
+  for ( let i=0; i< el.childNodes.length; i++ ){
+    let btn = el.childNodes[i];
+    removeClass( btn, 'root' );
+  }
+}
 function addClass( el, cls ){
   if ( el==null || el==undefined ) return; //debugger;
 
@@ -174,27 +180,35 @@ function asBtnHtml( nms ){
   return html;
 }
 
-var _chdRoot;
+var _chdRoot, _chdChord;
+function playChord(){
+  chd = em.toChord( _chdChord, _chdRoot );
+  msg( em.asStr(chd) );
+  playEvent( { t:0, chord: chd, d: 800 } );
+}
 function initChordUI(){
   divChdBtns.innerHTML = `<div id='triads'>${asBtnHtml(em.chordNames(3))}</div>` +
   `<div id='quartads'>${asBtnHtml(em.chordNames(4))}</div>` +
   `<div id='quintads'>${asBtnHtml(em.chordNames(5))}</div>`;
-  divChdBtns.addEventListener("click", function(e){
-    const root = em.toKeyNum( selRoot.value );
-    const chd = em.toChord( e.target.innerText, _chdRoot );
-    msg( em.asStr(chd) );
-    playEvent( { t:0, chord: chd, d: 800 } );
+  divChdBtns.addEventListener("click", function(ev){
+    if ( ev.target.nodeName != 'BUTTON' ) return;
+    rmClassFrChildren( document.getElementById('triads'), 'root' );
+    rmClassFrChildren( document.getElementById('quartads'), 'root' );
+    rmClassFrChildren( document.getElementById('quintads'), 'root' );
+
+    _chdChord = ev.target.innerText;
+    addClass( ev.target, 'root' );
+    playChord();
   });
   scaleDegrees.addEventListener('click', (ev) => {
     let id = ev.target.id;
-    if ( !id.startsWith('scd')) return;
-    for ( let i=0; i< scaleDegrees.childNodes.length; i++ ){
-      let btn = scaleDegrees.childNodes[i];
-      removeClass( btn, 'root' );
-    }
+    if ( ev.target.nodeName != 'BUTTON' ) return;
+    rmClassFrChildren( scaleDegrees, 'root' );
+    
     addClass( ev.target, 'root' );
-    _chdRoot = Number( ev.target.id.substr(3));
-    msg( `Chord root ${em.asStr(_chdRoot)}`);
+    _chdRoot = Number( ev.target.id.substr(3));   // e.g. scd50..scd71
+    playChord();
+    // msg( `Chord root ${em.asStr(_chdRoot)}`);
   });
 }
 
@@ -205,12 +219,25 @@ selRoot.addEventListener("change", function() {
 function setKey( song ){
   let root = song.root;
   let mode = song.mode;
-  for (let i=0; i<selRoot.options.length; i++){
+  for (let i=0; i<selRoot.options.length; i++){  // select song's key in selRoot
     let txt = selRoot.options[i].innerText.trim();
     if ( txt==root || (root.length>1 && txt.includes(root)))
       selRoot.options[i].selected = true;
   }
   selMode.value = mode;
+
+  let rkey = em.toKeyNum( root );
+  let scale = em.toScale( song.mode, rkey );
+  let rows = em.scaleRows( scale );
+  let schtml = '';
+  for ( let sd=0; sd<12; sd++ ){
+    schtml += `<button id="scd${rkey+sd}"> ${rows[sd].scdeg} ${em.asStr((rkey+sd) % 12)}</button>`;
+  }  
+  scaleDegrees.innerHTML = schtml;
+  addClass( scaleDegrees.childNodes[0], 'root' );
+  addClass( divChdBtns.childNodes[0].childNodes[0], 'root' );
+  _chdRoot = rkey;
+  _chdChord = 'M';
 }
 selSong.addEventListener("change", function() {
   _song = eg.findSong( selSong.value );
@@ -255,13 +282,13 @@ function showEventList(){     // build rows display from _trk.evts
 
   stat.innerText = `Notes: ${lo}..${hi}  Tics: 0..${maxtic} `;
   let rows = et.trackRowMap();
-  let schtml = '';
-  for ( let sd=lo; sd<lo+12 && sd<=hi; sd++ ){
-    schtml += `<button id="scd${sd}"> ${rows[sd].deg}</button>`;
-  }
-  scaleDegrees.innerHTML = schtml;
-  addClass( document.querySelector(`#scd${lo}`), 'root' );
-  _chdRoot = lo;
+  // let schtml = '';
+  // for ( let sd=lo; sd<lo+12 && sd<=hi; sd++ ){
+  //   schtml += `<button id="scd${sd}"> ${rows[sd].deg}</button>`;
+  // }
+  // scaleDegrees.innerHTML = schtml;
+  // addClass( document.querySelector(`#scd${lo}`), 'root' );
+  // _chdRoot = lo;
 
 
   let sp = 1, lblRw = 0;;
@@ -523,7 +550,7 @@ divBars.addEventListener("click", function(evt){    // click on Notes scroll
   } else if (tgt.id.startsWith('chd')){
     let ich = tgt.id.substring(3).split('-')[0];
     tip += _chords[ich];
-    tip = `c${iEvt} ${asBar(e.t)} ${em.chordName(e.chord,true)} for ${inBeats(e.d)}`;
+    tip = `c${iEvt} ${asBar(e.t)} ${em.chordName(e.chord,true)} ${em.asStr(e.chord)} for ${inBeats(e.d)}`;
     selectEl( tgt.parentElement );
     playEvent( { t:0, chord: e.chord, d: e.d } );
   } else if (tgt.id.startsWith('beat')){
