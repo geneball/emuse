@@ -1,4 +1,5 @@
 const { toChord, toKeyNum, toScale, scaleRows } = require("./emuse");
+const { msg } = require('./msg.js');
 
 function trackNames( song ){
   return song.tracks.map( x => x.nm );
@@ -12,7 +13,7 @@ function toSD( s ){
   var roman = [ 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii' ];
   for (let i=0; i<roman.length; i++)
     if ( s.toLowerCase() == roman[i] ) return i;
-  console.log(`toSD: unrec ${s}`);
+  msg(`toSD: unrec ${s}`);
   return 0;
 }
 function scDeg( nt, root, scale ){ // return scDeg (1..7) from keynum given root & scale
@@ -113,15 +114,13 @@ function evalTrack( song, track, playwhich, melOffset, chdOffset ){  // calc eve
       if (c[0]=='|'){
         let mtic = (parseFloat(c.substr(1))-1) *_trk.barTics;
         if ( tic != mtic )
-          console.log( `chords ${c} at tic ${tic} not ${mtic}` );
+          msg( `chords ${c} at tic ${tic} not ${mtic}` );
       } else {
           let [tics,chordname] = c.split(':');
           tics = Number( tics );
           if ( chordname != 'r' ){
             let chd = asChord( chordname, _trk.scale );
             chd = chd.map( x => x + _trk.chdOff );
-          //  if ( tics % tpb != 0 ) 
-          //    console.log( `chords: tics(${tics}) not at beat (${tpb}) ` )
             while ( tics > 0 ){
               let dur = tics > tpb? tpb : tics; 
               tics -= dur;
@@ -147,7 +146,7 @@ function evalTrack( song, track, playwhich, melOffset, chdOffset ){  // calc eve
         let bar = parseFloat(n.substr(1));
         let mtic = (bar-1) * _trk.barTics;
         if ( tic != mtic )
-          console.log( `melody ${n} at tic ${tic} not ${mtic}` );
+          msg( `melody ${n} at tic ${tic} not ${mtic}` );
       } else {
           let [tics,scdeg] = n.split(':');
           tics = Number(tics);

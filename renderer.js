@@ -182,16 +182,19 @@ function initChordUI(){
   divChdBtns.addEventListener("click", function(e){
     const root = em.toKeyNum( selRoot.value );
     const chd = em.toChord( e.target.innerText, _chdRoot );
+    msg( em.asStr(chd) );
     playEvent( { t:0, chord: chd, d: 800 } );
   });
   scaleDegrees.addEventListener('click', (ev) => {
     let id = ev.target.id;
+    if ( !id.startsWith('scd')) return;
     for ( let i=0; i< scaleDegrees.childNodes.length; i++ ){
       let btn = scaleDegrees.childNodes[i];
       removeClass( btn, 'root' );
     }
     addClass( ev.target, 'root' );
     _chdRoot = Number( ev.target.id.substr(3));
+    msg( `Chord root ${em.asStr(_chdRoot)}`);
   });
 }
 
