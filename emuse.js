@@ -1,5 +1,6 @@
 
   const { chordParserFactory } = require( 'chord-symbol' );
+  const { msg, err } = require("./msg.js");
 
     const noteDefs =   // 0=='C-1' .. 127='G8'
 	[
@@ -33,8 +34,7 @@
 			if ( nt.toUpperCase()=== noteDefs[i].nm.toUpperCase() ) 
 				return noteDefs[i].midi4 + (oct-4)*12;
 		}
-		console.log(`toKeyNum: unrecognized note ${nt}`);
-		return 60;
+		err( `toKeyNum: unrecognized note ${nt}`, true );
 	}
 	// c  c# d  d# e  f  f# g  g# a  a# b  c  -- note name
 	// 0  1  2  3  4  5  6  7  8  9  10 11 12 -- semitones
@@ -109,7 +109,7 @@
 		for (var i=0; i < modeDefs.length; i++)
 			if ( md ===  modeDefs[i].nm.toUpperCase() )
 				return modeDefs[i].scale.map( x => x+root );
-		console.log(`toScale: unrecognized mode ${md}`);
+		err( `toScale: unrecognized mode ${md}`, false );
 		return modeDefs[0].scale;		// default Ionian
 	}
 	
@@ -174,12 +174,12 @@
 	var parseChord = chordParserFactory();
 
 	function toChord( chd, root ){
-		let chnm = asStr( root % 12 ) + chd;
+		let chnm = emStr( root % 12 ) + chd;
 		if ( 'ABCDEFG'.includes( chd[0]) ) chnm = chd;
 		const chord = parseChord( chnm.trim() );
 		if ( chord.error==undefined )
 			return chord.normalized.semitones.map( x => x + root );
-		else { console.log( `parseChord( ${chnm} ) => ${chord.error[0].message}` ); debugger }
+		else  err( `parseChord( ${chnm} ) => ${chord.error[0].message}`, true ); 
 
       /*  root = toKeyNum(root);
 		if ( chd instanceof Array ) 
@@ -190,7 +190,7 @@
 			if ( chd === chordDefs[i].nm )
 				return chordDefs[i].nts.map( x => x + root );
 			
-		console.log(`toChord: unrecognized chord "${chd}"`);
+		msg(`toChord: unrecognized chord "${chd}"`);
 		return chordDefs[0].nts.map( x => x + root );		// default major triad
 		*/
 	}
@@ -201,7 +201,7 @@
 		var rt = chd[0], nt = '';
 		if ( rt>0 ){
             chd = chd.map( x => x-rt );
-            nt = asStr( astype? rt%12 : rt);
+            nt = emStr( astype? rt%12 : rt);
         }
 		for (var i=0; i < chordDefs.length; i++){
 			if (chd.length === chordDefs[i].nts.length && 
@@ -232,11 +232,11 @@
 		return `${deg}${scDeg>deg? '#':'' }`;
 	}
 	
-	function asStr( chd ){		// 60 => "C4"  0=>"C"
+	function emStr( chd ){		// 60 => "C4"  0=>"C"  [60,64,67] => '[ C4 E4 G4 ]'
 		if ( chd instanceof Array ){
 			var s = '[ ';
 			for ( var i=0; i < chd.length; i++ )
-				s += asStr( chd[i] ) + ' ';
+				s += emStr( chd[i] ) + ' ';
 			return s + ']'; // + chordName(chd);
 		}
     
@@ -250,24 +250,27 @@
 		return `? ${chd}`;
 	}
 	
-	function test(){
+	function emTest(){
 		for(const v of [ 60, 'Ab', 'C4', 'C6', 'C#3', 'bb', 'c#' ]){
             var kn = toKeyNum(v);
- 			console.log( `toKeyNum(${v}) = ${kn} = ${asStr(kn)}` );
+ 			msg( `toKeyNum(${v}) = ${kn} = ${emStr(kn)}` );
         }
 
         for(const v of [ 'major', 'locrian', 'harmonic minor' ])
-			console.log( `toScale(${v}) = [${toScale(v)}]` );
+			msg( `toScale(${v}) = [${toScale(v)}]` );
 
         for(const v of [ 'M', 'm', 'dim', 'mM7' ]){
 			  var ch1 = toChord(v, 'C');
 			  var ch3 = toChord(v,'E');
 			  var ch4 = toChord(v,'Bb');
- 			  console.log( `toChord(${v},C) = [${ch1}] = ${asStr(ch1)} = ${chordName(ch1)}` );
-			  console.log( `toChord(${v},E) = [${ch3}] = ${asStr(ch3)} = ${chordName(ch3)}` );
-			  console.log( `toChord(${v},Bb) = [${ch4}] = ${asStr(ch4)} = ${chordName(ch4)}` );
+ 			  msg( `toChord(${v},C) = [${ch1}] = ${emStr(ch1)} = ${chordName(ch1)}` );
+			  msg( `toChord(${v},E) = [${ch3}] = ${emStr(ch3)} = ${chordName(ch3)}` );
+			  msg( `toChord(${v},Bb) = [${ch4}] = ${emStr(ch4)} = ${chordName(ch4)}` );
         }
 	}
 
 	
-module.exports = { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, asStr, asDeg, test }; 
+module.exports = { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, 
+	emStr, asDeg, emTest }; 
+// const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, 
+//			emStr, asDeg, emTest } = require( './emuse.js' );
