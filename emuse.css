@@ -73,12 +73,12 @@
      .info{ width: 400px; display: inline-block; }
      .blk{ display: inline-block; font-weight: bold; text-align: center;}
 
-     .bt1 { width:10px; position: absolute; bottom:35px; height:5px; z-index: 2; }
-     .bt2 { width:20px; position: absolute; bottom:35px; height:5px; z-index: 2; }
-     .bt3 { width:30px; position: absolute; bottom:35px; height:5px; z-index: 2; }
-     .bt4 { width:40px; position: absolute; bottom:35px; height:5px; z-index: 2; }
-     .bt5 { width:50px; position: absolute; bottom:35px; height:5px; z-index: 2; }
-     .bt6 { width:60px; position: absolute; bottom:35px; height:5px; z-index: 2; }
+     .bt1 { width:10px; position: absolute; bottom:35px; height:10px; z-index: 2; }
+     .bt2 { width:20px; position: absolute; bottom:35px; height:10px; z-index: 2; }
+     .bt3 { width:30px; position: absolute; bottom:35px; height:10px; z-index: 2; }
+     .bt4 { width:40px; position: absolute; bottom:35px; height:10px; z-index: 2; }
+     .bt5 { width:50px; position: absolute; bottom:35px; height:10px; z-index: 2; }
+     .bt6 { width:60px; position: absolute; bottom:35px; height:10px; z-index: 2; }
 	 
      .rw  { height: 10px; }
      .r0  { position: absolute; bottom: 00px; }
