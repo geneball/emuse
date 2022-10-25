@@ -132,16 +132,17 @@ function evalHarmony( track ){
         tics = Number( tics );
         if ( chordname != 'r' ){
           let chd = asChord( chordname, _trk.scale );
-          while ( tics > 0 ){
-            let dur = tics > tpb? tpb : tics; 
-            tics -= dur;
-            _trk.evts.push( { t: Number(tic), chord: chd, d: dur } );
-            for ( let n of chd ){
-              if ( n < _trk.Lo ) _trk.Lo = n;
-              if ( n > _trk.Hi ) _trk.Hi = n;
-            }
-            tic += dur;
+
+          // while ( tics > 0 ){
+          //   let dur = tics > tpb? tpb : tics; 
+          //   tics -= dur;
+          _trk.evts.push( { t: Number(tic), chord: chd, d: tics } );
+          for ( let n of chd ){
+            if ( n < _trk.Lo ) _trk.Lo = n;
+            if ( n > _trk.Hi ) _trk.Hi = n;
           }
+          tic += tics;
+ //         }
         } else {
           tic += tics;
         }

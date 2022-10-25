@@ -186,22 +186,38 @@
 		}
 		else  err( `parseChord( ${chnm} ) => ${chord.error[0].message}`, true ); 
 	}
+	function idxChd( chd ){		// return idx of matching chordDef[] or -1
+		for (var i=0; i < chordDefs.length; i++){
+			if (chd.length === chordDefs[i].nts.length && 
+                chd.every((val,idx) => val == chordDefs[i].nts[idx] ))
+				    return i;
+        }
+		return -1;
+	}
 	function chordName( chd, astype ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
 		if (astype==undefined) astype == false;
 		if ( !(chd instanceof Array)) 
             return "?";
 		var rt = chd[0], nt = '';
-		if ( rt>0 ){
+		if ( rt > 0 ){
             chd = chd.map( x => x-rt );
             nt = emStr( astype? rt%12 : rt);
         }
-		for (var i=0; i < chordDefs.length; i++){
-			if (chd.length === chordDefs[i].nts.length && 
-                chd.every((val,idx) => val == chordDefs[i].nts[idx] ))
-				    return nt + chordDefs[i].nm;
-        }
-		err( `chordName: ${chd} unrecognized` );
-		return 'unrec chord';
+
+		let idx = idxChd( chd );
+		if ( idx >= 0 )  
+			return nt + chordDefs[idx].nm;
+
+		for ( let i=0; i < chd.length; i++ ){
+			if ( chd[i] < 0 )  chd[i] += 12;
+			if ( chd[i] > 11 ) chd[i] -= 12;
+		}
+		let chd2 = chd.sort( (a,b) => a-b );
+		debugger;
+
+		err( `chordName: ${chd} => ${chd2}` );
+		return chordName( chd2, astype );
+	//	return 'unrec chord';
 	}
 
 	const scaleDegreeDefs = [

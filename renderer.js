@@ -153,6 +153,10 @@ function evalTrack(){     // evaluate new track
   resetPlyr( 0 );
   _song = eg.findSong( selSong.value );
   _track = et.findTrack( _song, selTrk.value );
+  
+  if ( _song.melodyOctave != undefined )     m_octave.value = _song.melodyOctave;
+  if ( _song.harmonyOctave != undefined )    h_octave.value = _song.harmonyOctave;
+
   _trk = et.evalTrack( _song, _track ); 
   showEventList();
 

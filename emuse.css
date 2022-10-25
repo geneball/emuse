@@ -1,12 +1,12 @@
 
 :root	{
-        --L0: #FFCCCC;       --D0: #FF0000;
-        --L1: #FFEFD0;       --D1: #FFB014;
-        --L2: #FCFACC;       --D2: #EFE600;
-        --L3: #CCF6CC;       --D3: #00D300;
-        --L4: #DACCFF;       --D4: #4800FF;
-        --L5: #F1CCFA;       --D5: #B800E5;
-        --L6: #FFCCF5;       --D6: #FF00CB;
+        --L0: hsl(  0, 100%, 75%);       --D0: hsl(  0, 100%, 50%);
+        --L1: hsl( 40, 100%, 75%);       --D1: hsl( 40, 100%, 54%);
+        --L2: hsl( 58, 100%, 75%);       --D2: hsl( 58, 100%, 47%);
+        --L3: hsl(120, 100%, 75%);       --D3: hsl(120, 100%, 41%);
+        --L4: hsl(257, 100%, 75%);       --D4: hsl(257, 100%, 50%);
+        --L5: hsl(288, 100%, 75%);       --D5: hsl(288, 100%, 45%);
+        --L6: hsl(312, 100%, 75%);       --D6: hsl(312, 100%, 50%);
      
         --C00: #800000;      --C01: #9A6324;
         --C02: #808000;      --C03: #469990;
@@ -24,15 +24,15 @@
      body { background-color:  rgb(125, 125, 156); }
 
      .inner { position:absolute; bottom:0; left:0; width:16px; text-align:center;  border-radius: 50%;  }
-     input[type=range] {  width: 60px;  margin: 1;  }
+     input[type=range] {  width: 60px;  }
            
      input[type=range]::-webkit-slider-thumb {  -webkit-appearance: none;
            border: none; height: 2px;  width: 2px;  border-radius: 50%;  background: goldenrod;   margin-top: -2px;   }
            
-     input[type=range]:focus {    outline: none;     }
+   /*  input[type=range]:focus {    outline: none;     }
            
      input[type=range]:focus::-webkit-slider-runnable-track {       background: #ccc;    }
-
+*/
 
      #piano          { font-size: x-small; }
      .on             { background-color: #e6294b; }
@@ -42,13 +42,13 @@
      #selectSong     { width:8em; }
      #selectTrack    { width:8em; }
      #selectRoot     { width:3em; }
-     #selectMode     { width:4em; }
+     #selectMode     { width:8em; }
+     #selectEvents   { width:8em; }
 
-     #selectChord    { width:5em; }
      #bars           { position:relative; border: 1px solid white; width:1000px; height:320px;  overflow: auto; }
      .sel            { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 7px, white 7px ); }
    
-     div.sel div     { border: 1px solid black; }
+   /*  div.sel div     { border: 1px solid black; } */
      .root           { background: var(--C17); }
      .tic            { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
      .bar            { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
@@ -56,7 +56,7 @@
      .info           { width: 400px; display: inline-block; }
      .blk            { display: inline-block; text-align: center;}
      .hdr            { font-weight: bold; text-align: center;}
-     .grp            { display: inline-block; border: 1px solid black; }
+     .grp            { display: inline-block; margin: 0; padding: 2px; border: 1px solid black; }
 
      .bt1 { width:10px; height:10px; z-index: 2; border: 1px solid lightgray; }
      .bt2 { width:20px; height:10px; z-index: 2; border: 1px solid lightgray;}
@@ -83,36 +83,37 @@
      .n67      { z-index: 2; background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 5px, var(--D6) 5px, var(--D6) 10px); }
      .n7       { z-index: 2; background-color: var(--D6) !important; }
      .n71      { z-index: 2; background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D0) 10px, var(--D0) 20px); }
- 
-/*     .n12.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 4px, white 4px, white 6px, var(--D1) 6px, var(--D1) 10px); }
-     .n23.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 4px, white 4px, white 6px, var(--D2) 6px, var(--D2) 10px); } 
-     .n34.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 4px, white 4px, white 6px, var(--D3) 6px, var(--D3) 10px); } 
-     .n45.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 4px, white 4px, white 6px, var(--D4) 6px, var(--D4) 10px); } 
-     .n56.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 4px, white 4px, white 6px, var(--D5) 6px, var(--D5) 10px); } 
-     .n67.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 4px, white 4px, white 6px, var(--D6) 6px, var(--D6) 10px); } 
-     .n71.sel  { z-index: 2; background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 4px, white 4px, white 6px, var(--D0) 6px, var(--D0) 10px); } 
-*/
+
      .ch1       { background-color: var(--L0)  }
-     .ch12.sel  { background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 4px, white 4px, white 6px, var(--D1) 6px, var(--D1) 10px); }
-     .ch12      { background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 10px, var(--D1) 10px, var(--D1) 20px); }
+     .ch12      { background: repeating-linear-gradient(45deg, var(--L0), var(--L0) 10px, var(--L1) 10px, var(--L1) 20px); }
      .ch2       { background-color: var(--L1)  }
-     .ch23.sel  { background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 4px, white 4px, white 6px, var(--D2) 6px, var(--D2) 10px); } 
-     .ch23      { background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 10px, var(--D2) 10px, var(--D2) 20px); }
+     .ch23      { background: repeating-linear-gradient(45deg, var(--L1), var(--L1) 10px, var(--L2) 10px, var(--L2) 20px); }
      .ch3       { background-color: var(--L2)  }
-     .ch34.sel  { background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 4px, white 4px, white 6px, var(--D3) 6px, var(--D3) 10px); } 
-     .ch34      { background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 10px, var(--D3) 10px, var(--D3) 20px); }
+     .ch34      { background: repeating-linear-gradient(45deg, var(--L2), var(--L2) 10px, var(--L3) 10px, var(--L3) 20px); }
      .ch4       { background-color: var(--L3)  }
-     .ch45.sel  { background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 4px, white 4px, white 6px, var(--D4) 6px, var(--D4) 10px); } 
-     .ch45      { background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 10px, var(--D4) 10px, var(--D4) 20px); }
+     .ch45      { background: repeating-linear-gradient(45deg, var(--L3), var(--L3) 10px, var(--L4) 10px, var(--L4) 20px); }
      .ch5       { background-color: var(--L4)  }
-     .ch56.sel  { background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 4px, white 4px, white 6px, var(--D5) 6px, var(--D5) 10px); } 
-     .ch56      { background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 10px, var(--D5) 10px, var(--D5) 20px); }
+     .ch56      { background: repeating-linear-gradient(45deg, var(--L4), var(--L4) 10px, var(--L5) 10px, var(--L5) 20px); }
      .ch6       { background-color: var(--L5)  }
-     .ch67.sel  { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 4px, white 4px, white 6px, var(--D6) 6px, var(--D6) 10px); } 
-     .ch67      { background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 5px, var(--D6) 5px, var(--D6) 10px); }
+     .ch67      { background: repeating-linear-gradient(45deg, var(--L5), var(--L5) 5px, var(--L6) 5px, var(--L6) 10px); }
      .ch7       { background-color: var(--L6)  }
-     .ch71.sel  { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 4px, white 4px, white 6px, var(--D0) 6px, var(--D0) 10px); } 
-     .ch71      { background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D0) 10px, var(--D0) 20px); }
+     .ch71      { background: repeating-linear-gradient(45deg, var(--L6), var(--L6) 10px, var(--L0) 10px, var(--L0) 20px); }
+
+     div.sel .ch1   { background: repeating-linear-gradient(45deg, var(--L0), var(--L0) 9px, black 9px, black 11px );  }
+     div.sel .ch2   { background: repeating-linear-gradient(45deg, var(--L1), var(--L1) 9px, black 9px, black 11px );  }
+     div.sel .ch3   { background: repeating-linear-gradient(45deg, var(--L2), var(--L2) 9px, black 9px, black 11px );  }
+     div.sel .ch4   { background: repeating-linear-gradient(45deg, var(--L3), var(--L3) 9px, black 9px, black 11px );  }
+     div.sel .ch5   { background: repeating-linear-gradient(45deg, var(--L4), var(--L4) 9px, black 9px, black 11px );  }
+     div.sel .ch6   { background: repeating-linear-gradient(45deg, var(--L5), var(--L5) 9px, black 9px, black 11px );  }
+     div.sel .ch7   { background: repeating-linear-gradient(45deg, var(--L6), var(--L6) 9px, black 9px, black 11px );  }
+
+     div.sel .ch12  { background: repeating-linear-gradient(45deg, var(--L0), var(--L1) 9px, black 9px, black 11px, var(--L1) 11px, var(--L1) 20px); }
+     div.sel .ch23  { background: repeating-linear-gradient(45deg, var(--L1), var(--L2) 9px, black 9px, black 11px, var(--L2) 11px, var(--L2) 11px); }
+     div.sel .ch34  { background: repeating-linear-gradient(45deg, var(--L2), var(--L3) 9px, black 9px, black 11px, var(--L3) 11px, var(--L3) 11px); }
+     div.sel .ch45  { background: repeating-linear-gradient(45deg, var(--L3), var(--L4) 9px, black 9px, black 11px, var(--L4) 11px, var(--L4) 11px); }
+     div.sel .ch56  { background: repeating-linear-gradient(45deg, var(--L4), var(--L5) 9px, black 9px, black 11px, var(--L5) 11px, var(--L5) 11px); }
+     div.sel .ch67  { background: repeating-linear-gradient(45deg, var(--L5), var(--L6) 9px, black 9px, black 11px, var(--L6) 11px, var(--L6) 11px); }
+     div.sel .ch71  { background: repeating-linear-gradient(45deg, var(--L6), var(--L0) 9px, black 9px, black 11px, var(--L7) 11px, var(--L7) 11px); }
 
      .rw  { height: 10px; }
      .r0  { position: absolute; bottom: 00px; }

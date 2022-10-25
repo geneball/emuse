@@ -6,6 +6,8 @@
   "beatsPerBar": 4,
   "tempo": 78,
   "ticsPerBeat": 4,
+  "melodyOctave": 1,
+  "harmonyOctave": 0,
   "tracks": [
     {
       "nm": "Intro",
