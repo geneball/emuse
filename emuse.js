@@ -56,7 +56,7 @@
 
 
 	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], 	nm: 'Harmonic minor' }, // 1 2 ♭3 4 5 ♭6 7
-	 { scale:[ 0, 1, 4, 6, 8, 9, 11 ], 		nm: 'Phryrgian Dominant' },
+	 { scale:[ 0, 1, 4, 6, 8, 9, 11, 12 ], 		nm: 'Phryrgian Dominant' },
 	 { scale:[ 0, 2, 3, 6, 8, 10, 12 ], 	nm: 'Ascending melodic minor' },
 	 { scale:[ 0, 1, 3, 6, 8, 10, 11 ], 	nm: 'Phrygian ♯6' },
 	 { scale:[ 0, 2, 4, 7, 9, 10, 12 ], 	nm: 'Lydian augmented' },
@@ -175,24 +175,16 @@
 
 	function toChord( chd, root ){
 		let chnm = emStr( root % 12 ) + chd;
+		chnm = chnm.trim();
 		if ( 'ABCDEFG'.includes( chd[0]) ) chnm = chd;
 		const chord = parseChord( chnm.trim() );
-		if ( chord.error==undefined )
+		if ( chord.error==undefined ){
+			let semis = chord.normalized.semitones;
+			let nm = emStr( root % 12 ) + chordName( semis, true );
+			//if ( nm.localeCompare(chnm)!=0 ) err( `toChord: ${chnm} => ${emStr(semis)} => ${nm}`, true)
 			return chord.normalized.semitones.map( x => x + root );
+		}
 		else  err( `parseChord( ${chnm} ) => ${chord.error[0].message}`, true ); 
-
-      /*  root = toKeyNum(root);
-		if ( chd instanceof Array ) 
-			return chd.map( x => x + root );
-		chd = chd.trim();
-		if ( chd=="" ) chd = 'M';
-		for (var i=0; i < chordDefs.length; i++)
-			if ( chd === chordDefs[i].nm )
-				return chordDefs[i].nts.map( x => x + root );
-			
-		msg(`toChord: unrecognized chord "${chd}"`);
-		return chordDefs[0].nts.map( x => x + root );		// default major triad
-		*/
 	}
 	function chordName( chd, astype ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
 		if (astype==undefined) astype == false;
@@ -208,6 +200,7 @@
                 chd.every((val,idx) => val == chordDefs[i].nts[idx] ))
 				    return nt + chordDefs[i].nm;
         }
+		err( `chordName: ${chd} unrecognized` );
 		return 'unrec chord';
 	}
 

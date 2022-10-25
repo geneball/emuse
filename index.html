@@ -104,19 +104,19 @@
   <dialog id="melodyCtrl">
   <div class="title"> Melody <div id="m_close"> <div class="mdiv"><div class="md"></div></div></div></div>
   <div>
-    <div><label class="velocity">Velocity: 
+    <div><label class="range">Velocity: 
       <input type="range" id="m_velocity"   min="0" max="127" value="127">
     </label></div>
     <div><label class="mute"> Mute: 
       <input type="checkbox" id="m_mute">
       <span class="toggle"></span>
     </label></div>
-    <div><label class="octave"> Octave: 
-      <input type="radio" name="m_oct" value="-24"> 2
-      <input type="radio" name="m_oct" value="-12"> 3
-      <input type="radio" name="m_oct" value="0" checked > 4
-      <input type="radio" name="m_oct" value="12"> 5
-      <input type="radio" name="m_oct" value="24"> 6
+    <div><label class="mute"> RhythmOnly: 
+      <input type="checkbox" id="m_rhythmOnly">
+      <span class="toggle"></span>
+    </label></div>
+    <div><label class="range">Octave: 
+      <input type="range" id="m_octave"   min="0" max="6" value="3">
     </label></div>
   </div>
   </dialog>
@@ -129,12 +129,8 @@
       <div><label class="mute"> Mute: 
         <input type="checkbox" id="h_mute">
       </label></div>
-      <div><label class="octave"> Octave: 
-        <input type="radio" name="h_oct" value="-24"> 2
-        <input type="radio" name="h_oct" value="-12" checked > 3
-        <input type="radio" name="h_oct" value="0"> 4
-        <input type="radio" name="h_oct" value="12"> 5
-        <input type="radio" name="h_oct" value="24"> 6
+      <div><label class="range">Octave: 
+        <input type="range" id="h_octave"   min="0" max="6" value="3">
       </label></div>
     </div>
   </dialog>

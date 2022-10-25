@@ -1,5 +1,5 @@
 const { toChord, toKeyNum, toScale, scaleRows } = require("./emuse");
-const { msg } = require('./msg.js');
+const { msg, err } = require('./msg.js');
 
 function trackNames( song ){
   return song.tracks.map( x => x.nm );
@@ -55,7 +55,6 @@ var _trk = {    // state for last decoded track
   root:     0,  // keynum of root
   scale:    0,  // semitones of mode
   evts:     0,  // events
-  chdOff:   0,  // chord notes offset
   Lo:       0,  // lowest event keynum
   Hi:       0,  // highest event keynum
   maxTic:   0,  // maxTic in track
@@ -93,80 +92,80 @@ function trackRowMap(){ // return track row map
   calcRowMap();
   return _trk.rowMap;
 }
-function evalTrack( song, track, playwhich, melOffset, chdOffset ){  // calc events for song & track, Chords/Melody/Both, chord notes offset
+function evalMelody( track ){
+  let tic = 0;
+  let mseq = track.melody.join(' ').split(' ');
+  tic = 0;
+  for ( let n of mseq ){
+    if (n[0]=='|'){
+      let bar = parseFloat(n.substr(1));
+      let mtic = (bar-1) * _trk.barTics;
+      if ( tic != mtic )
+        msg( `melody ${n} at tic ${tic} not ${mtic}` );
+    } else {
+        let [tics,scdeg] = n.split(':');
+        tics = Number(tics);
+        if ( scdeg.toLowerCase() != 'r' ){
+          let n = asNote( scdeg, _trk.scale );
+          if (isNaN(n)) debugger; 
+          _trk.evts.push( { t:tic, nt: n, d:tics } );
+          if ( n < _trk.Lo ) _trk.Lo = n;
+          if ( n > _trk.Hi ) _trk.Hi = n;
+        }
+        tic += tics;
+    }
+    if ( tic > _trk.maxTic ) _trk.maxTic = tic;
+  }
+}
+function evalHarmony( track ){
+  let tpb = _trk.tpb;
+  let tic = 0;
+  let chdseq = track.chords.join(' ').split(' ');
+  for ( let c of chdseq ){
+    c = c.trim();
+    if (c[0]=='|'){
+      let mtic = (parseFloat(c.substr(1))-1) *_trk.barTics;
+      if ( tic != mtic )
+        msg( `chords ${c} at tic ${tic} not ${mtic}` );
+    } else if ( c.indexOf(':')>=0 ) {
+        let [tics,chordname] = c.split(':');
+        tics = Number( tics );
+        if ( chordname != 'r' ){
+          let chd = asChord( chordname, _trk.scale );
+          while ( tics > 0 ){
+            let dur = tics > tpb? tpb : tics; 
+            tics -= dur;
+            _trk.evts.push( { t: Number(tic), chord: chd, d: dur } );
+            for ( let n of chd ){
+              if ( n < _trk.Lo ) _trk.Lo = n;
+              if ( n > _trk.Hi ) _trk.Hi = n;
+            }
+            tic += dur;
+          }
+        } else {
+          tic += tics;
+        }
+    } 
+    else err( `unrecognized harmony: ${c}`)
+  }
+}
+function evalTrack( song, track ){  // calc events for song & track
   _trk.bpb = song.beatsPerBar;
   let tpb = _trk.tpb = Number( song.ticsPerBeat );
   _trk.msTic = 60000 / song.tempo / tpb;
   _trk.barTics = _trk.bpb * tpb;
   _trk.root = toKeyNum( song.root );
   _trk.scale = toScale( song.mode, _trk.root );
-  _trk.melOff = melOffset? melOffset : 0;
-  _trk.chdOff = chdOffset? chdOffset : 0;
-
+ 
   _trk.evts = [];
   let tic = 0;
   _trk.Lo = 127;
   _trk.Hi = 0;
   _trk.maxTic = 0;
-  if (playwhich=='Chords' || playwhich=='Both'){
-    let chdseq = track.chords.join(' ').split(' ');
-    for ( let c of chdseq ){
-      if (c[0]=='|'){
-        let mtic = (parseFloat(c.substr(1))-1) *_trk.barTics;
-        if ( tic != mtic )
-          msg( `chords ${c} at tic ${tic} not ${mtic}` );
-      } else {
-          let [tics,chordname] = c.split(':');
-          tics = Number( tics );
-          if ( chordname != 'r' ){
-            let chd = asChord( chordname, _trk.scale );
-            chd = chd.map( x => x + _trk.chdOff );
-            while ( tics > 0 ){
-              let dur = tics > tpb? tpb : tics; 
-              tics -= dur;
-              _trk.evts.push( { t: Number(tic), chord: chd, d: dur } );
-              for ( let n of chd ){
-                if ( n < _trk.Lo ) _trk.Lo = n;
-                if ( n > _trk.Hi ) _trk.Hi = n;
-              }
-              tic += dur;
-            }
-          } else {
-            tic += tics;
-          }
-      }
-    }
-    if ( tic > _trk.maxTic ) _trk.maxTic = tic;
-  }
-  if (playwhich=='Melody' || playwhich=='Both'){
-    let mseq = track.melody.join(' ').split(' ');
-    tic = 0;
-    for ( let n of mseq ){
-      if (n[0]=='|'){
-        let bar = parseFloat(n.substr(1));
-        let mtic = (bar-1) * _trk.barTics;
-        if ( tic != mtic )
-          msg( `melody ${n} at tic ${tic} not ${mtic}` );
-      } else {
-          let [tics,scdeg] = n.split(':');
-          tics = Number(tics);
-          if ( scdeg.toLowerCase() != 'r' ){
-            let n = asNote( scdeg, _trk.scale ) + _trk.melOff;
-            if (isNaN(n)) debugger; 
-            _trk.evts.push( { t:tic, nt: n, d:tics } );
-            if ( n < _trk.Lo ) _trk.Lo = n;
-            if ( n > _trk.Hi ) _trk.Hi = n;
-          }
-          tic += tics;
-      }
-    }
-    if ( tic > _trk.maxTic ) _trk.maxTic = tic;
-  }
-  //console.log( evts );
 
-  if ( playwhich=='Both' ){
-    _trk.evts.sort( (a,b) => (a.t - b.t) );
-  }
+  evalMelody( track );
+  evalHarmony( track );
+  _trk.evts.sort( (a,b) => (a.t - b.t) );
   return _trk;
 }
 module.exports = { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  };

@@ -1,3 +1,5 @@
+const { err } = require("./msg");
+
 var _chdRoot, _chdChord;        // current chord root & type
 function setChordRoot( ky, noPlay ){
     _chdRoot = ky;  
@@ -10,11 +12,11 @@ function setChordType( nm, noPlay ){
 function playEvent( e ){
     clearKeyMarkers();
     if ( e.nt != undefined ){
-        setNoteOn( e.t, e.nt, e.d, mVel() );
+        setNoteOn( e.t, e.nt, e.d, _plyr.m_velocity );
     }
     if ( e.chord != undefined ){
         for ( let nt of e.chord ){
-        setNoteOn( e.t, nt, e.d, hVel() );
+        setNoteOn( e.t, nt, e.d, _plyr.h_velocity );
         }
     }
     setTimeout( ()=>{ 
@@ -29,10 +31,14 @@ function playChord(){
 
 var _plyr = {
         midi:  null,
-        melodyVelocity: 128,
-        chordVelocity:  48,
-        melodyOffset:   0,
-        chordOffset:    -12,
+        m_velocity:     127,
+        h_velocity:     80,
+        m_octave:       3,
+        h_octave:       2,
+        m_rhythmOnly:   false,  // if true, replace all melody notes with rhythmNote
+        m_rhythmNote:   60, 
+        m_mute:         false,
+        h_mute:         false,   
         stop:           false,
         currBeat:       0,
         currEvtIdx:     0,   // index of next e in _trk.evts[]
@@ -43,24 +49,29 @@ var _plyr = {
         selEl:          null  // currently selected element
     };
 
-
     function resetPlyr( bt ){
         _plyr.stop = false;
         _plyr.notesOn = [];
         if ( bt != undefined ){
-        _plyr.currBeat = bt;
+            _plyr.currBeat = bt;
         }
         _plyr.currEvtIdx = 0;
         _plyr.notesOn = [];
         _plyr.hist = [];
-        _plyr.melodyOffset = Number( radioValue( 'm_oct' )); 
-        _plyr.chordOffset = Number( radioValue( 'h_oct' ) );
-        _plyr.melodyVelocity = Number( m_velocity.value );
-        _plyr.chordVelocity = Number( h_velocity.value );
-        _plyr.melodyMute = m_mute.checked;
-        _plyr.harmonyMute = h_mute.checked;
+        _plyr.m_mute = false;
+        _plyr.h_mute = false;
+
+        _plyr.m_rhythm_only = false;
+        _plyr.rhythmNote = 60;
         clearKeyMarkers();
     }
+    function plyrVal( nm, val ){
+        if ( _plyr[nm] == undefined ) err( `plyrVal: ${nm} undefined`);
+        if ( val != undefined )
+            _plyr[ nm ] = val;
+        return _plyr[ nm ];
+    }
+    
     function asNtChd( e ){
         if ( e.nt != undefined ) return emStr(e.nt);
         if ( e.chord != undefined ) return chordName(e.chord, true);
@@ -103,13 +114,11 @@ var _plyr = {
         _plyr.notesOn.push( { t:tic, nt: nt, d: d });
         midiOutDev().noteOn( 0, nt, vel);
         markKey( nt, true );
-        //addClass( keyspan[ nt ], 'on' );
         addHist( `noteOn(${nt} ${d})`);
     }
-    function setNoteOff( nt, idx ){
+    function setNoteOff( nt ){
         midiOutDev().noteOff( 0, nt );
         markKey( nt, false );
-        // removeClass( keyspan[ nt ], 'on' );
         addHist( `noteOff( ${nt} )`);
     }
     function startPlay( midi ){
@@ -120,38 +129,41 @@ var _plyr = {
         let tic = beat * _song.ticsPerBeat;
     
         function playtic(){
-        addHist( asBar(tic) );
-        setTic( tic );
-        let ntson = _plyr.notesOn;
-        _plyr.notesOn = [];
-        for ( let n of ntson ){
-            let nnt = { t: n.t, nt: n.nt, d: n.d-1 };  // one less tic
-            if (nnt.d==0){
-            setNoteOff( nnt.nt, i );
-            } else {
-            _plyr.notesOn.push( nnt );
+            addHist( asBar(tic) );
+            setTic( tic );
+            let ntson = _plyr.notesOn;
+            _plyr.notesOn = [];
+            for ( let n of ntson ){
+                let nnt = { t: n.t, nt: n.nt, d: n.d-1 };  // one less tic
+                if (nnt.d==0){
+                    setNoteOff( nnt.nt );
+                } else {
+                    _plyr.notesOn.push( nnt );
+                }
             }
-        }
         
-        for ( let i=_plyr.currEvtIdx; i<_trk.evts.length; i++ ){
-            let e = _trk.evts[ i ];
-            if ( e==null || e.t > tic ) break;
-            if ( e.nt != undefined && !_plyr.m_mute ){
-            setNoteOn( tic, e.nt, e.d, _plyr.melodyVelocity );
+            for ( let i=_plyr.currEvtIdx; i<_trk.evts.length; i++ ){
+                let e = _trk.evts[ i ];
+                if ( e==null || e.t > tic ) break;
+                if ( e.nt != undefined && !_plyr.m_mute ){
+                    let nt = e.nt + (_plyr.m_octave-3)*12;
+                    if (_plyr.m_rhythmOnly) nt = _plyr.m_rhythmNote;
+                    setNoteOn( tic, nt, e.d, _plyr.m_velocity );
+                }
+                if ( e.chord != undefined && !_plyr.h_mute  ){
+                    for ( let nt of e.chord ){
+                        nt += (_plyr.h_octave-3)*12;
+                        setNoteOn( tic, nt, e.d, _plyr.h_velocity );
+                    }
+                }
             }
-            if ( e.chord != undefined && !_plyr.h_mute  ){
-            for ( let nt of e.chord ){
-                setNoteOn( tic, nt, e.d, _plyr.chordVelocity );
+            tic++;
+            if ( _plyr.stop || tic > _trk.maxTic ){
+                btnPlay.innerText = 'Play';
+                if ( tic > _trk.maxTic ) _plyr.currBeat = 0;
+            } else {
+                setTimeout( playtic, _trk.msTic );
             }
-            }
-        }
-        tic++;
-        if ( _plyr.stop || tic > _trk.maxTic ){
-            btnPlay.innerText = 'Play';
-            if ( tic > _trk.maxTic ) _plyr.currBeat = 0;
-        } else {
-            setTimeout( playtic, _trk.msTic );
-        }
         }
         setTimeout( playtic, _trk.msTic )
     }
@@ -168,13 +180,9 @@ var _plyr = {
         addClass( el, 'sel' );
     }
   
-    function mVel(){ return _plyr.melodyVelocity; }
-    function hVel(){ return _plyr.chordVelocity; }
-    function mOffset(){ return _plyr.melodyOffset; }
-    function hOffset(){ return _plyr.chordOffset; }
-  
-    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, mVel, hVel, mOffset, hOffset, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
+    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
+        plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
  // const { 
  //       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
- //       mVel, hVel, mOffset, hOffset, playEvent, playChord, selectEl, setNoteOn, setNoteOff
+ //       plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
  //  } = require( './eplyr.js' );

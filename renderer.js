@@ -15,9 +15,10 @@ const et= require('./etrack.js');
 const eg = require("./egene");
 const { saveTrack, findSong, songNames } = eg;
 const { 
-      resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
-      mVel, hVel, mOffset, hOffset, playEvent, playChord, selectEl, setNoteOn, setNoteOff
+       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
+       plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
 } = require( './eplyr.js' );
+
 
 function loadSelect( sel, nms ){
   if ( sel==null )  debugger;
@@ -54,13 +55,17 @@ const selEvts     = document.getElementById('selectEvents');
 const adjMelody   = document.getElementById("adjMelody");
 const m_dialog    = document.getElementById( "melodyCtrl" );
 const m_velocity  = document.getElementById('m_velocity');
+const m_octave    = document.getElementById('m_octave');
 const m_mute      = document.getElementById('m_mute');
+const m_rhythmOnly= document.getElementById('m_rhythmOnly');
+
 const m_close     = document.getElementById('m_close');
 
 // harmony dialog
 const adjHarmony  = document.getElementById("adjHarmony");
 const h_dialog    = document.getElementById( "harmonyCtrl" );
 const h_velocity  = document.getElementById('h_velocity');
+const h_octave    = document.getElementById('h_octave');
 const h_mute      = document.getElementById('h_mute');
 const h_close     = document.getElementById('h_close');
 
@@ -152,7 +157,7 @@ function evalTrack(){     // evaluate new track
   resetPlyr( 0 );
   _song = eg.findSong( selSong.value );
   _track = et.findTrack( _song, selTrk.value );
-  _trk = et.evalTrack( _song, _track, 'Both', mOffset(), hOffset() ); 
+  _trk = et.evalTrack( _song, _track ); 
   showEventList();
 
   var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord) : emStr(x.nt)} * ${x.d}` );
@@ -162,29 +167,38 @@ function evalTrack(){     // evaluate new track
 
 function initDialogs(){
   // Melody/Harmony Adjust dialogues
-  var m_octs = document.querySelectorAll('input[type=radio][name="m_oct"]');
-  m_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
+ // var m_octs = document.querySelectorAll('input[type=radio][name="m_oct"]');
+//  m_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
   m_velocity.addEventListener("change", function() {
-    evalTrack();
+    plyrVal( 'm_velocity', m_velocity.value );
+  });
+  m_octave.addEventListener("change", function() {
+    plyrVal( 'm_octave', m_octave.value );
   });
   adjMelody.addEventListener('click', ev => {
     m_dialog.showModal();
   });
   m_mute.addEventListener('change', (ev) =>{
-    _plyr.m_mute = m_mute.checked;
+    plyrVal( 'm_mute', m_mute.checked );
+  });
+  m_rhythmOnly.addEventListener('change', (ev) =>{
+    plyrVal( 'm_rhythmOnly', m_rhythmOnly.checked );
   });
   m_close.addEventListener('click', (ev) =>{ m_dialog.close(); })
 
-  var h_octs = document.querySelectorAll('input[type=radio][name="h_oct"]');
-  h_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
-  h_velocity.addEventListener("change", function() {
-    evalTrack();
-  });
-  adjHarmony.addEventListener('click', ev => {
+ // var h_octs = document.querySelectorAll('input[type=radio][name="h_oct"]');
+ // h_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
+ h_velocity.addEventListener("change", function() {
+  plyrVal( 'h_velocity', h_velocity.value );
+});
+h_octave.addEventListener("change", function() {
+  plyrVal( 'h_octave', h_octave.value );
+});
+adjHarmony.addEventListener('click', ev => {
     h_dialog.showModal();
   });
   h_mute.addEventListener('change', (ev) =>{
-    _plyr.h_mute = h_mute.checked;
+    plyrVal( 'h_mute', h_mute.checked );
   });
   h_close.addEventListener('click', (ev) =>{ h_dialog.close(); })
 }
@@ -230,6 +244,14 @@ var _ntcls = {
   '1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
   '4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
 };
+var _chdcls = {
+  '1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
+  '4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
+};
+var _rowcls = {
+  '1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
+  '4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
+};
 
 var _rowdefs = {};
 function showEventList(){     // build rows display from _trk.evts
@@ -247,13 +269,8 @@ function showEventList(){     // build rows display from _trk.evts
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
     let rw = rows[i];
     let r = `r${rw.rw}`;
-    if ( rw.inscale ){   // nt i is in scale
-      html += `<div id="rw${rw.rw}" class="${r} rw sp${rw.deg}"></div>`;
-      _rowdefs[r] = { nt: i, deg: rw.deg, k:rw.key };
-    } else {
-      html += `<div id="rw${rw.rw}" class="${r} rw spx"></div>`;
-      _rowdefs[r] = { nt: i, deg: rw.deg, k:rw.key };
-    }
+    html += `<div id="rw${rw.rw}" class="${r} rw ${_rowcls[rw.deg]}"></div>`;
+    _rowdefs[r] = { nt: i, deg: rw.deg, k:rw.key };
     lblRw = rw.rw+1;
   }
   divRows.innerHTML = html;
@@ -311,7 +328,7 @@ function showEventList(){     // build rows display from _trk.evts
          let nt = e.chord[ i ];
          let rw = rows[ nt ];
       //   if (rw==undefined) rw = { rw:-1, deg: -1};
-         chtml += `<div id="chd${ccnt}-${i}" class="r${rw.rw} rw ${_ntcls[rw.deg]} t${e.t} ln${e.d} e${iE}"></div>`;
+         chtml += `<div id="chd${ccnt}-${i}" class="r${rw.rw} rw ${_chdcls[rw.deg]} t${e.t} ln${e.d} e${iE}"></div>`;
           let chdname = chordName( e.chord, true );
           if ( chdname != lastChd ){
             lastChd = chdname;
