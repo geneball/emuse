@@ -51,23 +51,19 @@ const selSong     = document.getElementById('selectSong');
 const selTrk      = document.getElementById('selectTrack');
 const selEvts     = document.getElementById('selectEvents');
 
-// melody dialog
-const adjMelody   = document.getElementById("adjMelody");
-const m_dialog    = document.getElementById( "melodyCtrl" );
+// melody options
 const m_velocity  = document.getElementById('m_velocity');
 const m_octave    = document.getElementById('m_octave');
-const m_mute      = document.getElementById('m_mute');
-const m_rhythmOnly= document.getElementById('m_rhythmOnly');
+const m_tune      = document.getElementById('m_tune');
+const m_rhythm= document.getElementById('m_rhythm');
+// const m_rhythm    = document.getElementById('m_rhythm');
+// const m_tune    = document.getElementById('m_tune');
 
-const m_close     = document.getElementById('m_close');
-
-// harmony dialog
-const adjHarmony  = document.getElementById("adjHarmony");
-const h_dialog    = document.getElementById( "harmonyCtrl" );
+// harmony options
 const h_velocity  = document.getElementById('h_velocity');
 const h_octave    = document.getElementById('h_octave');
 const h_mute      = document.getElementById('h_mute');
-const h_close     = document.getElementById('h_close');
+// const h_close     = document.getElementById('h_close');
 
 const btnPlay     = document.getElementById('btnPlay');
 const btnSave     = document.getElementById('btnSave');
@@ -167,40 +163,28 @@ function evalTrack(){     // evaluate new track
 
 function initDialogs(){
   // Melody/Harmony Adjust dialogues
- // var m_octs = document.querySelectorAll('input[type=radio][name="m_oct"]');
-//  m_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
   m_velocity.addEventListener("change", function() {
     plyrVal( 'm_velocity', m_velocity.value );
   });
   m_octave.addEventListener("change", function() {
     plyrVal( 'm_octave', m_octave.value );
   });
-  adjMelody.addEventListener('click', ev => {
-    m_dialog.showModal();
+  m_tune.addEventListener('change', (ev) =>{
+    plyrVal( 'm_tune', m_tune.checked );
   });
-  m_mute.addEventListener('change', (ev) =>{
-    plyrVal( 'm_mute', m_mute.checked );
+  m_rhythm.addEventListener('change', (ev) =>{
+    plyrVal( 'm_rhythm', m_rhythm.checked );
   });
-  m_rhythmOnly.addEventListener('change', (ev) =>{
-    plyrVal( 'm_rhythmOnly', m_rhythmOnly.checked );
+ 
+  h_velocity.addEventListener("change", function() {
+    plyrVal( 'h_velocity', h_velocity.value );
   });
-  m_close.addEventListener('click', (ev) =>{ m_dialog.close(); })
-
- // var h_octs = document.querySelectorAll('input[type=radio][name="h_oct"]');
- // h_octs.forEach( radio => radio.addEventListener('change', () => { evalTrack(); }));
- h_velocity.addEventListener("change", function() {
-  plyrVal( 'h_velocity', h_velocity.value );
-});
-h_octave.addEventListener("change", function() {
-  plyrVal( 'h_octave', h_octave.value );
-});
-adjHarmony.addEventListener('click', ev => {
-    h_dialog.showModal();
+  h_octave.addEventListener("change", function() {
+    plyrVal( 'h_octave', h_octave.value );
   });
   h_mute.addEventListener('change', (ev) =>{
     plyrVal( 'h_mute', h_mute.checked );
   });
-  h_close.addEventListener('click', (ev) =>{ h_dialog.close(); })
 }
 btnPlay.addEventListener("click", function(){     // Play
   if ( btnPlay.innerText=='Play' ){

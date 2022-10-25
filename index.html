@@ -62,37 +62,34 @@
 	  </div>
     </div>
 
-    <button id="btnPlay"  class="blk">Play</button>
+    <span class="grp"> &nbsp; <br>
+    <button id="btnPlay"  class="blk">Play</button> <br>
     <button id="btnSave" class="blk">Save</button>
+    </span>
 
-  <label class="blk"> Song:<br>
-      <select id="selectSong">     </select> 
-  </label> 
+  <span class="grp"> Song & Track:<br>
+      <select id="selectSong"> </select> <br>
+      <select id="selectTrack"> </select> 
+  </span> 
 
-  <label class="blk"> Track: <br>
-      <select id="selectTrack">      </select> 
-  </label> 
+  <span class="grp"> <span class="hdr"> Melody</span> <br>
+      <label class="range">Vel:   <input type="range" id="m_velocity"   min="0" max="127" value="127">  </label>  
+      <label class="chk"> Tune:   <input type="checkbox" id="m_tune"> </label>  <br>
+      <label class="range">Oct:   <input type="range" id="m_octave"   min="0" max="6" value="3"> </label>
+      <label class="chk"> Rhythm: <input type="checkbox" id="m_rhythm"> </label>
+  </span>
 
-  <label class="blk"> Melody<br>
-    <button id="adjMelody"> Adjust </button>
-  </label>
+  <span class="grp"> <span class="hdr">Harmony </span> <br>
+     <label class="velocity">Vel: <input type="range" id="h_velocity"   min="0" max="127" value="80">  </label>
+      <label class="chk"> Mute:  <input type="checkbox" id="h_mute">  </label> <br>
+      <label class="range">Oct:   <input type="range" id="h_octave"   min="0" max="6" value="3"> </label>
+  </span>
 
-  <label class="blk">Harmony <br>
-    <button id="adjHarmony"> Adjust </button>
-  </label>
-
-  <label class="blk"> Key: <br>
-    <select id="selectRoot" name="selRoot"> </select>
-  </label>
-
-  <label class="blk"> Mode: <br>
-    <select id="selectMode" >  </select>
-  </label>
-
-  <label class="blk"> Events: <br>
-     <select id="selectEvents">  </select>
-  </label>
-  
+  <span class="grp"> <span class="hdr">Key & Mode</span>  <br>
+    <select id="selectRoot"> </select>
+    <select id="selectMode"> </select> <br>
+    <label class="blk"> Evts:  <select id="selectEvents">  </select>  </label>
+  </span>
   <span id="info" class="info"> info </span>
 
   <div id="scaleDegrees"> <button class="on">1</button> <button>1#</button> <button>2</button></div>
@@ -104,34 +101,17 @@
   <dialog id="melodyCtrl">
   <div class="title"> Melody <div id="m_close"> <div class="mdiv"><div class="md"></div></div></div></div>
   <div>
-    <div><label class="range">Velocity: 
-      <input type="range" id="m_velocity"   min="0" max="127" value="127">
-    </label></div>
-    <div><label class="mute"> Mute: 
-      <input type="checkbox" id="m_mute">
-      <span class="toggle"></span>
-    </label></div>
-    <div><label class="mute"> RhythmOnly: 
-      <input type="checkbox" id="m_rhythmOnly">
-      <span class="toggle"></span>
-    </label></div>
-    <div><label class="range">Octave: 
-      <input type="range" id="m_octave"   min="0" max="6" value="3">
-    </label></div>
+      <label class="mute"> Mute:  <input type="checkbox" id="m_mute"> </label>
+      <label class="range">Vel:   <input type="range" id="m_velocity"   min="0" max="127" value="127">  </label>
+    <br>
+      <label class="range">Oct:   <input type="range" id="m_octave"   min="0" max="6" value="3"> </label>
+      <label class="mute"> Rhythm: <input type="checkbox" id="m_rhythmOnly"> </label>
   </div>
   </dialog>
   <dialog id="harmonyCtrl">
     <div class="title"> Harmony <button class="hdrclose" id="h_close"> x </button></div>
     <div>
-      <div><label class="velocity">Velocity: 
-        <input type="range" id="h_velocity"   min="0" max="127" value="80">
-      </label></div>
-      <div><label class="mute"> Mute: 
-        <input type="checkbox" id="h_mute">
-      </label></div>
-      <div><label class="range">Octave: 
-        <input type="range" id="h_octave"   min="0" max="6" value="3">
-      </label></div>
+
     </div>
   </dialog>
   </body>

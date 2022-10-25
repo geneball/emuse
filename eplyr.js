@@ -1,4 +1,4 @@
-const { err } = require("./msg");
+const { err, msg } = require("./msg");
 
 var _chdRoot, _chdChord;        // current chord root & type
 function setChordRoot( ky, noPlay ){
@@ -35,9 +35,9 @@ var _plyr = {
         h_velocity:     80,
         m_octave:       3,
         h_octave:       2,
-        m_rhythmOnly:   false,  // if true, replace all melody notes with rhythmNote
+        m_rhythm:       true,  // if false, play all melody notes for 1 beat
         m_rhythmNote:   60, 
-        m_mute:         false,
+        m_tune:         true,  // if false, play root for all notes
         h_mute:         false,   
         stop:           false,
         currBeat:       0,
@@ -58,17 +58,19 @@ var _plyr = {
         _plyr.currEvtIdx = 0;
         _plyr.notesOn = [];
         _plyr.hist = [];
-        _plyr.m_mute = false;
-        _plyr.h_mute = false;
+        // _plyr.m_tune = true;
+        // _plyr.h_mute = false;
 
-        _plyr.m_rhythm_only = false;
+        // _plyr.m_rhythm = true;
         _plyr.rhythmNote = 60;
         clearKeyMarkers();
     }
     function plyrVal( nm, val ){
         if ( _plyr[nm] == undefined ) err( `plyrVal: ${nm} undefined`);
-        if ( val != undefined )
+        if ( val != undefined ){
             _plyr[ nm ] = val;
+            msg( `${nm} = ${val}` );
+        }
         return _plyr[ nm ];
     }
     
@@ -145,10 +147,12 @@ var _plyr = {
             for ( let i=_plyr.currEvtIdx; i<_trk.evts.length; i++ ){
                 let e = _trk.evts[ i ];
                 if ( e==null || e.t > tic ) break;
-                if ( e.nt != undefined && !_plyr.m_mute ){
+                if ( e.nt != undefined && (_plyr.m_tune || _plyr.m_rhythm) ){
                     let nt = e.nt + (_plyr.m_octave-3)*12;
-                    if (_plyr.m_rhythmOnly) nt = _plyr.m_rhythmNote;
-                    setNoteOn( tic, nt, e.d, _plyr.m_velocity );
+                    if (!_plyr.m_tune) nt = _plyr.m_rhythmNote;     // no tune? play all notes as root
+                    let dur = e.d;
+                    if (!_plyr.m_rhythm) dur = tpb;     // no rhythm? 1 beat per note
+                    setNoteOn( tic, nt, dur, _plyr.m_velocity );
                 }
                 if ( e.chord != undefined && !_plyr.h_mute  ){
                     for ( let nt of e.chord ){

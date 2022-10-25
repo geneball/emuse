@@ -19,85 +19,44 @@
         --C16: #FFFAC8;      --C17: #AAFFC3;
         --C19: #DCEBFF;      --C20: #EEEEEE;
         --C21: #DDDDDD;
-     }
+}
+
      body { background-color:  rgb(125, 125, 156); }
-     .inner { position:absolute; bottom:0; left:0; width:16px; 
-             text-align:center;  border-radius: 50%;
-            }
-          input[type=range] {
-               width: 60px;
-               margin: 1;
-           }
+
+     .inner { position:absolute; bottom:0; left:0; width:16px; text-align:center;  border-radius: 50%;  }
+     input[type=range] {  width: 60px;  margin: 1;  }
            
-           input[type=range]::-webkit-slider-thumb {
-               -webkit-appearance: none;
-               border: none;
-               height: 2px;
-               width: 2px;
-               border-radius: 50%;
-               background: goldenrod;
-               margin-top: -2px;
-           }
+     input[type=range]::-webkit-slider-thumb {  -webkit-appearance: none;
+           border: none; height: 2px;  width: 2px;  border-radius: 50%;  background: goldenrod;   margin-top: -2px;   }
            
-           input[type=range]:focus {
-               outline: none;
-           }
+     input[type=range]:focus {    outline: none;     }
            
-           input[type=range]:focus::-webkit-slider-runnable-track {
-               background: #ccc;
-           }
-     #m_close {
-     width: 25px;
-     height: 25px;
-     background-color: red;
-     border: 1px solid black;
-     }
-     
-     .mdiv {
-     height: 25px;
-     width: 2px;
-     margin-left: 12px;
-     background-color: black;
-     transform: rotate(45deg);
-     Z-index: 1;
-     }
-     
-     .md {
-     height: 25px;
-     width: 2px;
-     background-color: black;
-     transform: rotate(90deg);
-     Z-index: 2;
-     }  
+     input[type=range]:focus::-webkit-slider-runnable-track {       background: #ccc;    }
+
 
      #piano          { font-size: x-small; }
-     .on { background-color: #e6294b; }
-     select { width:8em; }
-     btn{ border: 1px solid black; }
+     .on             { background-color: #e6294b; }
+ 
+     btn             { border: 1px solid black; }
+
+     #selectSong     { width:8em; }
+     #selectTrack    { width:8em; }
      #selectRoot     { width:3em; }
      #selectMode     { width:4em; }
-     #selectTrack    { width:5em; }
-     #selWhich       { width:5em; }
+
      #selectChord    { width:5em; }
-     #selMelOff      { width:4em; }
-     #selChdOff      { width:4em; }
-     #selMelVel      { width:4em; }
-     #selChdVel      { width:4em; }
-     #bars { position:relative; border: 1px solid white; width:1000px; height:320px;
-            overflow: auto; }
- /*    .sel { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 6px, white 6px, black 8px, black 8px); }
-     div.sel div { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 6px, white 6px, black 8px, black 8px); }
- */
-     .sel { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 7px, white 7px ); }
+     #bars           { position:relative; border: 1px solid white; width:1000px; height:320px;  overflow: auto; }
+     .sel            { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 7px, white 7px ); }
    
- /*    .sel        { border: 1px solid white; } */
-     div.sel div { border: 1px solid black; }
-     .root { background: var(--C17); }
-      .tic { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
-     .bar { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
-     .lbl { width: 5000px; height:40px; background-color: white;  font-size: x-small; }
-     .info{ width: 400px; display: inline-block; }
-     .blk{ display: inline-block; font-weight: bold; text-align: center;}
+     div.sel div     { border: 1px solid black; }
+     .root           { background: var(--C17); }
+     .tic            { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
+     .bar            { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
+     .lbl            { width: 5000px; height:40px; background-color: white;  font-size: x-small; }
+     .info           { width: 400px; display: inline-block; }
+     .blk            { display: inline-block; text-align: center;}
+     .hdr            { font-weight: bold; text-align: center;}
+     .grp            { display: inline-block; border: 1px solid black; }
 
      .bt1 { width:10px; height:10px; z-index: 2; border: 1px solid lightgray; }
      .bt2 { width:20px; height:10px; z-index: 2; border: 1px solid lightgray;}
