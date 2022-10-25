@@ -317,7 +317,7 @@ function saveTrack( song, trk, _trk ){
     genCodons( gene );
     delete gene.orig_events;        // since gene.evts matches
 
-    jetpack.write( `${song.nm}_${trk.nm}_gene.json`, gene )
+    data.write( `${song.nm}_${trk.nm}_gene.json`, gene )
 }
 var songs = [];
 var song_paths = [];

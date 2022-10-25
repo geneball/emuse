@@ -181,7 +181,8 @@
 		if ( chord.error==undefined ){
 			let semis = chord.normalized.semitones;
 			let nm = emStr( root % 12 ) + chordName( semis, true );
-			//if ( nm.localeCompare(chnm)!=0 ) err( `toChord: ${chnm} => ${emStr(semis)} => ${nm}`, true)
+			const revchord = parseChord( nm.trim() );
+			if ( !revchord.normalized.semitones.every( (v,i) => semis[i]===v ))  err( `toChord: ${chnm} => ${semis} => ${nm} => ${revchord.normalized.semitones}`, false)
 			return chord.normalized.semitones.map( x => x + root );
 		}
 		else  err( `parseChord( ${chnm} ) => ${chord.error[0].message}`, true ); 
@@ -213,7 +214,6 @@
 			if ( chd[i] > 11 ) chd[i] -= 12;
 		}
 		let chd2 = chd.sort( (a,b) => a-b );
-		debugger;
 
 		err( `chordName: ${chd} => ${chd2}` );
 		return chordName( chd2, astype );
