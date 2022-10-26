@@ -42,46 +42,47 @@
 	// I     ii   iii IV    V     vi    vii   -- scale degree
 	const modeDefs = 
 	[
-	 { scale:[ 0, 2, 4, 5, 7, 9, 11, 12 ], nm: 'Ionian',            },
-	 { scale:[ 0, 2, 4, 5, 7, 9, 11, 12 ], nm: 'Major',             },
-	 { scale:[ 0, 2, 3, 5, 7, 9, 10, 12 ], nm: 'Dorian'             },
-	 { scale:[ 0, 1, 3, 5, 7, 8, 10, 12 ], nm: 'Phrygian'           },
-	 { scale:[ 0, 2, 4, 6, 7, 9, 11, 12 ], nm: 'Lydian'             },
-	 { scale:[ 0, 2, 4, 5, 7, 9, 10, 12 ], nm: 'Mixolydian'         },
-	 { scale:[ 0, 2, 3, 5, 7, 8, 10, 12 ], nm: 'Aeolian'            },
-	 { scale:[ 0, 2, 3, 5, 7, 8, 10, 12 ], nm: 'Minor'              },
-	 { scale:[ 0, 1, 3, 5, 6, 8, 10, 12 ], nm: 'Locrian'            },
-	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], nm: 'Harmonic minor'     },
-	 { scale:[ 0, 2, 3, 5, 7, 9, 11, 12 ], nm: 'Melodic minor'      },
+	 { scale:[ 0, 2, 4, 5, 7,  9, 11 ], nm: 'Ionian',            },  	// I  + Ionian & 6 rotations
+	 { scale:[ 0, 2, 4, 5, 7,  9, 11 ], nm: 'Major',             },	 	// I
+	 { scale:[ 0, 2, 3, 5, 7,  9, 10 ], nm: 'Dorian'             },	 	// II
+	 { scale:[ 0, 1, 3, 5, 7,  8, 10 ], nm: 'Phrygian'           },  	// III
+	 { scale:[ 0, 2, 4, 6, 7,  9, 11 ], nm: 'Lydian'             },  	// IV
+	 { scale:[ 0, 2, 4, 5, 7,  9, 10 ], nm: 'Mixolydian'         },  	// V
+	 { scale:[ 0, 2, 3, 5, 7,  8, 10 ], nm: 'Aeolian'            },  	// VI
+	 { scale:[ 0, 2, 3, 5, 7,  8, 10 ], nm: 'Minor'              },  	// VI
+	 { scale:[ 0, 1, 3, 5, 6,  8, 10 ], nm: 'Locrian'            },  	// VII
+	
+	 { scale:[ 0, 2, 3, 5, 7,  9, 11 ], nm: 'Melodic minor'      },		// I  + 6 rotations
+	 { scale:[ 0, 1, 3, 5, 7,  9, 10 ], nm: 'Phrygian ♯6' 		 },		// II
+	 { scale:[ 0, 2, 4, 6, 8,  9, 11 ], nm: 'Lydian augmented' 	 },		// III
+	 { scale:[ 0, 2, 4, 6, 7,  9, 11 ], nm: 'Lydian dominant' 	 },		// IV
+	 { scale:[ 0, 2, 4, 5, 7,  9, 11 ], nm: 'Aeolian dominant' 	 },		// V
+	 { scale:[ 0, 2, 3, 5, 6,  8, 10 ], nm: 'Half-diminished' 	 },		// VI
+	 { scale:[ 0, 1, 3, 4, 6,  8, 10 ], nm: 'Altered dominant' 	 },		// VII
 
+	 { scale:[ 0, 2, 3, 5, 7,  8, 11 ], nm: 'Harmonic minor'     },		// I  + 6 rotations
+ 	 { scale:[ 0, 1, 3, 5, 6,  9, 10 ], nm: 'Locrian ♯6' 		 },		// II
+	 { scale:[ 0, 2, 4, 5, 8,  9, 11 ], nm: 'Ionian ♯5' 		 },		// III
+	 { scale:[ 0, 2, 3, 6, 7,  9, 10 ], nm: 'Ukrainian Dorian' 	 },		// IV
+	 { scale:[ 0, 1, 4, 5, 7,  8, 10 ], nm: 'Phrygian Dominant'  },		// V	 
+	 { scale:[ 0, 3, 4, 6, 7,  9, 11 ], nm: 'Lydian ♯2' 		 },		// VI
+	 { scale:[ 0, 1, 3, 4, 6,  8,  9 ], nm: 'Altered Diminished' },		// VII
 
-	 { scale:[ 0, 2, 3, 5, 7, 8, 11, 12 ], 	nm: 'Harmonic minor' }, // 1 2 ♭3 4 5 ♭6 7
-	 { scale:[ 0, 1, 4, 6, 8, 9, 11, 12 ], 		nm: 'Phryrgian Dominant' },
-	 { scale:[ 0, 2, 3, 6, 8, 10, 12 ], 	nm: 'Ascending melodic minor' },
-	 { scale:[ 0, 1, 3, 6, 8, 10, 11 ], 	nm: 'Phrygian ♯6' },
-	 { scale:[ 0, 2, 4, 7, 9, 10, 12 ], 	nm: 'Lydian augmented' },
-	{ scale:[ 0, 2, 4, 7, 8, 10, 11 ], 		nm: 'Lydian dominant' },
-	{ scale:[ 0, 2, 4, 6, 8, 9, 11 ], 		nm: 'Aeolian dominant' },
-	{ scale:[ 0, 2, 3, 6, 7, 9, 11 ], 		nm: 'Half-diminished' },
-	{ scale:[ 0, 1, 3, 6, 7, 10, 11 ], 		nm: 'Locrian ♯6' },
-	{ scale:[ 0, 2, 4, 6, 9, 10, 12 ], 		nm: 'Ionian ♯5' },
-	{ scale:[ 0, 2, 3, 7, 8, 10, 11 ], 		nm: 'Ukrainian Dorian' },
-	{ scale:[ 0, 3, 4, 7, 8, 10, 12 ], 		nm: 'Lydian ♯2' },
-	{ scale:[ 0, 1, 3, 5, 7, 9, 12 ], 		nm: 'Altered Diminished' },
-	{ scale:[ 0, 2, 4, 6, 8, 9, 12 ], 		nm: 'Harmonic major' },
-	{ scale:[ 0, 2, 3, 6, 7, 10, 11 ], 		nm: 'Dorian ♭5' },
-	{ scale:[ 0, 1, 3, 5, 8, 9, 11 ], 		nm: 'Phrygian ♭4' },
-	{ scale:[ 0, 2, 3, 7, 8, 10, 12 ], 		nm: 'Lydian ♭3' },
-	{ scale:[ 0, 1, 4, 6, 8, 10, 11 ], 		nm: 'Mixolydian ♭2' },
-	{ scale:[ 0, 3, 4, 7, 9, 10, 12 ], 		nm: 'Lydian Augmented ♯2' },
-	{ scale:[ 0, 1, 3, 6, 7, 9, 12 ], 		nm: 'Locrian 7' },
-	{ scale:[ 0, 1, 4, 6, 8, 9, 12 ], 		nm: 'Double harmonic' },
-	{ scale:[ 0, 3, 4, 7, 8, 11, 12 ], 		nm: 'Lydian ♯2 ♯6' },
-	{ scale:[ 0, 1, 3, 5, 8, 9, 10 ], 		nm: 'Phrygian ♭♭7 ♭4' },
-	{ scale:[ 0, 2, 3, 7, 8, 9, 12  ], 		nm: 'Hungarian minor' },
-	{ scale:[ 0, 1, 4, 6, 7, 10, 11 ], 		nm: 'Locrian ♮6 ♮3' },
-	{ scale:[ 0, 3, 4, 6, 9, 10, 12 ], 		nm: 'Ionian ♯5 ♯2' }, //  0, 2, 4, 5, 7, 9, 11, 12 
-	{ scale:[ 0, 1, 2, 6, 7, 9, 10 ], 		nm: 'Locrian ♭♭3 ♭♭7' }
+	 { scale:[ 0, 2, 4, 5, 7,  8, 11 ], nm: 'Harmonic major' 	 },		// I  + 6 rotations
+	 { scale:[ 0, 2, 3, 5, 6,  9, 10 ], nm: 'Dorian ♭5' 		 },		// II
+	 { scale:[ 0, 1, 3, 4, 7,  8, 10 ], nm: 'Phrygian b4'  		 },		// III	 
+	 { scale:[ 0, 2, 3, 6, 7,  9, 11 ], nm: 'Lydian ♭3' 		 },		// IV
+	 { scale:[ 0, 1, 4, 5, 7,  9, 10 ], nm: 'Mixolydian ♭2' 	 },		// V
+	 { scale:[ 0, 3, 4, 6, 8,  9, 11 ], nm: 'Lydian Augmented ♯2'},		// VI
+	 { scale:[ 0, 1, 3, 5, 6,  8,  9 ], nm: 'Locrian ♭♭7' 		 },		// VII
+
+	 { scale:[ 0, 1, 4, 5, 7,  8, 11 ], nm: 'Double harmonic' 	 },		// I  + 6 rotations
+	 { scale:[ 0, 3, 4, 6, 7, 10, 11 ], nm: 'Lydian ♯2 ♯6' 		 },		// II
+	 { scale:[ 0, 1, 3, 4, 7,  8,  9 ], nm: 'Phrygian ♭♭7 ♭4' 	  },	// III
+	 { scale:[ 0, 2, 3, 6, 7,  8, 11 ], nm: 'Hungarian minor' 	 },		// IV
+	 { scale:[ 0, 1, 4, 5, 6,  9, 10 ], nm: 'Locrian ♮6 ♮3' 	 },		// V
+	 { scale:[ 0, 3, 4, 5, 8,  9, 11 ], nm: 'Ionian ♯5 ♯2' 		 }, 	// VI
+	 { scale:[ 0, 1, 2, 5, 6,  8,  9 ], nm: 'Locrian ♭♭3 ♭♭7' 	 }		// VII
 	];
     function modeNames( ){   return modeDefs.map( x => x.nm );    }
 	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
