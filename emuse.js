@@ -84,6 +84,24 @@
 	 { scale:[ 0, 3, 4, 5, 8,  9, 11 ], nm: 'Ionian ♯5 ♯2' 		 }, 	// VI
 	 { scale:[ 0, 1, 2, 5, 6,  8,  9 ], nm: 'Locrian ♭♭3 ♭♭7' 	 }		// VII
 	];
+	function initModeDegrees(){
+		for ( let sc of modeDefs ){
+			let sdg = [];
+			let semi = 0, sd = 0, prSharp = false;
+			for ( let i=0; i<12; i++ ){
+				if ( semi < sc.scale.length && sc.scale[semi]===i ){		// 0 => '1'  2 => '2'
+					sd++;
+					sdg.push( `${sd}` );
+					semi++;
+					prSharp = false;
+				} else { 						// 1 => '1#'
+					sdg.push( prSharp? `${sd}##` : `${sd}#` );		// e.g. 8, 11  => 6 6# 6## 7
+					prSharp = true;
+				}
+			}
+			sc.scDeg = sdg;
+		}
+	}
     function modeNames( ){   return modeDefs.map( x => x.nm );    }
 	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
 		let rw = [], sc = 0, r = 0;
@@ -102,6 +120,9 @@
 		return rw;
 	}
 	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
+		if ( modeDefs[0].scDeg == undefined )
+			initModeDegrees();
+
         if (root==undefined) root = 0;
 		if ( md===undefined ) return modeDefs[0];
 		if ( md instanceof Array && md.length >= 8 ) 
@@ -210,15 +231,18 @@
 		if ( idx >= 0 )  
 			return nt + chordDefs[idx].nm;
 
+		let adj = false;
 		for ( let i=0; i < chd.length; i++ ){
-			if ( chd[i] < 0 )  chd[i] += 12;
-			if ( chd[i] > 11 ) chd[i] -= 12;
+			if ( chd[i] < 0 )  { chd[i] += 12; adj = true; }
+			if ( chd[i] > 11 ) { chd[i] -= 12; adj = true; }
 		}
-		let chd2 = chd.sort( (a,b) => a-b );
+		if ( adj ){
+			let chd2 = chd.sort( (a,b) => a-b );
+			return chordName( chd2, astype );
+		}
 
-		err( `chordName: ${chd} => ${chd2}` );
-		return chordName( chd2, astype );
-	//	return 'unrec chord';
+		err( `chordName: ${chd} unrecognized` );
+		return 'unrec chord';
 	}
 
 	const scaleDegreeDefs = [

@@ -1,13 +1,40 @@
-const { err, msg } = require("./msg");
+const { toChord } = require("./emuse");
+const { err, msg, nameChord } = require("./msg");
 
-var _chdRoot, _chdChord;        // current chord root & type
+var _chdRoot, _chdChord, _chdInv;        // current chord root & type
 function setChordRoot( ky, noPlay ){
     _chdRoot = ky;  
+    _chdInv = 0;        // no inversion
     if (!noPlay) playChord();
 }
 function setChordType( nm, noPlay ){
     _chdChord = nm;
+    _chdInv = 0;
     if (!noPlay) playChord();
+}
+function arrayRotate(arr, count) {
+    count -= arr.length * Math.floor(count / arr.length);
+    arr.push.apply(arr, arr.splice(0, count));
+    return arr;
+}
+function adjInversion( inc ){
+    _chdInv += inc;
+    let chd = toChord( _chdChord, _chdRoot );
+   // if ( Math.abs(_chdInv) >= chd.length ) _chdInv = 0;
+
+    playChord();   
+    return _chdInv;
+}
+function invertChord( chd ){   
+    let len = chd.length;
+    for ( let i=0; i < Math.abs(_chdInv); i++ ){
+        let idx = i % len;
+        if ( _chdInv < 0 )
+            chd[ len-1-idx ] -= 12;
+        else
+            chd[ idx ] += 12;
+    }
+    return chd.sort( );
 }
 function playEvent( e ){
     clearKeyMarkers();
@@ -24,8 +51,9 @@ function playEvent( e ){
         }, 800 );
 }
 function playChord(){
-    chd = toChord( _chdChord, _chdRoot );
-    msg( emStr(chd) );
+    let chd = toChord( _chdChord, _chdRoot );
+    chd = invertChord( chd );
+    nameChord( `${emStr(chd)} = ${chordName(chd, true)}` );
     playEvent( { t:0, chord: chd, d: 800 } );
 }
 
@@ -184,9 +212,9 @@ var _plyr = {
         addClass( el, 'sel' );
     }
   
-    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
+    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion,
         plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
  // const { 
- //       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
+ //       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, invertChord,
  //       plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
  //  } = require( './eplyr.js' );

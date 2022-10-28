@@ -16,6 +16,11 @@ function status( s ){
   stat.innerText = s;
 }
 
-module.exports = { msg, status, err }; 
-// const { msg, status, err } = require("./renderer.js");
+function nameChord( s ){
+  let stat = document.getElementById( 'chordName' );
+  stat.innerText = s;
+}
+
+module.exports = { msg, status, nameChord, err }; 
+// const { msg, status, nameChord, err } = require("./renderer.js");
 

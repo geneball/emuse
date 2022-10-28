@@ -1,6 +1,6 @@
 
 
-const { msg, status, err } = require("./msg.js");
+const { msg, status, nameChord, err } = require("./msg.js");
 const { shell } = require('electron');
 //const { info } = require('jzz');
 const { 
@@ -15,7 +15,7 @@ const et= require('./etrack.js');
 const eg = require("./egene");
 const { saveTrack, findSong, songNames } = eg;
 const { 
-       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType,
+       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion,
        plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
 } = require( './eplyr.js' );
 
@@ -46,6 +46,9 @@ function radioValue( nm ){    // return value of radio group name='nm'
 const selRoot     = document.getElementById('selectRoot');
 const selMode     = document.getElementById('selectMode');
 const scaleDegrees= document.getElementById('scaleDegrees');
+const inv_down    = document.getElementById('inv_down');
+const inv_up      = document.getElementById('inv_up');
+const chd_inv     = document.getElementById('chdInv');
 const divChdBtns  = document.getElementById('chdButtons');
 const selSong     = document.getElementById('selectSong');
 const selTrk      = document.getElementById('selectTrack');
@@ -105,6 +108,12 @@ function initChordUI(){
     addClass( ev.target, 'root' );
     let key = Number( ev.target.id.substr(3));  // e.g. scd50..scd71
     setChordRoot( key );
+  });
+  inv_down.addEventListener('click', (ev) =>{
+    chd_inv.innerText = adjInversion( -1 );
+  });
+  inv_up.addEventListener('click', (ev) =>{
+    chd_inv.innerText = adjInversion( 1 );
   });
 }
 
