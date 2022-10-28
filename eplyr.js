@@ -1,27 +1,19 @@
 const { toChord } = require("./emuse");
 const { err, msg, nameChord } = require("./msg");
+const { midiOutDev, markKey, clearKeyMarkers, addClass, removeClass } = require( './piano.js' );
 
 var _chdRoot, _chdChord, _chdInv;        // current chord root & type
 function setChordRoot( ky, noPlay ){
     _chdRoot = ky;  
-    _chdInv = 0;        // no inversion
-    if (!noPlay) playChord();
+     if (!noPlay) playChord();
 }
 function setChordType( nm, noPlay ){
     _chdChord = nm;
-    _chdInv = 0;
-    if (!noPlay) playChord();
+     if (!noPlay) playChord();
 }
-function arrayRotate(arr, count) {
-    count -= arr.length * Math.floor(count / arr.length);
-    arr.push.apply(arr, arr.splice(0, count));
-    return arr;
-}
-function adjInversion( inc ){
-    _chdInv += inc;
-    let chd = toChord( _chdChord, _chdRoot );
-   // if ( Math.abs(_chdInv) >= chd.length ) _chdInv = 0;
-
+function adjInversion( inv ){
+    _chdInv = inv;
+ 
     playChord();   
     return _chdInv;
 }

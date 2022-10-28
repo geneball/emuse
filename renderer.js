@@ -1,24 +1,13 @@
 
-
-const { msg, status, nameChord, err } = require("./msg.js");
+const { msg, status } = require("./msg.js");
 const { shell } = require('electron');
-//const { info } = require('jzz');
-const { 
-  toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, 
-	emStr, asDeg, emTest 
-} = require( './emuse.js' );
-const { 
-  midiOutDev, markKey, clearKeyMarkers, rmClassFrChildren, addClass, removeClass 
-} = require( './piano.js' );
 
-const et= require('./etrack.js');
-const eg = require("./egene");
-const { saveTrack, findSong, songNames } = eg;
-const { 
-       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion,
-       plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
-} = require( './eplyr.js' );
+const { toKeyNum, toScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
+const { midiOutDev, clearKeyMarkers, rmClassFrChildren, addClass } = require( './piano.js' );
 
+const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  } = require('./etrack.js');
+const { saveTrack, findSong, songNames } = require("./egene");
+const { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion, plyrVal, playEvent, selectEl } = require( './eplyr.js' );
 
 function loadSelect( sel, nms ){
   if ( sel==null )  debugger;
@@ -46,8 +35,6 @@ function radioValue( nm ){    // return value of radio group name='nm'
 const selRoot     = document.getElementById('selectRoot');
 const selMode     = document.getElementById('selectMode');
 const scaleDegrees= document.getElementById('scaleDegrees');
-const inv_down    = document.getElementById('inv_down');
-const inv_up      = document.getElementById('inv_up');
 const chd_inv     = document.getElementById('chdInv');
 const divChdBtns  = document.getElementById('chdButtons');
 const selSong     = document.getElementById('selectSong');
@@ -58,15 +45,13 @@ const selEvts     = document.getElementById('selectEvents');
 const m_velocity  = document.getElementById('m_velocity');
 const m_octave    = document.getElementById('m_octave');
 const m_tune      = document.getElementById('m_tune');
-const m_rhythm= document.getElementById('m_rhythm');
-// const m_rhythm    = document.getElementById('m_rhythm');
-// const m_tune    = document.getElementById('m_tune');
+const m_rhythm    = document.getElementById('m_rhythm');
+
 
 // harmony options
 const h_velocity  = document.getElementById('h_velocity');
 const h_octave    = document.getElementById('h_octave');
 const h_mute      = document.getElementById('h_mute');
-// const h_close     = document.getElementById('h_close');
 
 const btnPlay     = document.getElementById('btnPlay');
 const btnSave     = document.getElementById('btnSave');
@@ -99,6 +84,7 @@ function initChordUI(){
 
     addClass( ev.target, 'root' );
     setChordType( ev.target.innerText );
+    chd_inv.value = 0;
   });
   scaleDegrees.addEventListener('click', (ev) => {
     let id = ev.target.id;
@@ -108,12 +94,10 @@ function initChordUI(){
     addClass( ev.target, 'root' );
     let key = Number( ev.target.id.substr(3));  // e.g. scd50..scd71
     setChordRoot( key );
+    chd_inv.value = 0;
   });
-  inv_down.addEventListener('click', (ev) =>{
-    chd_inv.innerText = adjInversion( -1 );
-  });
-  inv_up.addEventListener('click', (ev) =>{
-    chd_inv.innerText = adjInversion( 1 );
+  chd_inv.addEventListener('change', (ev) => {
+    adjInversion( chd_inv.value );
   });
 }
 
@@ -146,27 +130,27 @@ function setKey( song ){
   setChordType( 'M', true );
 }
 selSong.addEventListener("change", function() {
-  _song = eg.findSong( selSong.value );
-  loadSelect( selTrk, et.trackNames( _song ));
+  _song = findSong( selSong.value );
+  loadSelect( selTrk, trackNames( _song ));
   setKey( _song );
   selTrk.dispatchEvent( new Event('change') );
 });
 selTrk.addEventListener("change", function() {      // change Track
-  evalTrack();
+  refreshTrack();
 });
 selEvts.addEventListener("change", function() {     // change Event
   var evt = _trk.evts[ selEvts.selectedIndex ];
   playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
 });
-function evalTrack(){     // evaluate new track
+function refreshTrack(){     // evaluate new track
   resetPlyr( 0 );
-  _song = eg.findSong( selSong.value );
-  _track = et.findTrack( _song, selTrk.value );
+  _song = findSong( selSong.value );
+  _track = findTrack( _song, selTrk.value );
   
   if ( _song.melodyOctave != undefined )     m_octave.value = _song.melodyOctave;
   if ( _song.harmonyOctave != undefined )    h_octave.value = _song.harmonyOctave;
 
-  _trk = et.evalTrack( _song, _track ); 
+  _trk = evalTrack( _song, _track ); 
   showEventList();
 
   var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord) : emStr(x.nt)} * ${x.d}` );
@@ -205,7 +189,7 @@ btnPlay.addEventListener("click", function(){     // Play
     startPlay();
   } else {
     btnPlay.innerText = 'Play';
-      stopPlay();
+    stopPlay();
   }
 });
 btnSave.addEventListener("click", function(){     // Save
@@ -256,11 +240,11 @@ function showEventList(){     // build rows display from _trk.evts
   let html = '';  
   let root = toKeyNum( _song.root );
   let scale = toScale( _song.mode, root );
-  let [ lo, hi ] = et.trackLoHi();
-  let maxtic = et.maxTic();
+  let [ lo, hi ] = trackLoHi();
+  let maxtic = maxTic();
 
   status( `Notes: ${lo}..${hi}  Tics: 0..${maxtic} ` );
-  let rows = et.trackRowMap();
+  let rows = trackRowMap();
   
   let sp = 1, lblRw = 0;;
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
@@ -377,7 +361,7 @@ loadSelect( selRoot,  ['C','C#','Db', 'D','D#', 'Eb','E','F','F#','Gb', 'G','G#'
 
 initDialogs();
 
-if ( typeof eg.songNames == 'function' )
-  loadSelect( selSong, eg.songNames() );
+if ( typeof songNames == 'function' )
+  loadSelect( selSong, songNames() );
 selSong.dispatchEvent( new Event('change') );
 

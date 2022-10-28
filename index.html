@@ -16,73 +16,79 @@
     <link  	rel="stylesheet" 	href="emuse.css" >
   </head>
   <body>
+    <!--   Note bars display    -->
     <div id="bars"> 
-    <div id="beats">
-      <div id="bt0" class="bt t0 r19 on"></div>
-    </div>
-    <div id="labels" class="lbl">
-      <div class="r18 t0">1</div>
-      <div class="r18 t12">2</div>
-      <div class="r19 t0">Cm</div>
-    </div>
-	  <div id="rows">
-		  <div class="r0  sp1"></div>
-		  <div class="r1  sp2"></div>
-		  <div class="r2  sp3"></div>
-		  <div class="r3  sp4"></div>
-		  <div class="r4  sp5"></div>
-		  <div class="r5  sp6"></div>
-		  <div class="r6  sp7"></div>
-		  <div class="r7  sp1"></div>
-		  <div class="r8  sp2"></div>
-		  <div class="r9  sp3"></div>
-		  <div class="r10 sp4"></div>
-		  <div class="r11 sp5"></div>
-		  <div class="r12 sp6"></div>
-		  <div class="r13 sp7"></div>
-		  <div class="r14 sp1"></div>
-		  <div class="r15 sp2"></div>
-		  <div class="r16 sp3"></div>
-		  <div class="r17 sp4"></div>
-		  <div class="r18 sp5"></div>
-		  <div class="r19 sp6"></div>
-	  </div>                
-    <div id="tics"> 
- 	  </div>
-	  <div id="notes">
+      <div id="beats">
+        <div id="bt0" class="bt t0 r19 on"></div>
+      </div>
+
+      <div id="labels" class="lbl">
+        <div class="r18 t0">1</div>
+        <div class="r18 t12">2</div>
+        <div class="r19 t0">Cm</div>
+      </div>
+
+      <div id="rows">
+        <div class="r0  sp1"></div>
+        <div class="r1  sp2"></div>
+        <div class="r2  sp3"></div>
+        <div class="r3  sp4"></div>
+        <div class="r4  sp5"></div>
+        <div class="r5  sp6"></div>
+        <div class="r6  sp7"></div>
+        <div class="r7  sp1"></div>
+        <div class="r8  sp2"></div>
+        <div class="r9  sp3"></div>
+        <div class="r10 sp4"></div>
+        <div class="r11 sp5"></div>
+        <div class="r12 sp6"></div>
+        <div class="r13 sp7"></div>
+        <div class="r14 sp1"></div>
+        <div class="r15 sp2"></div>
+        <div class="r16 sp3"></div>
+        <div class="r17 sp4"></div>
+        <div class="r18 sp5"></div>
+        <div class="r19 sp6"></div>
+      </div>  
+
+      <div id="tics">   </div>
+
+      <div id="notes">
         <div id="nt0" class="r8  n2 t0 ln2"></div>
         <div id="nt1" class="r11 n5 t2 ln1"></div>
         <div id="nt2" class="r15 n2 t3 ln4"></div>
         <div id="nt3" class="r12 n6 t7 ln2"></div>
       </div>
-	  <div id="chords">
+
+      <div id="chords">
         <div id="chd0-0" class="r0 n1 t0 ln1"></div>
         <div id="chd0-4" class="r4 n5 t0 ln1"></div>
         <div id="chd0-7" class="r7 n1 t0 ln1"></div>
-	  </div>
+      </div>
     </div>
 
+    <!--   Controls    -->
     <span class="grp"> &nbsp; <br>
-    <button id="btnPlay"  class="blk">Play</button> <br>
-    <button id="btnSave" class="blk">Save</button>
+      <button id="btnPlay"  class="blk">Play</button> <br>
+      <button id="btnSave" class="blk">Save</button>
     </span>
 
     <span class="grp"> Song & Track:<br>
-        <select id="selectSong"> </select> <br>
-        <select id="selectTrack"> </select> 
+      <select id="selectSong"> </select> <br>
+      <select id="selectTrack"> </select> 
     </span> 
 
     <span class="grp"> <span class="hdr"> Melody</span> <br>
-        <label class="range">Vel:   <input type="range" id="m_velocity"   min="0" max="127" value="127">  </label>  
-        <label class="chk"> Tune:   <input type="checkbox" checked id="m_tune"> </label>  <br>
-        <label class="range">Oct:   <input type="range" id="m_octave"   min="0" max="6" value="3"> </label>
-        <label class="chk"> Rhythm: <input type="checkbox" checked id="m_rhythm"> </label>
+      <label class="range">Vel:   <input type="number" id="m_velocity"   min="0" max="127" value="127">  </label>  
+      <label class="chk"> Tune:   <input type="checkbox" checked id="m_tune"> </label>  <br>
+      <label class="range">Oct:   <input type="number" id="m_octave"   min="0" max="6" value="3"> </label>
+      <label class="chk"> Rhythm: <input type="checkbox" checked id="m_rhythm"> </label>
     </span>
 
     <span class="grp"> <span class="hdr">Harmony </span> <br>
-      <label class="velocity">Vel: <input type="range" id="h_velocity"   min="0" max="127" value="80">  </label>
-        <label class="chk"> Mute:  <input type="checkbox" id="h_mute">  </label> <br>
-        <label class="range">Oct:   <input type="range" id="h_octave"   min="0" max="6" value="3"> </label>
+      <label class="velocity">Vel: <input type="number" id="h_velocity"   min="0" max="127" value="80">  </label>
+      <label class="chk"> Mute:  <input type="checkbox" id="h_mute">  </label> <br>
+      <label class="range">Oct:   <input type="number" id="h_octave"   min="0" max="6" value="3"> </label>
     </span>
 
     <span class="grp"> <span class="hdr">Key & Mode</span>  <br>
@@ -95,8 +101,9 @@
     <div>
        <span id="scaleDegrees"> <button class="on">1</button> <button>1#</button> <button>2</button></span>
        <span id="inversions"> 
-          <button id="inv_down"> &darr; </button> <span id="chdInv"> 0 </span> <button id="inv_up"> &uarr; </button> 
-        </span> 
+          <label class="range">Inversion: <input type="number" id="chdInv"  min="-20" max="20" value="0"> </label>
+          <!-- <button id="inv_down"> &darr; </button> <span id="chdInv"> 0 </span> <button id="inv_up"> &uarr; </button> -->
+       </span> 
         <span id="chordName"></span>
     </div>
     <div id="chdButtons">   </div>
