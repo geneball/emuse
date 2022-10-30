@@ -88,7 +88,7 @@ function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0
   _trk.rowMap = rws;
 }
 function trackLoHi(){
-  return [ min(_trk.mLo, _trk.hLo), max(_trk.mHi, _trk.hHi) ];
+  return [ _trk.mLo < _trk.hLo? _trk.mLo : _trk.hLo, _trk.mHi > _trk.hHi? _trk.mHi : _trk.hHi  ];
 }
 function maxTic(){ 
   return _trk.maxTic;
@@ -114,7 +114,7 @@ function evalMelody( track ){
         if ( scdeg.toLowerCase() != 'r' ){
           let n = asNote( scdeg, _trk.scale );
           if (isNaN(n)) debugger; 
-          _trk.evts.push( { t:tic, nt: n, d:tics } );
+          _trk.evts.push( { t:tic, nt: n, d:tics, sd: scdeg } );
           if ( n < _trk.mLo ) _trk.mLo = n;
           if ( n > _trk.mHi ) _trk.mHi = n;
         }
