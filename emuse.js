@@ -148,16 +148,20 @@
 		};
 
 		let off = 12 - (currRoot % 12); 
+		let oct = Math.trunc(currRoot / 12)+1;
+		let octB = oct * -7;		// octB => oct octaves below Root
 		for ( let k=0; k < 128; k++ ){
-			let baseDeg = k+1 - currRoot;		// e.g. in GMaj, C-1 => -68,  G3 => 1, C4 => 5
+			// bdeg (e.g. in GMaj), C-1 => -68,  G3 => 1, C4 => 5
 			let scidx = ( k + off ) % 12;			// 0..12
 			let scdeg = currScale.scDeg[ scidx ];	// '1' .. '7##'
+			if ( scdeg==='1' ) octB += 7;
+			let bdeg =  octB + Number(scdeg.substring(0,1));
 			
-			let scDegKey = `${baseDeg}${scdeg.substring(1)}`;
+			let scDegKey = `${bdeg}${scdeg.substring(1)}`;
 			currScaleDegMap[  scDegKey ] = k;   // map from eg. GMaj:  '1' => 67, '1#' => 68, '-1' => 65
 
-			let scrow = { key:k, nt: emStr(k, false), scdeg: scdeg,
-			  ntcls: ntcls[ scdeg ], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
+			let scrow = { key:k, nt: emStr(k, false), scdeg: scdeg, bdeg: scDegKey,
+			ntcls: ntcls[ scdeg ], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
 			scrow.inscale = scrow.scdeg.length===1;		// no # => inscale
 			currScaleRows[ k ] = scrow;
 		}

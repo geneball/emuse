@@ -142,7 +142,7 @@ function evalHarmony( track ){
           // while ( tics > 0 ){
           //   let dur = tics > tpb? tpb : tics; 
           //   tics -= dur;
-          _trk.evts.push( { t: Number(tic), chord: chd, d: tics } );
+          _trk.evts.push( { t: Number(tic), chord: chd, d: tics, nm: chordname } );
           for ( let n of chd ){
             if ( n < _trk.hLo ) _trk.hLo = n;
             if ( n > _trk.hHi ) _trk.hHi = n;
