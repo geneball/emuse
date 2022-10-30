@@ -45,7 +45,7 @@ function playEvent( e ){
 function playChord(){
     let chd = toChord( _chdChord, _chdRoot );
     chd = invertChord( chd );
-    nameChord( `${emStr(chd)} = ${chordName(chd, true)}` );
+    nameChord( `${emStr(chd,false)} = ${chordName(chd, true)}` );
     playEvent( { t:0, chord: chd, d: 800 } );
 }
 
@@ -95,7 +95,7 @@ var _plyr = {
     }
     
     function asNtChd( e ){
-        if ( e.nt != undefined ) return emStr(e.nt);
+        if ( e.nt != undefined ) return emStr(e.nt,false);
         if ( e.chord != undefined ) return chordName(e.chord, true);
     }
     function setTic( tic ){

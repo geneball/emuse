@@ -1,4 +1,4 @@
-const { toChord, toKeyNum, toScale, scaleRows } = require("./emuse");
+const { toChord, toKeyNum, toScale, scaleRows, scaleDegMap } = require("./emuse");
 const { msg, err } = require('./msg.js');
 
 function trackNames( song ){
@@ -34,7 +34,12 @@ function asChord( nm, scale ){    // decode e.g. 'Im' or 'iii6(9)'
   if (chd.trim()=='') chd = 'M';
   return toChord( chd, scale[scdeg]);
 }
+
 function asNote( scdeg, scale ){  // decode scale degree even if <0 or >7
+  let scDegMap = scaleDegMap();
+  let k = scDegMap[scdeg];
+  if ( k!==undefined ) return k;
+
   let off = 0, adj = 0;
   let lch = scdeg[scdeg.length-1];
   if ( lch=='#' || lch=='b' ){
@@ -83,12 +88,13 @@ function calcRowMap(){    // calc _trk.rowMap as [ lo..hi ] == row for keynum [0
   _trk.rowMap = rws;
 }
 function trackLoHi(){
-  return [ _trk.Lo, _trk.Hi ];
+  return [ min(_trk.mLo, _trk.hLo), max(_trk.mHi, _trk.hHi) ];
 }
 function maxTic(){ 
   return _trk.maxTic;
 }
 function trackRowMap(){ // return track row map
+  debugger;
   calcRowMap();
   return _trk.rowMap;
 }
@@ -109,8 +115,8 @@ function evalMelody( track ){
           let n = asNote( scdeg, _trk.scale );
           if (isNaN(n)) debugger; 
           _trk.evts.push( { t:tic, nt: n, d:tics } );
-          if ( n < _trk.Lo ) _trk.Lo = n;
-          if ( n > _trk.Hi ) _trk.Hi = n;
+          if ( n < _trk.mLo ) _trk.mLo = n;
+          if ( n > _trk.mHi ) _trk.mHi = n;
         }
         tic += tics;
     }
@@ -138,8 +144,8 @@ function evalHarmony( track ){
           //   tics -= dur;
           _trk.evts.push( { t: Number(tic), chord: chd, d: tics } );
           for ( let n of chd ){
-            if ( n < _trk.Lo ) _trk.Lo = n;
-            if ( n > _trk.Hi ) _trk.Hi = n;
+            if ( n < _trk.hLo ) _trk.hLo = n;
+            if ( n > _trk.hHi ) _trk.hHi = n;
           }
           tic += tics;
  //         }
@@ -157,11 +163,13 @@ function evalTrack( song, track ){  // calc events for song & track
   _trk.barTics = _trk.bpb * tpb;
   _trk.root = toKeyNum( song.root );
   _trk.scale = toScale( song.mode, _trk.root );
- 
+
   _trk.evts = [];
   let tic = 0;
-  _trk.Lo = 127;
-  _trk.Hi = 0;
+  _trk.mLo = 127;
+  _trk.mHi = 0;
+  _trk.hLo = 127;
+  _trk.hHi = 0;
   _trk.maxTic = 0;
 
   evalMelody( track );

@@ -2,7 +2,7 @@
 const { msg, status } = require("./msg.js");
 const { shell } = require('electron');
 
-const { toKeyNum, toScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
+const { toKeyNum, toScale, setScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
 const { midiOutDev, clearKeyMarkers, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  } = require('./etrack.js');
@@ -117,11 +117,13 @@ function setKey( song ){
   selMode.value = mode;
 
   let rkey = toKeyNum( root );
-  let scale = toScale( song.mode, rkey );
-  let rows = scaleRows( scale );
+  setScale( song.mode, rkey );
+  let rows = scaleRows( );
   let schtml = '';
+
   for ( let sd=0; sd<12; sd++ ){
-    schtml += `<button id="scd${rkey+sd}"> ${rows[sd].scdeg} ${emStr((rkey+sd) % 12)}</button>`;
+    let rw = rows[sd];
+    schtml += `<button id="scd${rkey+sd}" class="${rw.chdcls}"> ${rw.scdeg} ${emStr((rkey+sd), true)}</button>`;
   }  
   scaleDegrees.innerHTML = schtml;
   addClass( scaleDegrees.childNodes[0], 'root' );
@@ -153,7 +155,7 @@ function refreshTrack(){     // evaluate new track
   _trk = evalTrack( _song, _track ); 
   showEventList();
 
-  var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord) : emStr(x.nt)} * ${x.d}` );
+  var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,false) : emStr(x.nt,false)} * ${x.d}` );
   loadSelect( selEvts, evts );
   btnPlay.innerText = 'Play';
 }
@@ -221,39 +223,40 @@ function asBar( tics ){    // return tics as string in bars
   // s += fr==0? '' : ` ${fr}/${_song.ticsPerBeat}`;
   // return `|${bar}.${s}`;
 }
-var _ntcls = {
-  '1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
-  '4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
-};
-var _chdcls = {
-  '1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
-  '4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
-};
-var _rowcls = {
-  '1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
-  '4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
-};
+// var _ntcls = {
+//   '1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
+//   '4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
+// };
+// var _chdcls = {
+//   '1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
+//   '4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
+// };
+// var _rowcls = {
+//   '1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
+//   '4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
+// };
 
-var _rowdefs = {};
+// var _rowdefs = {};
 function showEventList(){     // build rows display from _trk.evts
   clearKeyMarkers();
   let html = '';  
   let root = toKeyNum( _song.root );
-  let scale = toScale( _song.mode, root );
+  //setScale( _song.mode, root );
   let [ lo, hi ] = trackLoHi();
   let maxtic = maxTic();
 
   status( `Notes: ${lo}..${hi}  Tics: 0..${maxtic} ` );
-  let rows = trackRowMap();
+  let rows = scaleRows(); 
   
-  let sp = 1, lblRw = 0;;
+  //let sp = 1; //, lblRw = 0;
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
     let rw = rows[i];
-    let r = `r${rw.rw}`;
-    html += `<div id="rw${rw.rw}" class="${r} rw ${_rowcls[rw.deg]}"></div>`;
-    _rowdefs[r] = { nt: i, deg: rw.deg, k:rw.key };
-    lblRw = rw.rw+1;
+    let r = i-lo; //`r${rw.rw}`;
+    html += `<div id="rw${r}" class="r${r} rw ${rw.rowcls}"></div>`;
+    // _rowdefs[r] = { nt: i, deg: rw.deg, k:rw.key };
+    // lblRw = r+1;
   }
+  let lblRw = hi-lo+2;
   divRows.innerHTML = html;
   // set up label bar
   divLabels.innerHTML = `<div id="labelRow" class="lbl r${lblRw}"></div>`;
@@ -277,10 +280,10 @@ function showEventList(){     // build rows display from _trk.evts
     if ( (tic % tpm)==0 ){
       mrk = 'bar';
       let m = (tic / tpm) + 1;
-      lblhtml += `<div class="r${lblRw} t${tic} ln2">${m}</div>`;
+      lblhtml += `<div class="kbar r${lblRw} t${tic} ln2">${m}</div>`;
     }
     html += `<div class="${mrk} t${tic}"></div>`;
-    beathtml += `<div id="beat${bt}" class="r${lblRw+2} bt${tpb} t${tic}"></div>`;
+    beathtml += `<div id="beat${bt}" class="kbt r${lblRw+2} bt${tpb} t${tic}"></div>`;
     bt++;
   }
   divBeats.innerHTML = beathtml;
@@ -294,9 +297,10 @@ function showEventList(){     // build rows display from _trk.evts
     let e = _trk.evts[iE]; 
      if ( e.nt != undefined ){
        let rw = rows[ e.nt ];
+       let r = e.nt - lo;
        if (rw==undefined) debugger;
       //  if ( rw.inscale ){
-          html += `<div id="nt${cnt}" class="r${rw.rw} rw ${_ntcls[ rw.deg ]} t${e.t} ln${e.d} e${iE}"></div>`;
+          html += `<div id="nt${cnt}" class="k${e.nt} r${r} rw ${rw.ntcls} t${e.t} ln${e.d} e${iE}"></div>`;
       //  } else {
       //     let deg = Math.trunc(rw.deg);
       //     let brow = Math.trunc(rw.rw);
@@ -308,12 +312,13 @@ function showEventList(){     // build rows display from _trk.evts
        for ( i=0; i < e.chord.length; i++ ){
          let nt = e.chord[ i ];
          let rw = rows[ nt ];
+         let r = nt-lo;
       //   if (rw==undefined) rw = { rw:-1, deg: -1};
-         chtml += `<div id="chd${ccnt}-${i}" class="r${rw.rw} rw ${_chdcls[rw.deg]} t${e.t} ln${e.d} e${iE}"></div>`;
+         chtml += `<div id="chd${ccnt}-${i}" class="k${nt} r${r} rw ${rw.chdcls} t${e.t} ln${e.d} e${iE}"></div>`;
           let chdname = chordName( e.chord, true );
           if ( chdname != lastChd ){
             lastChd = chdname;
-            lblhtml += `<div class="r${lblRw+1} t${e.t}">${lastChd}</div>`;
+            lblhtml += `<div class="kchd r${lblRw+1} t${e.t}">${lastChd}</div>`;
           }
        }
        chtml += '</div>';
@@ -328,23 +333,29 @@ function showEventList(){     // build rows display from _trk.evts
 divBars.addEventListener("click", function(evt){    // click on Notes scroll
   let tgt = evt.target;
   let rw = null, iEvt = null;
+
   for ( let cl of tgt.className.split(' ') ){ 
-    if (  _rowdefs[cl] != undefined ) rw = _rowdefs[cl];
+    if ( cl[0]=='k'){ 
+      rw = Number( cl.substring(1) );
+      rw = isNaN(rw)? null : scaleRows()[rw];
+    }
+   // if (  _rowdefs[cl] != undefined ) rw = _rowdefs[cl];
     if ( cl[0]=='e' ) iEvt = Number( cl.substring(1));
   }
+
 
   let tip = `#${tgt.id}.${tgt.className} `;
   let eCls = tgt.className.substring(tgt.className.indexOf(' e'));
   let e = _trk.evts[ eCls.substring(2) ];
-  if ( rw!=null ) tip = `${emStr(rw.nt)} (${rw.deg}) `;
+  if ( rw!=null ) tip = `${emStr(rw.nt,false)} (${rw.deg}) `;
   if (tgt.id.startsWith('nt')){
-    tip = `m${iEvt} ${asBar(e.t)} ${emStr(e.nt)} (${rw.deg}) for ${inBeats(e.d)}`;
+    tip = `m${iEvt} ${asBar(e.t)} ${emStr(e.nt,false)} (${rw.deg}) for ${inBeats(e.d)}`;
     selectEl( tgt );
     playEvent( { t:0, nt: e.nt, d: e.d } );
   } else if (tgt.id.startsWith('chd')){
     let ich = tgt.id.substring(3).split('-')[0];
   
-    tip = `c${iEvt} ${asBar(e.t)} ${chordName(e.chord,true)} ${emStr(e.chord)} for ${inBeats(e.d)}`;
+    tip = `c${iEvt} ${asBar(e.t)} ${chordName(e.chord,true)} ${emStr(e.chord,false)} for ${inBeats(e.d)}`;
     selectEl( tgt.parentElement );
     playEvent( { t:0, chord: e.chord, d: e.d } );
   } else if (tgt.id.startsWith('beat')){

@@ -51,7 +51,7 @@
     #bars            { position:relative; border: 1px solid white; width:1000px; height:320px;  overflow: auto; }
     .sel             { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 7px, white 7px ); }
 
-    .root            { background: var(--C17); }
+    .root            { border: 2px solid white; }
     .tic             { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
     .bar             { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
     .lbl             { width: 5000px; height:40px; background-color: white;  font-size: x-small; }

@@ -85,6 +85,7 @@
 	 { scale:[ 0, 1, 2, 5, 6,  8,  9 ], nm: 'Locrian ♭♭3 ♭♭7' 	 }		// VII
 	];
 	function initModeDegrees(){
+		let shp = [ '', '#', '##' ];
 		for ( let sc of modeDefs ){
 			let sdg = [];
 			let semi = 0, sd = 0, prSharp = false;
@@ -103,7 +104,7 @@
 		}
 	}
     function modeNames( ){   return modeDefs.map( x => x.nm );    }
-	function scaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
+	function oldscaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
 		let rw = [], sc = 0, r = 0;
 		let off = scale[0];
 		scale = scale.map( x => x-off );
@@ -119,22 +120,74 @@
 		}
 		return rw;
 	}
-	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
+	var currScale;
+	var currRoot;
+	var currScaleRows;
+	var currScaleDegMap;
+	function scaleRows(  ){	// return currScaleRows: [0.127] with info for each key in current scale
+		return currScaleRows;
+	}
+	function scaleDegMap(  ){	// return currScaleRows: [0.127] with info for each key in current scale
+		return currScaleDegMap;
+	}
+	function calcScaleRows(  ){	
+		currScaleRows = []; 
+		currScaleDegMap = {};
+
+		let ntcls = {
+		'1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
+		'4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
+		};
+		let chdcls = {
+		'1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
+		'4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
+		};
+		let rowcls = {
+		'1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
+		'4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
+		};
+
+		let off = 12 - (currRoot % 12); 
+		for ( let k=0; k < 128; k++ ){
+			let baseDeg = k+1 - currRoot;		// e.g. in GMaj, C-1 => -68,  G3 => 1, C4 => 5
+			let scidx = ( k + off ) % 12;			// 0..12
+			let scdeg = currScale.scDeg[ scidx ];	// '1' .. '7##'
+
+			currScaleDegMap[  baseDeg + scdeg.substring(1) ] = k;   // map from eg. GMaj:  '1' => 67, '1#' => 68, '-1' => 65
+
+			let scrow = { key:k, nt: emStr(k, false), scdeg: scdeg,
+			  ntcls: ntcls[ scdeg ], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
+			scrow.inscale = scrow.scdeg.length===1;		// no # => inscale
+			currScaleRows[ k ] = scrow;
+		}
+
+		return currScaleRows;
+	}
+	function setScale( md, root ){	// set currScale, currRoot & cuffScaleRows for selected mode
 		if ( modeDefs[0].scDeg == undefined )
 			initModeDegrees();
 
         if (root==undefined) root = 0;
-		if ( md===undefined ) return modeDefs[0];
-		if ( md instanceof Array && md.length >= 8 ) 
-			return md;
+		currRoot = root;
+		if ( md===undefined ) md = 'Major'; // modeDefs[0];
+		currScale = null;
+
 		md = md.trim().toUpperCase();
 		for (var i=0; i < modeDefs.length; i++)
-			if ( md ===  modeDefs[i].nm.toUpperCase() )
-				return modeDefs[i].scale.map( x => x+root );
-		err( `toScale: unrecognized mode ${md}`, false );
-		return modeDefs[0].scale;		// default Ionian
+			if ( md ===  modeDefs[i].nm.toUpperCase() ){
+				currScale = modeDefs[i];
+				break;
+			}
+		if ( currScale===null )	{	
+			err( `toScale: unrecognized mode ${md}`, false );
+			currScale = modeDefs[0];
+		}
+		calcScaleRows();
 	}
-	
+	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
+		//setScale( md, root );
+		return currScale.scale;
+	}	
 	// c  c# d  d# e  f  f# g  g# a  a# b  c  -- note name
 	// 0  1  2  3  4  5  6  7  8  9  10 11 12 -- semitones
 	// 1     2     3  4     5     6     7     -- scale degree
@@ -206,7 +259,7 @@
 	var parseChord = chordParserFactory();
 
 	function toChord( chd, root ){
-		let chnm = emStr( root % 12 ) + chd;
+		let chnm = emStr( root, true ) + chd;
 		chnm = chnm.trim();
 		if ( 'ABCDEFG'.includes( chd[0]) ) chnm = chd;
 		const chord = parseChord( chnm.trim() );
@@ -237,27 +290,13 @@
 		if ( !(chd instanceof Array)) 
             debugger;
 		var rt = chd[0], chd2;
-		let nts = chd.map( (v, i) => emStr( astype? chd[i]%12 : chd[i] ) );
-		if ( rt > 0 ){
-            chd2 = chd.map( x => x-rt );
-         //   nt = emStr( astype? rt%12 : rt);
-        }
-
+		let nts = chd.map( (v, i) => emStr( chd[i], astype ) );
+        chd2 = chd.map( x => x-rt );
+ 
 		let idx = idxChd( chd2 );
 		if ( idx >= 0 )  
 			return `${nts[0]}${chordDefs[idx].nm}`;
 
-		// let adj = false;
-		// for ( let i=0; i < chd2.length; i++ ){
-		// 	if ( chd2[i] < 0 )  { chd2[i] += 12; adj = true; }
-		// 	if ( chd2[i] > 11 ) { chd2[i] -= 12; adj = true; }
-		// }
-		// if ( adj ){
-		// 	chd2.sort( (a,b) => a-b );
-		// 	idx = idxChd( chd2 );
-		// 	if ( idx >= 0 )
-		// 		return `${nt}${chordDefs[idx].nm}`;
-		// }
 		for ( let i=0; i < chd2.length-1; i++ ){
 			chd2[i] += 12;
 			let chd3 = [ ...chd2 ];
@@ -293,11 +332,12 @@
 		return `${deg}${scDeg>deg? '#':'' }`;
 	}
 	
-	function emStr( chd ){		// 60 => "C4"  0=>"C"  [60,64,67] => '[ C4 E4 G4 ]'
+	function emStr( chd, astype ){		// 60 => "C4"  0=>"C"  [60,64,67] => '[ C4 E4 G4 ]'
+		if ( astype===undefined ) astype = false;
 		if ( chd instanceof Array ){
 			var s = '[ ';
 			for ( var i=0; i < chd.length; i++ )
-				s += emStr( chd[i] ) + ' ';
+				s += emStr( chd[i], astype ) + ' ';
 			return s + ']'; // + chordName(chd);
 		}
     
@@ -306,7 +346,7 @@
 		  var oct = Math.trunc(keynum/12)-1;
           var scdeg = keynum % 12;
 		  if ( noteDefs[scdeg]==undefined ) debugger;
-		  return noteDefs[scdeg].nm + (oct<0? '' : `${oct}`);		// treat -1 as no octave
+		  return noteDefs[scdeg].nm + (astype? '' : `${oct}`);		// astype =>  no octave
 		}
 		return `? ${chd}`;
 	}
@@ -314,7 +354,7 @@
 	function emTest(){
 		for(const v of [ 60, 'Ab', 'C4', 'C6', 'C#3', 'bb', 'c#' ]){
             var kn = toKeyNum(v);
- 			msg( `toKeyNum(${v}) = ${kn} = ${emStr(kn)}` );
+ 			msg( `toKeyNum(${v}) = ${kn} = ${emStr(kn, false)}` );
         }
 
         for(const v of [ 'major', 'locrian', 'harmonic minor' ])
@@ -324,12 +364,12 @@
 			  var ch1 = toChord(v, 'C');
 			  var ch3 = toChord(v,'E');
 			  var ch4 = toChord(v,'Bb');
- 			  msg( `toChord(${v},C) = [${ch1}] = ${emStr(ch1)} = ${chordName(ch1)}` );
-			  msg( `toChord(${v},E) = [${ch3}] = ${emStr(ch3)} = ${chordName(ch3)}` );
-			  msg( `toChord(${v},Bb) = [${ch4}] = ${emStr(ch4)} = ${chordName(ch4)}` );
+ 			  msg( `toChord(${v},C) = [${ch1}] = ${emStr(ch1, false)} = ${chordName(ch1)}` );
+			  msg( `toChord(${v},E) = [${ch3}] = ${emStr(ch3, true)} = ${chordName(ch3)}` );
+			  msg( `toChord(${v},Bb) = [${ch4}] = ${emStr(ch4, true)} = ${chordName(ch4)}` );
         }
 	}
 
 	
-module.exports = { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest }; 
-// const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest } = require( './emuse.js' );
+module.exports = { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest }; 
+// const { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest } = require( './emuse.js' );
