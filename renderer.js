@@ -3,7 +3,7 @@ const { msg, status } = require("./msg.js");
 const { shell } = require('electron');
 
 const { toKeyNum, toScale, setScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
-const { midiOutDev, clearKeyMarkers, rmClassFrChildren, addClass } = require( './piano.js' );
+const { midiOutDev, clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  } = require('./etrack.js');
 const { saveTrack, findSong, songNames } = require("./egene");
@@ -103,12 +103,10 @@ function initChordUI(){
 
 /* **********************  Song & Track UI  *******************  */
 var _song, _track;  
-selRoot.addEventListener("change", function() {
-    playCurrChord( midiOutDev(), 500);
-});
-function setKey( song ){
-  let root = song.root;
-  let mode = song.mode;
+selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
+selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
+
+function setKey( root, mode ){
   for (let i=0; i<selRoot.options.length; i++){  // select song's key in selRoot
     let txt = selRoot.options[i].innerText.trim();
     if ( txt==root || (root.length>1 && txt.includes(root)))
@@ -117,15 +115,16 @@ function setKey( song ){
   selMode.value = mode;
 
   let rkey = toKeyNum( root );
-  setScale( song.mode, rkey );
+  setScale( mode, rkey );
   let rows = scaleRows( );
   let schtml = '';
 
-  for ( let sd=0; sd<12; sd++ ){
+  for ( let sd=rkey; sd<rkey+12; sd++ ){
     let rw = rows[sd];
-    schtml += `<button id="scd${rkey+sd}" class="${rw.chdcls}"> ${rw.scdeg} ${emStr((rkey+sd), true)}</button>`;
+    schtml += `<button id="scd${sd}" class="${rw.chdcls}"> ${rw.scdeg} ${emStr((sd), true)}</button>`;
   }  
   scaleDegrees.innerHTML = schtml;
+  setKeyScale( rows );
   addClass( scaleDegrees.childNodes[0], 'root' );
   addClass( divChdBtns.childNodes[0].childNodes[0], 'root' );
   setChordRoot( rkey, true );
@@ -134,7 +133,8 @@ function setKey( song ){
 selSong.addEventListener("change", function() {
   _song = findSong( selSong.value );
   loadSelect( selTrk, trackNames( _song ));
-  setKey( _song );
+  setKey( _song.root, _song.mode );
+
   selTrk.dispatchEvent( new Event('change') );
 });
 selTrk.addEventListener("change", function() {      // change Track

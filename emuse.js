@@ -104,22 +104,22 @@
 		}
 	}
     function modeNames( ){   return modeDefs.map( x => x.nm );    }
-	function oldscaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
-		let rw = [], sc = 0, r = 0;
-		let off = scale[0];
-		scale = scale.map( x => x-off );
-		for ( let i=0; i < 12; i++ ){
-			if ( i==scale[sc] ){ // semitone i is in scale
-				rw.push( { inscale: true, rw: r, deg: sc, scdeg:`${sc+1}` } );	// assign next full row to scale degree sc
-				r++;   
-				sc++;
-			} else {	// semitone i is non-scale
-				rw.push ( { inscale: false, rw: r, deg: sc-0.5, scdeg:`${sc}#` } );	// insert a half-row for a non-scale scale degree
-				r++;
-			}
-		}
-		return rw;
-	}
+	// function oldscaleRows( scale ){	// return map of all semitones [0..11] => [ 0..7 ] with .5 entries for non-scale notes
+	// 	let rw = [], sc = 0, r = 0;
+	// 	let off = scale[0];
+	// 	scale = scale.map( x => x-off );
+	// 	for ( let i=0; i < 12; i++ ){
+	// 		if ( i==scale[sc] ){ // semitone i is in scale
+	// 			rw.push( { inscale: true, rw: r, deg: sc, scdeg:`${sc+1}` } );	// assign next full row to scale degree sc
+	// 			r++;   
+	// 			sc++;
+	// 		} else {	// semitone i is non-scale
+	// 			rw.push ( { inscale: false, rw: r, deg: sc-0.5, scdeg:`${sc}#` } );	// insert a half-row for a non-scale scale degree
+	// 			r++;
+	// 		}
+	// 	}
+	// 	return rw;
+	// }
 	var currScale;
 	var currRoot;
 	var currScaleRows;
@@ -130,18 +130,30 @@
 	function scaleDegMap(  ){	// return currScaleRows: [0.127] with info for each key in current scale
 		return currScaleDegMap;
 	}
+
 	function calcScaleRows(  ){	
 		currScaleRows = []; 
 		currScaleDegMap = {};
 
-		let ntcls = {
-		'1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
-		'4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
-		};
+		let cls = {
+			'1':	{ chd: 'ch1',   nt: 'n1',   sd:'sd1',   row: 'sp1'  },
+			'1#':	{ chd: 'ch12',  nt: 'n12',  sd:'sd12',  row: 'sp12' },
+			'1##':	{ chd: 'ch21',  nt: 'n21',  sd:'sd21',  row: 'sp21' },
+		}
 		let chdcls = {
-		'1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
-		'4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
+			'1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
+			'4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
 		};
+		
+		let ntcls = {
+			'1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
+			'4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
+		};
+		let sdcls = {
+			'1':'sd1',  '1#':'sd12',  '2':'sd2',  '2#':'sd23',  '3':'sd3', '3#':'sd34',  
+			'4':'sd4',  '4#':'sd45',  '5':'sd5',  '5#':'sd56',  '6':'sd6', '6#':'sd67',  '7':'sd7', '7#':'sd71' 
+		};
+				
 		let rowcls = {
 		'1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
 		'4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
@@ -161,7 +173,7 @@
 			currScaleDegMap[  scDegKey ] = k;   // map from eg. GMaj:  '1' => 67, '1#' => 68, '-1' => 65
 
 			let scrow = { key:k, nt: emStr(k, false), scdeg: scdeg, bdeg: scDegKey,
-			ntcls: ntcls[ scdeg ], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
+			ntcls: ntcls[ scdeg ], sdcls: sdcls[scdeg], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
 			scrow.inscale = scrow.scdeg.length===1;		// no # => inscale
 			currScaleRows[ k ] = scrow;
 		}
@@ -191,7 +203,7 @@
 	}
 	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
 		//setScale( md, root );
-		return currScale.scale;
+		return currScale.scale.map( v => currRoot + v );
 	}	
 	// c  c# d  d# e  f  f# g  g# a  a# b  c  -- note name
 	// 0  1  2  3  4  5  6  7  8  9  10 11 12 -- semitones
