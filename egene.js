@@ -3,6 +3,8 @@ const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic } = req
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
 const { msg } = require( './msg.js' );
+const { eNt, hNt } = require( './eplyr.js' );
+
 
 var codon_maps = null;          // codon op & arg mappings
 const codon_ops = [ 
@@ -160,6 +162,68 @@ function chordKind( kind ){
 function chordDuration( dur ){  adjDur( 'CA', dur, _est.cdur ); _est.cdur = dur; }
 function playChord(  ){         addCodon( 'PC' );       }
 function playNote(  ){          addCodon( 'PN' );       }
+
+function romanDegree( sdeg ){
+    let sharps = '';
+    while ( sdeg[sdeg.length-1]=='#' ){
+        sharps += '#'; 
+        sdeg = sdeg.substring(0, sdeg.length-1 );
+    }
+    let n = Number(sdeg);
+    while ( n > 7 ) n -= 7;
+    while ( n < 0 ) n += 7;
+    let roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
+    return roman[n] + sharps;
+}
+function extractEvents( evts, scaleRows, root, style ){
+    let extr = [];
+    let prevnt = toKeyNum(root);
+    let mtic = 0, htic = 0;
+    let isRhythm, isMelody;
+    switch ( style ){
+        case 'notes':       isRhythm = false; isMelody = true; break;
+        case 'intervals':   isRhythm = false; isMelody = true; break;
+        case 'scaledegree': isRhythm = false; isMelody = true; break;
+        case 'm_rhythm':    isRhythm = true;  isMelody = true; break;
+        case 'chords':      isRhythm = false; isMelody = false; break;
+        case 'roman':       isRhythm = false; isMelody = false; break;
+        case 'h_rhythm':    isRhythm = true;  isMelody = false; break;
+        default:        err( `unrecognized style ${style}` );   break;
+    }
+    for ( let e of evts ){
+        if ( isMelody && e.nt != undefined ){
+            if ( e.t > mtic ){
+                extr.push( style=='m_rhythm'? e.t-mtic : 'r' );
+                mtic = e.t;
+            }
+            switch( style ){
+                case 'notes':       extr.push( e.nt ); break;
+                case 'intervals':   extr.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
+                case 'scaledegree': extr.push( scaleRows[e.nt].bdeg ); break;
+                case 'm_rhythm':    extr.push( e.d );
+                default: break;
+            }
+            prevnt = e.nt;
+            mtic += e.d;
+        } 
+        if ( !isMelody && e.chord != undefined ){
+            if ( e.t > htic ){
+                extr.push( isRhythm? e.t-htic : 'r' );
+                htic = e.t; 
+            }
+            switch( style ){
+                case 'chords':      extr.push( chordName( e.chord, true )); break;
+                case 'roman':       // convert leading note to roman scale degree 1..7
+                    let [ rt, chnm ] = chordName( e.chord, false, true );     // split root & name
+                    extr.push( `${ romanDegree( scaleRows[ e.chord[0] ].bdeg) }${chnm}` ); break;
+                case 'h_rhythm':    extr.push( e.d );
+                default: break;
+            }
+            htic += e.d;
+        }
+    }
+    return extr;
+}
 function encodeEvent( e ){
     _encHist.push( { evt: _est.iEvt, t: e.t, typ: e.nt? 'N':'C', nt: _est.nt, nd: _est.ntdur, rt: _est.chdrt, cd: _est.cdur  } );
     if ( e.nt != undefined ){
@@ -317,6 +381,14 @@ function saveTrack( song, trk, _trk ){
     genCodons( gene );
     delete gene.orig_events;        // since gene.evts matches
 
+    gene.notes       = extractEvents( gene.evts, scaleRows(), song.root, 'notes'        ).join(' ');
+    gene.intervals   = extractEvents( gene.evts, scaleRows(), song.root, 'intervals'    ).join(' ');
+    gene.scaledegree = extractEvents( gene.evts, scaleRows(), song.root, 'scaledegree'  ).join(' ');
+    gene.m_rhythm    = extractEvents( gene.evts, scaleRows(), song.root, 'm_rhythm'     ).join(' ');
+    gene.chords      = extractEvents( gene.evts, scaleRows(), song.root, 'chords'       ).join(' ');
+    gene.roman       = extractEvents( gene.evts, scaleRows(), song.root, 'roman'        ).join(' ');
+    gene.h_rhythm    = extractEvents( gene.evts, scaleRows(), song.root, 'h_rhythm'     ).join(' ');
+
     data.write( `${song.nm}_${trk.nm}_gene.json`, gene )
 }
 var songs = [];
@@ -350,5 +422,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { saveTrack, findSong, songNames };
-// const { saveTrack, findSong, songNames } = require("./egene");
+module.exports = { saveTrack, findSong, songNames, extractEvents };
+// const { saveTrack, extractEvents, findSong, songNames, extractEvents } = require("./egene");

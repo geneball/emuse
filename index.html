@@ -73,22 +73,34 @@
       <button id="btnSave" class="blk">Save</button>
     </span>
 
-    <span class="grp"> Song & Track:<br>
+    <span class="grp"> <span class="hdr">Song & Track: </span><br>
       <select id="selectSong"> </select> <br>
       <select id="selectTrack"> </select> 
     </span> 
 
-    <span class="grp"> <span class="hdr"> Melody</span> <br>
-      <label class="range">Vel:   <input type="number" id="m_velocity"   min="0" max="127" value="127">  </label>  
-      <label class="chk"> Tune:   <input type="checkbox" checked id="m_tune"> </label>  <br>
-      <label class="range">Oct:   <input type="number" id="m_octave"   min="0" max="6" value="3"> </label>
+    <span class="grp"> 
+      <label class="range">Beats/Bar:  <span id="bpb"> </span>   </label> <br>
+      <label class="range">Tics/bt:    <span id="tpb"> </span> </label> <br>
+      <label class="range">Beats/min:  <input type="number" id="tempo"  min="20" max="220" value="80"> </label>
+    </span>
+
+    <span class="grp"> 
+      <label class="chk"> Melody: <input type="checkbox" checked id="m_tune"> </label>  <br>
       <label class="chk"> Rhythm: <input type="checkbox" checked id="m_rhythm"> </label>
+    </span>
+    <span class="grp"> 
+      <label class="chk"> Chords: <input type="checkbox" checked id="h_chords">  </label> <br>
+      <label class="chk"> Rhythm: <input type="checkbox" checked id="h_rhythm">  </label> 
+    </span>
+
+    <span class="grp"> <span class="hdr"> Melody</span> <br>
+      <label class="range">Vel:   <input type="number" id="m_velocity"   min="0" max="127" value="127">  </label>  <br>
+      <label class="range">Oct:   <input type="number" id="m_octave"   min="-1" max="9" value="4"> </label>
     </span>
 
     <span class="grp"> <span class="hdr">Harmony </span> <br>
-      <label class="velocity">Vel: <input type="number" id="h_velocity"   min="0" max="127" value="80">  </label>
-      <label class="chk"> Mute:  <input type="checkbox" id="h_mute">  </label> <br>
-      <label class="range">Oct:   <input type="number" id="h_octave"   min="0" max="6" value="3"> </label>
+      <label class="velocity">Vel: <input type="number" id="h_velocity"   min="0" max="127" value="80">  </label> <br>
+      <label class="range">Oct:   <input type="number" id="h_octave"   min="-1" max="9" value="3"> </label>
     </span>
 
     <span class="grp"> <span class="hdr">Key & Mode</span>  <br>
@@ -109,8 +121,16 @@
     <div id="chdButtons">   </div>
   
     <p id=piano> piano </p>
-    <span id="status"> status </span>
-
+  <!-- <span id="extract">
+      <button> notes </button>
+      <button> intervals </button> 
+      <button> scaledegree </button> 
+      <button> m_rhythm </button> 
+      <button> chords </button> 
+      <button> roman </button> 
+      <button> h_rhythm </button> 
+    </span>--> 
+    <span id="status"> </span>
   </body>
   <script src="./renderer.js"></script>
 </html>

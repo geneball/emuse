@@ -53,7 +53,8 @@ function initPiano(){
         let oct = Math.trunc(k/12)-2;
         let i = k % 12;
         keyspan[k] = document.getElementById(`key${k}`);
-        keyspan[k].innerHTML = keybd[k]==undefined? k : keybd[k];
+        let cd = keybd[k]==undefined? k : keybd[k];
+        keyspan[k].innerHTML = `${cd}`;  // <br>${emStr(k,false)}`;
     }
 }
 
@@ -64,7 +65,7 @@ function midiOutDev(){
 }
 
 function removeClass( el, cls ){
-    if ( el==null || el==undefined ) return;
+    if ( el==null || el==undefined || el.classList==undefined ) return;
 
     if ( el.classList.contains( cls ) ){
         el.classList.remove( cls );

@@ -11,7 +11,7 @@ function err( s, debug ){
   if ( debug ) debugger;
 }
 
-function status( s ){
+function statusMsg( s ){
   let stat = document.getElementById( 'status' );
   stat.innerText = s;
 }
@@ -21,6 +21,6 @@ function nameChord( s ){
   stat.innerText = s;
 }
 
-module.exports = { msg, status, nameChord, err }; 
-// const { msg, status, nameChord, err } = require("./renderer.js");
+module.exports = { msg, statusMsg, nameChord, err }; 
+// const { msg, statusMsg, nameChord, err } = require("./renderer.js");
 

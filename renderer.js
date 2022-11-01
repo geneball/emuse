@@ -1,13 +1,13 @@
 
-const { msg, status } = require("./msg.js");
+const { msg, statusMsg } = require("./msg.js");
 const { shell } = require('electron');
 
 const { toKeyNum, toScale, setScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
 const { midiOutDev, clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  } = require('./etrack.js');
-const { saveTrack, findSong, songNames } = require("./egene");
-const { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion, plyrVal, playEvent, selectEl } = require( './eplyr.js' );
+const { saveTrack, findSong, songNames, extractEvents } = require("./egene");
+const { resetPlyr, startPlay, stopPlay, setTic, mNt, hNt, setChordRoot,  chordRoot, setChordType, adjInversion, plyrVal, playEvent, selectEl } = require( './eplyr.js' );
 
 function loadSelect( sel, nms ){
   if ( sel==null )  debugger;
@@ -41,6 +41,11 @@ const selSong     = document.getElementById('selectSong');
 const selTrk      = document.getElementById('selectTrack');
 const selEvts     = document.getElementById('selectEvents');
 
+// tempo options
+const bpb         = document.getElementById( 'bpb' );
+const tpb         = document.getElementById( 'tpb' );
+const tempo       = document.getElementById( 'tempo' );
+
 // melody options
 const m_velocity  = document.getElementById('m_velocity');
 const m_octave    = document.getElementById('m_octave');
@@ -51,7 +56,8 @@ const m_rhythm    = document.getElementById('m_rhythm');
 // harmony options
 const h_velocity  = document.getElementById('h_velocity');
 const h_octave    = document.getElementById('h_octave');
-const h_mute      = document.getElementById('h_mute');
+const h_chords    = document.getElementById('h_chords');
+const h_rhythm    = document.getElementById('h_rhythm');
 
 const btnPlay     = document.getElementById('btnPlay');
 const btnSave     = document.getElementById('btnSave');
@@ -63,6 +69,7 @@ const divRows     = document.getElementById('rows');
 const divTics     = document.getElementById('tics');
 const divNotes    = document.getElementById('notes');
 const divChords   = document.getElementById('chords');
+//const btnsExtract = document.getElementById('extract');
 
 /* ***************** chordUI   **********************  */
 function asBtnHtml( nms ){
@@ -72,15 +79,18 @@ function asBtnHtml( nms ){
   }
   return html;
 }
+function clearChordBtns(){
+  rmClassFrChildren( document.getElementById('triads'),   'root' );
+  rmClassFrChildren( document.getElementById('quartads'), 'root' );
+  rmClassFrChildren( document.getElementById('quintads'), 'root' );
+}
 function initChordUI(){
   divChdBtns.innerHTML = `<div id='triads'>${asBtnHtml(chordNames(3))}</div>` +
   `<div id='quartads'>${asBtnHtml(chordNames(4))}</div>` +
   `<div id='quintads'>${asBtnHtml(chordNames(5))}</div>`;
   divChdBtns.addEventListener("click", function(ev){
     if ( ev.target.nodeName != 'BUTTON' ) return;
-    rmClassFrChildren( document.getElementById('triads'), 'root' );
-    rmClassFrChildren( document.getElementById('quartads'), 'root' );
-    rmClassFrChildren( document.getElementById('quintads'), 'root' );
+    clearChordBtns();
 
     addClass( ev.target, 'root' );
     setChordType( ev.target.innerText );
@@ -101,20 +111,30 @@ function initChordUI(){
   });
 }
 
+// btnsExtract.addEventListener('click', (ev) => {
+//   if ( ev.target.nodeName != 'BUTTON' ) return;
+//   let extr = extractEvents( _trk.evts, scaleRows(), chordRoot(), ev.target.innerText.trim() );
+//   statusMsg( `${extr}` );
+// });
+
+
 /* **********************  Song & Track UI  *******************  */
 var _song, _track;  
 selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
 selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
 
 function setKey( root, mode ){
-  for (let i=0; i<selRoot.options.length; i++){  // select song's key in selRoot
-    let txt = selRoot.options[i].innerText.trim();
-    if ( txt==root || (root.length>1 && txt.includes(root)))
-      selRoot.options[i].selected = true;
-  }
+  clearChordBtns();
+  rmClassFrChildren( scaleDegrees, 'root' );
+  selRoot.value = root;
+  // for (let i=0; i<selRoot.options.length; i++){  // select song's key in selRoot
+  //   let txt = selRoot.options[i].innerText.trim();
+  //   if ( txt==root || (root.length>1 && txt.includes(root)))
+  //     selRoot.options[i].selected = true;
+  // }
   selMode.value = mode;
 
-  let rkey = toKeyNum( root );
+  let rkey = toKeyNum( root );    // root key in octave 4
   setScale( mode, rkey );
   let rows = scaleRows( );
   let schtml = '';
@@ -124,7 +144,7 @@ function setKey( root, mode ){
     schtml += `<button id="scd${sd}" class="${rw.chdcls}"> ${rw.scdeg} ${emStr((sd), true)}</button>`;
   }  
   scaleDegrees.innerHTML = schtml;
-  setKeyScale( rows );
+  setKeyScale( rows );      // piano scale coloring
   addClass( scaleDegrees.childNodes[0], 'root' );
   addClass( divChdBtns.childNodes[0].childNodes[0], 'root' );
   setChordRoot( rkey, true );
@@ -144,48 +164,59 @@ selEvts.addEventListener("change", function() {     // change Event
   var evt = _trk.evts[ selEvts.selectedIndex ];
   playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
 });
+function initValue( ctl, nm, val, def ){
+  if ( val==undefined ) val = def;
+  if ( ctl.value==undefined )
+    ctl.innerText = plyrVal( nm, val );
+  else
+    ctl.value = plyrVal( nm, val );
+}
 function refreshTrack(){     // evaluate new track
   resetPlyr( 0 );
   _song = findSong( selSong.value );
   _track = findTrack( _song, selTrk.value );
   
-  if ( _song.melodyOctave != undefined )     m_octave.value = _song.melodyOctave;
-  if ( _song.harmonyOctave != undefined )    h_octave.value = _song.harmonyOctave;
+  initValue( bpb, 'bpb', _song.beatsPerBar, 4 );
+  initValue( tpb, 'tpb', _song.ticsPerBeat, 4 );
+  initValue( tempo, 'tempo', _song.tempo, 80 );
+  plyrVal( 'msTic', 60000 / plyrVal('tempo') / plyrVal( 'tpb' ) );
 
-  _trk = evalTrack( _song, _track ); 
+  initValue( m_octave, 'm_octave', _song.melodyOctave, 4 );
+  initValue( h_octave, 'h_octave', _song.harmonyOctave, 3 );
+
+  _trk = evalTrack( _song, _track, plyrVal('m_octave'), plyrVal('h_octave') ); 
   showEventList();
 
-  var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,false) : emStr(x.nt,false)} * ${x.d}` );
+  var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
   loadSelect( selEvts, evts );
   btnPlay.innerText = 'Play';
 }
 
 function initDialogs(){
+  tempo.addEventListener( 'change', (ev)=> {
+     plyrVal('tempo', tempo.value);
+     plyrVal( 'msTic', 60000 / plyrVal('tempo') / plyrVal( 'tpb' ) );
+  });
   // Melody/Harmony Adjust dialogues
-  m_velocity.addEventListener("change", function() {
-    plyrVal( 'm_velocity', m_velocity.value );
-  });
-  m_octave.addEventListener("change", function() {
+  m_velocity.addEventListener("change", (ev) => plyrVal( 'm_velocity', m_velocity.value ) );
+  m_octave.addEventListener("change", (ev) => {
     plyrVal( 'm_octave', m_octave.value );
+    _trk = evalTrack( _song, _track, plyrVal( 'm_octave'), plyrVal( 'h_octave') ); 
+    showEventList();
   });
-  m_tune.addEventListener('change', (ev) =>{
-    plyrVal( 'm_tune', m_tune.checked );
-  });
-  m_rhythm.addEventListener('change', (ev) =>{
-    plyrVal( 'm_rhythm', m_rhythm.checked );
-  });
+  m_tune.addEventListener('change',     (ev) => {  plyrVal( 'm_tune', m_tune.checked );  } );
+  m_rhythm.addEventListener('change',   (ev) => {  plyrVal( 'm_rhythm', m_rhythm.checked );  } );
  
-  h_velocity.addEventListener("change", function() {
-    plyrVal( 'h_velocity', h_velocity.value );
-  });
-  h_octave.addEventListener("change", function() {
+  h_velocity.addEventListener("change", (ev) => {  plyrVal( 'h_velocity', h_velocity.value );  } );
+  h_octave.addEventListener("change",   (ev) => { 
     plyrVal( 'h_octave', h_octave.value );
+    _trk = evalTrack( _song, _track, plyrVal( 'm_octave'), plyrVal( 'h_octave') ); 
+    showEventList();
   });
-  h_mute.addEventListener('change', (ev) =>{
-    plyrVal( 'h_mute', h_mute.checked );
-  });
+  h_chords.addEventListener('change',     (ev) => {  plyrVal( 'h_chords', h_chords.checked );  } );
+  h_rhythm.addEventListener('change',     (ev) => {  plyrVal( 'h_rhythm', h_rhythm.checked );  } );
 }
-btnPlay.addEventListener("click", function(){     // Play
+btnPlay.addEventListener("click", (ev) => {     // Play
   if ( btnPlay.innerText=='Play' ){
     btnPlay.innerText = 'Stop';
     startPlay();
@@ -194,7 +225,7 @@ btnPlay.addEventListener("click", function(){     // Play
     stopPlay();
   }
 });
-btnSave.addEventListener("click", function(){     // Save
+btnSave.addEventListener("click", (ev) => {     // Save
   saveTrack( _song, _track, _trk ); 
   msg( `Saved track '${_track.nm}' of '${_song.nm}'` );
 });
@@ -237,6 +268,11 @@ function asBar( tics ){    // return tics as string in bars
 // };
 
 // var _rowdefs = {};
+var _row0key;
+function rowInfo( rw ){
+  if (isNaN(rw)) debugger;
+  return scaleRows()[ rw + _row0key ];
+}
 function showEventList(){     // build rows display from _trk.evts
   clearKeyMarkers();
   let html = '';  
@@ -245,10 +281,11 @@ function showEventList(){     // build rows display from _trk.evts
   let [ lo, hi ] = trackLoHi();
   let maxtic = maxTic();
 
-  status( `Notes: ${lo}..${hi}  Tics: 0..${maxtic} ` );
+  statusMsg( `Notes: ${lo}..${hi}  Tics: 0..${maxtic} ` );
   let rows = scaleRows(); 
   
   //let sp = 1; //, lblRw = 0;
+  _row0key = lo;
   for (let i=lo; i<=hi; i++){   // backgrounds for rows
     let rw = rows[i];
     let r = i-lo; //`r${rw.rw}`;
@@ -330,28 +367,25 @@ function showEventList(){     // build rows display from _trk.evts
    divChords.innerHTML = chtml;
    setTic(0);
 }
-divBars.addEventListener("click", function(evt){    // click on Notes scroll
+divBars.addEventListener("click",  (evt) => {    // click on Notes scroll
   let tgt = evt.target;
   let rw = null, iEvt = null;
+  let tip = `#${tgt.id}.${tgt.className} `;
 
   for ( let cl of tgt.className.split(' ') ){ 
-    if ( cl[0]=='k'){ 
-      rw = Number( cl.substring(1) );
-      rw = isNaN(rw)? null : scaleRows()[rw];
+    if ( cl[0]=='r' && '0123456789'.includes(cl[1])){ 
+      rw = rowInfo( Number( cl.substring(1) ));
+      tip = `${rw.nt} (${rw.bdeg})`;
     }
-   // if (  _rowdefs[cl] != undefined ) rw = _rowdefs[cl];
     if ( cl[0]=='e' ) iEvt = Number( cl.substring(1));
   }
 
 
-  let tip = `#${tgt.id}.${tgt.className} `;
-  let eCls = tgt.className.substring(tgt.className.indexOf(' e'));
-  let e = _trk.evts[ eCls.substring(2) ];
-  if ( rw!=null ) tip = `${emStr(rw.nt,false)} (${rw.deg}) `;
+  let e = _trk.evts[ iEvt ];
   if (tgt.id.startsWith('nt')){
-    tip = `m${iEvt} ${asBar(e.t)} ${emStr(e.nt,false)} (${rw.deg}) for ${inBeats(e.d)}`;
+    tip = `m${iEvt} ${asBar(e.t)} ${emStr(e.nt, false)} (${rw.bdeg}) for ${inBeats(e.d)}`;
     selectEl( tgt );
-    playEvent( { t:0, nt: e.nt, d: e.d } );
+    playEvent( { t:0, nt:  e.nt, d: e.d } );
   } else if (tgt.id.startsWith('chd')){
     let ich = tgt.id.substring(3).split('-')[0];
   
@@ -364,7 +398,6 @@ divBars.addEventListener("click", function(evt){    // click on Notes scroll
   } 
   msg( tip );
 });
-
 
 initChordUI();
 loadSelect( selMode, modeNames() );

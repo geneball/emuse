@@ -130,35 +130,39 @@
 	function scaleDegMap(  ){	// return currScaleRows: [0.127] with info for each key in current scale
 		return currScaleDegMap;
 	}
-
+	function scDegToKeyNum( sdeg ){
+		let k = currScaleDegMap[ sdeg ];
+		if ( k==undefined ) debugger;
+		return k;
+	}
 	function calcScaleRows(  ){	
 		currScaleRows = []; 
 		currScaleDegMap = {};
 
 		let cls = {
-			'1':	{ chd: 'ch1',   nt: 'n1',   sd:'sd1',   row: 'sp1'  },
-			'1#':	{ chd: 'ch12',  nt: 'n12',  sd:'sd12',  row: 'sp12' },
-			'1##':	{ chd: 'ch21',  nt: 'n21',  sd:'sd21',  row: 'sp21' },
+			'1':	{ chd: 'ch1',   nt: 'n1',   sd:'sd1',   row: 'sp1' },
+			'1#':	{ chd: 'ch12',  nt: 'n12',  sd:'sd12',  row: 'sp2' },
+			'1##':	{ chd: 'ch21',  nt: 'n21',  sd:'sd21',  row: 'sp2' },
+			'2':	{ chd: 'ch2',   nt: 'n2',   sd:'sd2',   row: 'sp1' },
+			'2#':	{ chd: 'ch23',  nt: 'n23',  sd:'sd23',  row: 'sp2' },
+			'2##':	{ chd: 'ch32',  nt: 'n32',  sd:'sd32',  row: 'sp2' },
+			'3':	{ chd: 'ch3',   nt: 'n3',   sd:'sd3',   row: 'sp1' },
+			'3#':	{ chd: 'ch34',  nt: 'n34',  sd:'sd34',  row: 'sp2' },
+			'3##':	{ chd: 'ch43',  nt: 'n43',  sd:'sd43',  row: 'sp2' },
+			'4':	{ chd: 'ch4',   nt: 'n4',   sd:'sd4',   row: 'sp1' },
+			'4#':	{ chd: 'ch45',  nt: 'n45',  sd:'sd45',  row: 'sp2' },
+			'4##':	{ chd: 'ch54',  nt: 'n54',  sd:'sd54',  row: 'sp2' },
+			'5':	{ chd: 'ch5',   nt: 'n5',   sd:'sd5',   row: 'sp1' },
+			'5#':	{ chd: 'ch56',  nt: 'n56',  sd:'sd56',  row: 'sp2' },
+			'5##':	{ chd: 'ch65',  nt: 'n65',  sd:'sd65',  row: 'sp2' },
+			'6':	{ chd: 'ch6',   nt: 'n6',   sd:'sd6',   row: 'sp1' },
+			'6#':	{ chd: 'ch67',  nt: 'n67',  sd:'sd67',  row: 'sp2' },
+			'6##':	{ chd: 'ch76',  nt: 'n76',  sd:'sd76',  row: 'sp2' },
+			'7':	{ chd: 'ch7',   nt: 'n7',   sd:'sd7',   row: 'sp1' },
+			'7#':	{ chd: 'ch71',  nt: 'n71',  sd:'sd71',  row: 'sp2' },
+			'7##':	{ chd: 'ch17',  nt: 'n17',  sd:'sd17',  row: 'sp2' },
 		}
-		let chdcls = {
-			'1':'ch1',  '1#':'ch12',  '2':'ch2',  '2#':'ch23',  '3':'ch3', '3#':'ch34',
-			'4':'ch4',  '4#':'ch45',  '5':'ch5',  '5#':'ch56',  '6':'ch6', '6#':'ch67',  '7':'ch7', '7#':'ch71' 
-		};
-		
-		let ntcls = {
-			'1':'n1',  '1#':'n12',  '2':'n2',  '2#':'n23',  '3':'n3', '3#':'n34',  
-			'4':'n4',  '4#':'n45',  '5':'n5',  '5#':'n56',  '6':'n6', '6#':'n67',  '7':'n7', '7#':'n71' 
-		};
-		let sdcls = {
-			'1':'sd1',  '1#':'sd12',  '2':'sd2',  '2#':'sd23',  '3':'sd3', '3#':'sd34',  
-			'4':'sd4',  '4#':'sd45',  '5':'sd5',  '5#':'sd56',  '6':'sd6', '6#':'sd67',  '7':'sd7', '7#':'sd71' 
-		};
-				
-		let rowcls = {
-		'1':'sp1',  '1#':'sp2',  '2':'sp1',  '2#':'sp2',  '3':'sp1', '3#':'sp2',
-		'4':'sp1',  '4#':'sp2',  '5':'sp1',  '5#':'sp2',  '6':'sp1', '6#':'sp2',  '7':'sp1', '7#':'sp2' 
-		};
-
+	
 		let off = 12 - (currRoot % 12); 
 		let oct = Math.trunc(currRoot / 12)+1;
 		let octB = oct * -7;		// octB => oct octaves below Root
@@ -173,7 +177,7 @@
 			currScaleDegMap[  scDegKey ] = k;   // map from eg. GMaj:  '1' => 67, '1#' => 68, '-1' => 65
 
 			let scrow = { key:k, nt: emStr(k, false), scdeg: scdeg, bdeg: scDegKey,
-			ntcls: ntcls[ scdeg ], sdcls: sdcls[scdeg], chdcls: chdcls[ scdeg ], rowcls: rowcls[ scdeg ] };
+			ntcls: cls[ scdeg ].nt, sdcls: cls[scdeg].sd, chdcls: cls[ scdeg ].chd, rowcls: cls[ scdeg ].row };
 			scrow.inscale = scrow.scdeg.length===1;		// no # => inscale
 			currScaleRows[ k ] = scrow;
 		}
@@ -202,7 +206,7 @@
 		calcScaleRows();
 	}
 	function toScale( md, root ){		// return [] of semitones in scale, e.g. [ 0,2,4,5,7,9,11,12 ]
-		//setScale( md, root );
+		debugger; //setScale( md, root );
 		return currScale.scale.map( v => currRoot + v );
 	}	
 	// c  c# d  d# e  f  f# g  g# a  a# b  c  -- note name
@@ -302,17 +306,18 @@
         }
 		return -1;
 	}
-	function chordName( chd, astype ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
+	function chordName( chd, astype, split ){	// return chord name e.g. [60,64,67] => "C4M"  (or if astype==true, "CM")
 		if (astype==undefined) astype == false;
+		if (split==undefined) split == false;
 		if ( !(chd instanceof Array)) 
             debugger;
 		var rt = chd[0], chd2;
-		let nts = chd.map( (v, i) => emStr( chd[i], astype ) );
+		let nts = chd.map( (v, i) => emStr( chd[i], astype ) );			
         chd2 = chd.map( x => x-rt );
  
 		let idx = idxChd( chd2 );
 		if ( idx >= 0 )  
-			return `${nts[0]}${chordDefs[idx].nm}`;
+			return split? [ nts[0], chordDefs[idx].nm ] : `${nts[0]}${chordDefs[idx].nm}`;
 
 		for ( let i=0; i < chd2.length-1; i++ ){
 			chd2[i] += 12;
@@ -321,7 +326,7 @@
 			chd3 = chd3.map( x => x-chd3[0] );
 			idx = idxChd( chd3 );
 			if ( idx >= 0 )
-				return `${nts[i+1]}${chordDefs[idx].nm}/${nts[0]}`;
+				return split? [ nts[i+1], `${chordDefs[idx].nm}/${nts[0]}` ] : `${nts[i+1]}${chordDefs[idx].nm}/${nts[0]}`;
 		}
 
 		err( `chordName: ${chd} unrecognized` );
@@ -388,5 +393,5 @@
 	}
 
 	
-module.exports = { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest }; 
-// const { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest } = require( './emuse.js' );
+module.exports = { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, scDegToKeyNum, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest }; 
+// const { toKeyNum, setScale, toScale, scaleRows, scaleDegMap, scDegToKeyNum, modeNames, chordNames, toChord, chordName, emStr, asDeg, emTest } = require( './emuse.js' );

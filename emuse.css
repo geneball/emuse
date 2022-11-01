@@ -39,11 +39,19 @@
     #selectMode      { width: 8em; }
     #selectEvents    { width: 8em; }
     #chdInv          { width: 2em; }
+    #tempo           { width: 3em; }
+    #tpb             { width: 2em; }
+    #bpb             { width: 2em; }
+
+	#scaleDegrees button { border: 2px solid white; }
+	#triads button 	 { border: 2px solid white; }
+	#quartads button { border: 2px solid white; }
+	#quintads button { border: 2px solid white; }
 
     #bars            { position:relative; border: 1px solid white; width:1000px; height:320px;  overflow: auto; }
     .sel             { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 7px, white 7px ); }
     .act             { background: repeating-linear-gradient(45deg, transparent, transparent 4px, white 4px, black 8px ); }
-    .root            { border: 2px solid white; }
+    .root            { border: 2px solid black !important; }
     .tic             { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
     .bar             { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
     .lbl             { width: 5000px; height:40px; background-color: white;  font-size: x-small; }
@@ -78,6 +86,13 @@
     .n56             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 10px, var(--D5) 10px, var(--D5) 20px); }
     .n67             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 10px, var(--D6) 10px, var(--D6) 20px); }
     .n71             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D0) 10px, var(--D0) 20px); }
+    .n21             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D0), var(--D0) 10px, var(--D1) 10px, var(--D1) 20px); }
+    .n32             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D1), var(--D1) 10px, var(--D2) 10px, var(--D2) 20px); }
+    .n43             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D2), var(--D2) 10px, var(--D3) 10px, var(--D3) 20px); }
+    .n54             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D3), var(--D3) 10px, var(--D4) 10px, var(--D4) 20px); }
+    .n65             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D4), var(--D4) 10px, var(--D5) 10px, var(--D5) 20px); }
+    .n76             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D5), var(--D5) 10px, var(--D6) 10px, var(--D6) 20px); }
+    .n17             { z-index: 2; background: repeating-linear-gradient(45deg, var(--D6), var(--D6) 10px, var(--D0) 10px, var(--D0) 20px); }
 
     .ch1             { background-color: var(--L0)  }
     .ch2             { background-color: var(--L1)  }
@@ -94,6 +109,13 @@
     .ch56            { background: repeating-linear-gradient(45deg, var(--L4), var(--L4) 10px, var(--L5) 10px, var(--L5) 20px); }
     .ch67            { background: repeating-linear-gradient(45deg, var(--L5), var(--L5) 5px, var(--L6) 5px, var(--L6) 10px); }
     .ch71            { background: repeating-linear-gradient(45deg, var(--L6), var(--L6) 10px, var(--L0) 10px, var(--L0) 20px); }
+    .ch21            { background: repeating-linear-gradient(45deg, var(--L0), var(--L0) 10px, var(--L1) 10px, var(--L1) 20px); }
+    .ch32            { background: repeating-linear-gradient(45deg, var(--L1), var(--L1) 10px, var(--L2) 10px, var(--L2) 20px); }
+    .ch43            { background: repeating-linear-gradient(45deg, var(--L2), var(--L2) 10px, var(--L3) 10px, var(--L3) 20px); }
+    .ch54            { background: repeating-linear-gradient(45deg, var(--L3), var(--L3) 10px, var(--L4) 10px, var(--L4) 20px); }
+    .ch65            { background: repeating-linear-gradient(45deg, var(--L4), var(--L4) 10px, var(--L5) 10px, var(--L5) 20px); }
+    .ch76            { background: repeating-linear-gradient(45deg, var(--L5), var(--L5) 5px, var(--L6) 5px, var(--L6) 10px); }
+    .ch17            { background: repeating-linear-gradient(45deg, var(--L6), var(--L6) 10px, var(--L0) 10px, var(--L0) 20px); }
 
     .sd1             { background-color: var(--L0)  }
     .sd2             { background-color: var(--L1)  }
@@ -110,6 +132,13 @@
     .sd56            { background-color: var(--C22)  }
     .sd67            { background-color: var(--C22)  }
     .sd71            { background-color: var(--C22)  }
+    .sd21            { background-color: var(--C22)  }
+    .sd32            { background-color: var(--C22)  }
+    .sd43            { background-color: var(--C22)  }
+    .sd54            { background-color: var(--C22)  }
+    .sd65            { background-color: var(--C22)  }
+    .sd76            { background-color: var(--C22)  }
+    .sd17            { background-color: var(--C22)  }
 
     div.sel .ch1     { background: repeating-linear-gradient(45deg, var(--L0), var(--L0) 9px, black 9px, black 11px );  }
     div.sel .ch2     { background: repeating-linear-gradient(45deg, var(--L1), var(--L1) 9px, black 9px, black 11px );  }
@@ -126,6 +155,13 @@
     div.sel .ch56    { background: repeating-linear-gradient(45deg, var(--L4), var(--L5) 9px, black 9px, black 11px, var(--L5) 11px, var(--L5) 11px); }
     div.sel .ch67    { background: repeating-linear-gradient(45deg, var(--L5), var(--L6) 9px, black 9px, black 11px, var(--L6) 11px, var(--L6) 11px); }
     div.sel .ch71    { background: repeating-linear-gradient(45deg, var(--L6), var(--L0) 9px, black 9px, black 11px, var(--L7) 11px, var(--L7) 11px); }
+    div.sel .ch21    { background: repeating-linear-gradient(45deg, var(--L0), var(--L1) 9px, black 9px, black 11px, var(--L1) 11px, var(--L1) 20px); }
+    div.sel .ch32    { background: repeating-linear-gradient(45deg, var(--L1), var(--L2) 9px, black 9px, black 11px, var(--L2) 11px, var(--L2) 11px); }
+    div.sel .ch43    { background: repeating-linear-gradient(45deg, var(--L2), var(--L3) 9px, black 9px, black 11px, var(--L3) 11px, var(--L3) 11px); }
+    div.sel .ch54    { background: repeating-linear-gradient(45deg, var(--L3), var(--L4) 9px, black 9px, black 11px, var(--L4) 11px, var(--L4) 11px); }
+    div.sel .ch65    { background: repeating-linear-gradient(45deg, var(--L4), var(--L5) 9px, black 9px, black 11px, var(--L5) 11px, var(--L5) 11px); }
+    div.sel .ch76    { background: repeating-linear-gradient(45deg, var(--L5), var(--L6) 9px, black 9px, black 11px, var(--L6) 11px, var(--L6) 11px); }
+    div.sel .ch17    { background: repeating-linear-gradient(45deg, var(--L6), var(--L0) 9px, black 9px, black 11px, var(--L7) 11px, var(--L7) 11px); }
 
     .rw              { height: 10px; }
 

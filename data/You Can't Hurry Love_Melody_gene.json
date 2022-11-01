@@ -5,7 +5,7 @@
   "bpb": 4,
   "tpb": 4,
   "tempo": 99,
-  "codons": "FwAQBFCEDBEwGeH7JqRM%NjLuQHrRHqRHuJuRMsNALqQHxRMsNALuQHqJqRHuRMsNAQHqRHqRHuJuRMsNALwQOCHpJqRHvJuRMsNNLoQHuJqRHuRHlJuRMsNNL2QHqJqRHqROBJrRHuJtRHuRHtRHrRMsNNLeQHqJrRMsNZLyQHuJtRHtRHuJtRHqJrRMsNJLqQHrRHqRHuJuRMsNALqQHxRMsNAQHqJqRMsNALqQHuRMsNALwQHqRHqRHuJuRMsNALwQOCHpJqRHvJuRMsNNLoQHuJqRHuRHlRMsNNLwQRHqRHqROBJrRHuJtRMsNNLqQHuRHtROBHuRMsNcLoQRRMsNZQ",
+  "codons": "FwAQBFCEDBEwGeH7JqRM%NWLuQHrRHqRHuJuRMsNALqQHxRMsNALuQHqJqRHuRMsNAQHqRHqRHuJuRMsNALwQOCHpJqRHvJuRMsNBLoQHuJqRHuRHlJuRMsNBL2QHqJqRHqROBJrRHuJtRHuRHtRHrRMsNBLeQHqJrRMsNJLyQHuJtRHtRHuJtRHqJrRMsNFLqQHrRHqRHuJuRMsNALqQHxRMsNAQHqJqRMsNALqQHuRMsNALwQHqRHqRHuJuRMsNALwQOCHpJqRHvJuRMsNBLoQHuJqRHuRHlRMsNBLwQRHqRHqROBJrRHuJtRMsNBLqQHuRHtROBHuRMsNVLoQRRMsNJQ",
   "evts": [
     {
       "t": 0,
@@ -229,8 +229,8 @@
       "t": 64,
       "chord": [
         70,
-        72,
-        77
+        77,
+        84
       ],
       "d": 6
     },
@@ -420,10 +420,10 @@
       "t": 120,
       "chord": [
         70,
-        72,
         74,
         77,
-        80
+        80,
+        84
       ],
       "d": 4
     },

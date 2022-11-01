@@ -1,12 +1,15 @@
 const { toChord } = require("./emuse");
-const { err, msg, nameChord } = require("./msg");
+const { err, msg, statusMsg, nameChord } = require("./msg");
 const { midiOutDev, markKey, clearKeyMarkers, addClass, removeClass } = require( './piano.js' );
+
+
 
 var _chdRoot, _chdChord, _chdInv;        // current chord root & type
 function setChordRoot( ky, noPlay ){
     _chdRoot = ky;  
      if (!noPlay) playChord();
 }
+function chordRoot(){ return _chdRoot; }
 function setChordType( nm, noPlay ){
     _chdChord = nm;
      if (!noPlay) playChord();
@@ -28,14 +31,24 @@ function invertChord( chd ){
     }
     return chd.sort( );
 }
+function mNt( k ){   return k; }
+//     // map melody k from octave 4 to octave m_octave
+//     if ( k instanceof Array ) return k.map( v => mNt(v) );
+//     return k + (_plyr.m_octave-4) * 12; 
+// }
+function hNt( k ){ return k; }
+//         // map harmony k from octave 4 to octave h_octave
+//    if ( k instanceof Array ) return k.map( v => hNt(v) );
+//    return k + (_plyr.h_octave - 4) * 12; 
+// }
 function playEvent( e ){
     clearKeyMarkers();
     if ( e.nt != undefined ){
-        setNoteOn( e.t, e.nt, e.d, _plyr.m_velocity );
+        setNoteOn( mNt( e.t ), e.nt, e.d, _plyr.m_velocity );
     }
     if ( e.chord != undefined ){
         for ( let nt of e.chord ){
-        setNoteOn( e.t, nt, e.d, _plyr.h_velocity );
+            setNoteOn( e.t, hNt( nt ), e.d, _plyr.h_velocity );
         }
     }
     setTimeout( ()=>{ 
@@ -50,7 +63,11 @@ function playChord(){
 }
 
 var _plyr = {
-        midi:  null,
+        bpb:            0,
+        tpb:            0,
+        tempo:          0,
+        msTic:          0,
+        midi:           null,
         m_velocity:     127,
         h_velocity:     80,
         m_octave:       3,
@@ -58,7 +75,9 @@ var _plyr = {
         m_rhythm:       true,  // if false, play all melody notes for 1 beat
         m_rhythmNote:   60, 
         m_tune:         true,  // if false, play root for all notes
-        h_mute:         false,   
+        h_chords:       true,   
+        h_rhythm:       true,   
+        root:           60,
         stop:           false,
         currBeat:       0,
         currEvtIdx:     0,   // index of next e in _trk.evts[]
@@ -118,7 +137,7 @@ var _plyr = {
         };
         
         if ( e==null ) return;
-        status( `${asBar(tic)} { ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }` );
+        statusMsg( `${asBar(tic)} { ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }` );
         
         _plyr.currBeat = bt;
         divBeat = document.getElementById( `beat${bt}` );
@@ -129,7 +148,7 @@ var _plyr = {
         addClass( divBeat, 'on' );
     }
     function addHist( msg ){
-        let currMs = (Date.now()-_plyr.msStart)/_trk.msTic;
+        let currMs = (Date.now()-_plyr.msStart)/_plyr.msTic;
         _plyr.hist.push( { ms:`${currMs.toFixed(2)}`, m: msg } );
     }
     function setNoteOn( tic, nt, d, vel ){
@@ -146,7 +165,7 @@ var _plyr = {
     function startPlay( midi ){
         resetPlyr();  // leave currBeat intact
         _plyr.msStart = Date.now();
-        _plyr.msMax = _plyr.msStart + _trk.maxTic * _trk.msTic;
+        _plyr.msMax = _plyr.msStart + _trk.maxTic * _plyr.msTic;
         var beat = _plyr.currBeat;
         let tic = beat * _song.ticsPerBeat;
     
@@ -168,16 +187,19 @@ var _plyr = {
                 let e = _trk.evts[ i ];
                 if ( e==null || e.t > tic ) break;
                 if ( e.nt != undefined && (_plyr.m_tune || _plyr.m_rhythm) ){
-                    let nt = e.nt + (_plyr.m_octave-3)*12;
+                    let nt = e.nt; 
                     if (!_plyr.m_tune) nt = _plyr.m_rhythmNote;     // no tune? play all notes as root
                     let dur = e.d;
-                    if (!_plyr.m_rhythm) dur = tpb;     // no rhythm? 1 beat per note
+                    if ( !_plyr.m_rhythm ) dur = tpb;     // no rhythm? 1 beat per note
                     setNoteOn( tic, nt, dur, _plyr.m_velocity );
                 }
-                if ( e.chord != undefined && !_plyr.h_mute  ){
-                    for ( let nt of e.chord ){
-                        nt += (_plyr.h_octave-3)*12;
-                        setNoteOn( tic, nt, e.d, _plyr.h_velocity );
+                if ( e.chord != undefined && (_plyr.h_chords || _plyr.h_rhythm)  ){
+                    let dur = e.d;
+                    if ( !_plyr.h_rhythm ) dur = tpb;
+                    let chd = e.chord;
+                    if ( !_plyr.h_chords ) chd = [ _plyr.root, _plyr.root+4, _plyr.root+7 ];
+                    for ( let nt of chd ){
+                        setNoteOn( tic, nt, dur, _plyr.h_velocity );
                     }
                 }
             }
@@ -186,10 +208,10 @@ var _plyr = {
                 btnPlay.innerText = 'Play';
                 if ( tic > _trk.maxTic ) _plyr.currBeat = 0;
             } else {
-                setTimeout( playtic, _trk.msTic );
+                setTimeout( playtic, _plyr.msTic );
             }
         }
-        setTimeout( playtic, _trk.msTic )
+        setTimeout( playtic, _plyr.msTic )
     }
     function stopPlay( ){
         _plyr.stop = true;
@@ -205,8 +227,8 @@ var _plyr = {
     }
   
     module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion,
-        plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
+        plyrVal, mNt, hNt, chordRoot, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
  // const { 
  //       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, invertChord,
- //       plyrVal, playEvent, playChord, selectEl, setNoteOn, setNoteOff
+ //       plyrVal, mNt, hNt, chordRoot, playEvent, playChord, selectEl, setNoteOn, setNoteOff
  //  } = require( './eplyr.js' );
