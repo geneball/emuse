@@ -1,0 +1,20 @@
+{
+  "nm": "Hallelujah_Verse",
+  "root": "C",
+  "mode": "Major",
+  "bpb": 6,
+  "tpb": 4,
+  "tempo": 168,
+  "codons": "FwAABFCEDBEyG#HnJyRMsNAL#QJkRJuRRHuJqRHqJuRM1NAQHuJwROKHnJoRHvJqRMjNAQJuRJyRJkRJuRHuJuRM1NAQHnJoRJwROGHxJqRJ0RMoNAQJiRJ!RMuNAQHqJcRRHqROEHuJqRMlNAQHlJxRMzNAQOjHxJnRRHuJwRMlNAQRJuRJoRHuJwRMxNALgQJoRHuJwRMuNAQJoRHtRMuNAL4QJwRRJoRHuJqRMoNAQHqJ0RHuJqRHqJoRHuJqRMuNAQJ0RJqRRMpNAQRHuRHqJuRMxNALyQHqROUHwJmRHvJwR",
+  "notes": "55 55 55 55 57 55 57 r 52 55 55 55 55 55 57 52 52 r 57 57 57 57 55 55 53 r 55 48 r 53 53 55 55 55 55 57 57 59 59 60 60 60 60 62 60 62 60 62 62 62 62 62 64 62 60 r 64 67",
+  "intervals": "-5 +0 +0 +0 +2 -2 +2 r -5 +3 +0 +0 +0 +0 +2 -5 +0 r +5 +0 +0 +0 -2 +0 -2 r +2 -7 r +5 +0 +2 +0 +0 +0 +2 +0 +2 +0 +1 +0 +0 +0 +2 -2 +2 -2 +2 +0 +0 +0 +0 +2 -2 -2 r +4 +3",
+  "scaledegrees": "-2 -2 -2 -2 -1 -2 -1 r -4 -2 -2 -2 -2 -2 -1 -4 -4 r -1 -1 -1 -1 -2 -2 -3 r -2 -6 r -3 -3 -2 -2 -2 -2 -1 -1 0 0 1 1 1 1 2 1 2 1 2 2 2 2 2 3 2 1 r 3 5",
+  "rootNote": "60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 r 60 60 r 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 r 60 60",
+  "mRhythm": "10 2 4 4 2 4 8 10 4 2 4 10 2 4 6 2 6 6 4 12 2 20 4 4 4 4 2 7 35 2 2 6 6 8 4 8 4 8 4 4 8 8 4 2 10 8 4 2 10 8 8 8 8 10 10 20 4 8",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "CM AM CM AM FM GM CM GM CM FM GM AM FM GM EM AM",
+  "romans": "IIM VIIM IIM VIIM VM VIM IIM VIM IIM VM VIM VIIM VM VIM IVM VIIM",
+  "rootMajor": "CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM",
+  "hRhythm": "24 24 24 24 24 24 24 24 24 12 12 24 24 24 24 30",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4"
+}

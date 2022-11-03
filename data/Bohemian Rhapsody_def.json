@@ -6,225 +6,169 @@
   "tempo": 144,
   "ticsPerBeat": 4,
   "tracks": [
-    { "nm": "Intro",
+    {
+      "nm": "Intro",
       "melody": [
-		"|1 4:r 4:2# 4:3 4:4 4:8# 4:8# 4:8 4:r",
-		"|3 4:7 4:7 4:8 4:r 4:8# 4:8# 4:8 4:r 4:7 4:7 4:8 4:r"
+        "|1 4:r 4:2# 4:3 4:4 4:8# 4:8# 4:8 4:r",
+        "|3 4:7 4:7 4:8 4:r 4:8# 4:8# 4:8 4:r 4:7 4:7 4:8 4:r"
       ],
       "chords": [
-		"|1 8:r 4:Bb7 4:Eb/Bb 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D"
+        "|1 8:r 4:Bb7 4:Eb/Bb 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D 8:Cb/Eb 8:Bb/D 8:A/C# 8:Bb/D"
       ]
     },
-    { "nm": "Intro & Verse",
+    {
+      "nm": "Verse",
       "melody": [
-		"|1"
+        "|1 4:13 4:13 4:13 2:13 8:12 2:r 4:15 4:r",
+        "|3 4:4# 4:4# 4:4# 4:5 8:7 4:4 4:2",
+        "|5 20:7 4:r 4:7 4:8 4:8 4:5 4:8 4:10",
+        "|8 4:13 4:5 4:12 4:5 4:8 4:5 4:8 4:10 4:13 4:5 4:12 4:5"
       ],
       "chords": [
-		"|1"
+        "|1 16:Eb 16:Bb/D 16:Edim/Db 36:F7/C 12:r",
+        "|7 64:Bb"
       ]
     },
-    { "nm": "Verse",
+    {
+      "nm": "Verse & Pre-chorus",
       "melody": [
-		"|1 4:13 4:13 4:13 2:13 8:12 2:r 4:15 4:r",
-		"|3 4:4# 4:4# 4:4# 4:5 8:7 4:4 4:2",
-		"|5 20:7 4:r 4:7 4:8 4:8 4:5 4:8 4:10",
-		"|8 4:13 4:5 4:12 4:5 4:8 4:5 4:8 4:10 4:13 4:5 4:12 4:5"
+        "|1 16:3 12:r 4:1 4:2 2:3 10:3",
+        "|4 12:r 4:3 3:4 2:5 4:4 4:3 5:2 4:r 4:2 4:3",
+        "|7 2:4 4:5 4:4 4:3 10:2 8:r",
+        "|9 2:3 14:3 8:r 4:3 4:5 6:7 2:6 16:6 4:r 4:6",
+        "|15 6:8 2:8 6:8 8:8 2:6 6:4 2:3 20:2 12:r"
       ],
       "chords": [
-		"|1 16:Eb 16:Bb/D 16:Edim/Db 36:F7/C 12:r",
-		"|7 64:Bb"
+        "|1 32:Bb 32:Gm",
+        "|5 16:Cm 8:Cm7 8:F7",
+        "|9 32:Bb 32:Gm 8:Cm 8:Cb+ 8:Cm/Bb 16:Am7 8:AbM7 8:Ab/G"
       ]
     },
-    { "nm": "Verse & Pre-chorus",
+    {
+      "nm": "Pre-chorus",
       "melody": [
-		"|1 16:3 12:r 4:1 4:2 2:3 10:3",
-		"|4 12:r 4:3 3:4 2:5 4:4 4:3 5:2 4:r 4:2 4:3",
-		"|7 2:4 4:5 4:4 4:3 10:2 8:r",
-		"|9 2:3 14:3 8:r 4:3 4:5 6:7 2:6 16:6 4:r 4:6",
-		"|15 6:8 2:8 6:8 8:8 2:6 6:4 2:3 20:2 12:r"
+        "|1 2:10 22:10 4:9 2:10 2:11",
+        "|3 24:10 4:r 2:10 2:10",
+        "|5 8:11 2:10 4:10 16:9 2:r 6:5 4:9 4:9 2:10 6:10 4:11 4:11 2:12 4:11 6:10 4:r 2:9 2:10",
+        "|11 12:8 2:5 2:5 4:5# 2:6# 4:5# 2:6# 4:5# 16:5"
       ],
       "chords": [
-		"|1 32:Bb 32:Gm",
-		"|5 16:Cm 8:Cm7 8:F7",
-		"|9 32:Bb 32:Gm 8:Cm 8:Cb+ 8:Cm/Bb 16:Am7 8:AbM7 8:Ab/G"
+        "|1 24:Eb 8:Bb/D 32:Cm 12:Fm 4:Fb+ 8:Fm/Eb 8:Dm7b5",
+        "|7 32:Bb 16:Eb 16:Bb/D 16:Cm 16:Abm 16:Eb"
       ]
     },
-    { "nm": "Pre-chorus",
+    {
+      "nm": "Pre-chorus & Chorus",
       "melody": [
-		"|1 2:10 22:10 4:9 2:10 2:11",
-		"|3 24:10 4:r 2:10 2:10",
-		"|5 8:11 2:10 4:10 16:9 2:r 6:5 4:9 4:9 2:10 6:10 4:11 4:11 2:12 4:11 6:10 4:r 2:9 2:10",
-		"|11 12:8 2:5 2:5 4:5# 2:6# 4:5# 2:6# 4:5# 16:5"
+        "|1 4:6 4:8 4:5 4:8 4:4# 4:8 4:4 4:8"
       ],
       "chords": [
-		"|1 24:Eb 8:Bb/D 32:Cm 12:Fm 4:Fb+ 8:Fm/Eb 8:Dm7b5",
-		"|7 32:Bb 16:Eb 16:Bb/D 16:Cm 16:Abm 16:Eb"
+        "|1 8:Ab 8:Eb/G 8:Ebdim/Gb 8:Fm7"
       ]
     },
-    { "nm": "Pre-chorus & Chorus",
+    {
+      "nm": "Pre-Chorus",
       "melody": [
-		"|1 4:6 4:8 4:5 4:8 4:4# 4:8 4:4 4:8"
+        "|1 2:10 22:10 4:9 2:10 2:11",
+        "|3 24:10 4:r 2:10 2:10",
+        "|5 6:11 2:10 4:10 16:9 2:r 2:5",
+        "|7 4:5 4:9 4:9 2:10 6:10 4:11 4:11 2:12 4:11 6:10 4:r 2:9 2:10 12:12 2:9 2:10",
+        "|11 12:8 2:7 2:7 4:7# 2:8# 4:7# 2:8# 4:7# 16:4"
       ],
       "chords": [
-		"|1 8:Ab 8:Eb/G 8:Ebdim/Gb 8:Fm7"
+        "|1 24:Eb 8:Bb/D 32:Cm 12:Fm 4:Fb+",
+        "|6 8:Fm/Eb 8:Dm7 32:Bb 16:Eb 16:Bb/D 16:Cm 16:Abm 16:Eb"
       ]
     },
-    { "nm": "Pre-Chorus",
+    {
+      "nm": "Chorus",
       "melody": [
-		"|1 2:10 22:10 4:9 2:10 2:11",
-		"|3 24:10 4:r 2:10 2:10",
-		"|5 6:11 2:10 4:10 16:9 2:r 2:5",
-		"|7 4:5 4:9 4:9 2:10 6:10 4:11 4:11 2:12 4:11 6:10 4:r 2:9 2:10 12:12 2:9 2:10",
-		"|11 12:8 2:7 2:7 4:7# 2:8# 4:7# 2:8# 4:7# 16:4"
+        "|1 8:5 6:10 1:9 1:8 12:12 4:10",
+        "|3 1:12 11:13 4:r 4:13 2:14 2:15 4:13 2:14 2:15",
+        "|5 12:16 2:r 2:13 2:16 2:17 2:18 2:19 8:20",
+        "|7 2:19 2:18 1:17 1:18 2:17 1:16 1:17 2:16 1:15 1:14 2:15",
+        "|8 1:14 1:15 1:14 1:13 1:14 1:13 2:12 8:12",
+        "|9 2:r 2:12 2:13 2:14 1:15 1:16 1:17 1:18 5:19 1:12 2:13 1:14 1:15 2:16 1:17 1:18 2:19 12:20 4:r 2:14 2:15",
+        "|13 12:16 2:9 2:10 8:11 8:16",
+        "|15 12:11 2:13# 1:13# 9:13# 8:6#"
       ],
       "chords": [
-		"|1 24:Eb 8:Bb/D 32:Cm 12:Fm 4:Fb+",
-		"|6 8:Fm/Eb 8:Dm7 32:Bb 16:Eb 16:Bb/D 16:Cm 16:Abm 16:Eb"
+        "|1 16:Eb 16:Bb/D 32:Cm 12:Fm 4:Fb+ 8:Fm/Eb 8:Dm7(b5) 11:Db 3:Db 1:Db/C 8:Cb 8:Bbm"
       ]
     },
-    { "nm": "Chorus",
+    {
+      "nm": "Chorus Lead-Out",
       "melody": [
-		"|1 8:5 6:10 1:9 1:8 12:12 4:10",
-		"|3 1:12 11:13 4:r 4:13 2:14 2:15 4:13 2:14 2:15",
-		"|5 12:16 2:r 2:13 2:16 2:17 2:18 2:19 8:20",
-		"|7 2:19 2:18 1:17 1:18 2:17 1:16 1:17 2:16 1:15 1:14 2:15",
-		"|8 1:14 1:15 1:14 1:13 1:14 1:13 2:12 8:12",
-		"|9 2:r 2:12 2:13 2:14 1:15 1:16 1:17 1:18 5:19 1:12 2:13 1:14 1:15 2:16 1:17 1:18 2:19 12:20 4:r 2:14 2:15",
-		"|13 12:16 2:9 2:10 8:11 8:16",
-		"|15 12:11 2:13# 1:13# 9:13# 8:6#"
-		],
-      "chords": [
-		"|1 16:Eb 16:Bb/D 32:Cm 12:Fm 4:Fb+ 8:Fm/Eb 8:Dm7(b5) 11:Db 3:Db 1:Db/C 8:Cb 8:Bbm"
-      ]
-    },
-    { "nm": "Chorus Lead-Out",
-      "melody": [
-		"|1 4:4 2:3 2:3 2:2# 2:2# 2:3 2:3",
-		"|2 2:4 2:4 2:3 2:3 4:2# 2:5 2:5",
-		"|3 4:8 2:5 2:5 4:8 2:5 2:5",
-		"|4 2:4# 2:4# 4:5 4:6 4:5",
-		"|5 2:5# 2:5# 2:5# 2:5# 4:6 4:6 2:6# 2:6# 2:6# 2:6# 4:7 4:7"
+        "|1 4:4 2:3 2:3 2:2# 2:2# 2:3 2:3",
+        "|2 2:4 2:4 2:3 2:3 4:2# 2:5 2:5",
+        "|3 4:8 2:5 2:5 4:8 2:5 2:5",
+        "|4 2:4# 2:4# 4:5 4:6 4:5",
+        "|5 2:5# 2:5# 2:5# 2:5# 4:6 4:6 2:6# 2:6# 2:6# 2:6# 4:7 4:7"
       ],
       "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Bridge",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Solo",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Solo1",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Solo2",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Solo3",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Outro1",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
-      ]
-    },
-    { "nm": "Outro2",
-      "melody": [
-		"|1"
-      ],
-      "chords": [
-		"|1"
+        "|1"
       ]
     }
- ],
+  ],
   "lyrics": {
     "Verse1": [
-		"Is this the real life?",
-		"Is this just fantasy?",
-		"Caught in a landside,",
-		"No escape from reality",
-		"Open your eyes,",
-		"Look up to the skies and see,",
-		"I'm just a poor boy, I need no sympathy,",
-		"Because I'm easy come, easy go,",
-		"Little high, little low,",
-		"Any way the wind blows doesn't really matter to",
-		"Me, to me",
-		"Mamaaa,",
-		"Just killed a man,",
-		"Put a gun against his head, pulled my trigger,",
-		"Now he's dead",
-		"Mamaaa, life had just begun,",
-		"But now I've gone and thrown it all away",
-		"Mama, oooh,",
-		"Didn't mean to make you cry,",
-		"If I'm not back again this time tomorrow,",
-		"Carry on, carry on as if nothing really matters",
-		"Too late, my time has come,",
-		"Sends shivers down my spine, body's aching all",
-		"The time",
-		"Goodbye, everybody, I've got to go,",
-		"Gotta leave you all behind and face the truth",
-		"Mama, oooh",
-		"I don't want to die,",
-		"I sometimes wish I'd never been born at all.",
-		"I see a little silhouetto of a man,",
-		"Scaramouch, Scaramouch, will you do the Fandango!",
-		"Thunderbolts and lightning, very, very frightening me",
-		"Galileo, Galileo",
-		"Galileo, Galileo",
-		"Galileo, Figaro - magnificoo",
-		"I'm just a poor boy nobody loves me",
-		"He's just a poor boy from a poor family,",
-		"Spare him his life from this monstrosity",
-		"Easy come, easy go, will you let me go",
-		"Bismillah! No, we will not let you go",
-		"(Let him go!) Bismillah! We will not let you go",
-		"(Let him go!) Bismillah! We will not let you go",
-		"(Let me go) Will not let you go",
-		"(Let me go)(Never) Never let you go",
-		"(Let me go) (Never) let you go (Let me go) Ah",
-		"No, no, no, no, no, no, no",
-		"Oh mama mia, mama mia, mama mia, let me go",
-		"Beelzebub has a devil put aside for me, for me,",
-		"For meee",
-		"So you think you can stop me and spit in my eye",
-		"So you think you can love me and leave me to die",
-		"Oh, baby, can't do this to me, baby,",
-		"Just gotta get out, just gotta get right outta here",
-		"Nothing really matters, Anyone can see,",
-		"Nothing really matters,",
-		"Nothing really matters to me",
-		"Any way the wind blows..."
+      "Is this the real life?",
+      "Is this just fantasy?",
+      "Caught in a landside,",
+      "No escape from reality",
+      "Open your eyes,",
+      "Look up to the skies and see,",
+      "I'm just a poor boy, I need no sympathy,",
+      "Because I'm easy come, easy go,",
+      "Little high, little low,",
+      "Any way the wind blows doesn't really matter to",
+      "Me, to me",
+      "Mamaaa,",
+      "Just killed a man,",
+      "Put a gun against his head, pulled my trigger,",
+      "Now he's dead",
+      "Mamaaa, life had just begun,",
+      "But now I've gone and thrown it all away",
+      "Mama, oooh,",
+      "Didn't mean to make you cry,",
+      "If I'm not back again this time tomorrow,",
+      "Carry on, carry on as if nothing really matters",
+      "Too late, my time has come,",
+      "Sends shivers down my spine, body's aching all",
+      "The time",
+      "Goodbye, everybody, I've got to go,",
+      "Gotta leave you all behind and face the truth",
+      "Mama, oooh",
+      "I don't want to die,",
+      "I sometimes wish I'd never been born at all.",
+      "I see a little silhouetto of a man,",
+      "Scaramouch, Scaramouch, will you do the Fandango!",
+      "Thunderbolts and lightning, very, very frightening me",
+      "Galileo, Galileo",
+      "Galileo, Galileo",
+      "Galileo, Figaro - magnificoo",
+      "I'm just a poor boy nobody loves me",
+      "He's just a poor boy from a poor family,",
+      "Spare him his life from this monstrosity",
+      "Easy come, easy go, will you let me go",
+      "Bismillah! No, we will not let you go",
+      "(Let him go!) Bismillah! We will not let you go",
+      "(Let him go!) Bismillah! We will not let you go",
+      "(Let me go) Will not let you go",
+      "(Let me go)(Never) Never let you go",
+      "(Let me go) (Never) let you go (Let me go) Ah",
+      "No, no, no, no, no, no, no",
+      "Oh mama mia, mama mia, mama mia, let me go",
+      "Beelzebub has a devil put aside for me, for me,",
+      "For meee",
+      "So you think you can stop me and spit in my eye",
+      "So you think you can love me and leave me to die",
+      "Oh, baby, can't do this to me, baby,",
+      "Just gotta get out, just gotta get right outta here",
+      "Nothing really matters, Anyone can see,",
+      "Nothing really matters,",
+      "Nothing really matters to me",
+      "Any way the wind blows..."
     ]
   }
 }

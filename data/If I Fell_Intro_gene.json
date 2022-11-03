@@ -1,0 +1,20 @@
+{
+  "nm": "If I Fell_Intro",
+  "root": "D#",
+  "mode": "Minor",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 105,
+  "codons": "FwADBFCEDHEwGhOMH7JqRHuRHtRPQMvNAL4QHuRHnRHuRHtJuRHpJqRHuRHtRMrNAQHuRHmRHuRHuJwRHoJoRHrJuRMrNAQH4J0RHrJiRM1NAQHqJuRHnJuRHqJoRHuRHtRMlNAQHuRHpRHtRHuJuRHpJqRHtRRMrNAQHuRHmRHuRHuJwRHoJoRH0J2RMzNAQHlJiRHuR",
+  "notes": "r 75 77 78 80 75 77 78 75 77 78 80 74 76 78 74 73 85 84 82 77 75 77 78 80 77 78 80 77 78 78 80 74 76 78 74 82 75 77",
+  "intervals": "r +12 +2 +1 +2 -5 +2 +1 -3 +2 +1 +2 -6 +2 +2 -4 -1 +12 -1 -2 -5 -2 +2 +1 +2 -3 +1 +2 -3 +1 +0 +2 -6 +2 +2 -4 +8 -7 +2",
+  "scaledegrees": "r 8 9 10 11 8 9 10 8 9 10 11 7# 8# 10 7# 7 14 13# 12 9 8 9 10 11 9 10 11 9 10 10 11 7# 8# 10 7# 12 8 9",
+  "rootNote": "r 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63 63",
+  "mRhythm": "12 2 2 2 2 2 2 4 2 2 2 2 2 2 6 2 4 12 2 4 6 2 2 2 2 2 2 4 2 2 2 2 2 2 6 2 12 2 2",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "r D#M DM C#M A#M D#M DM AM",
+  "romans": "r IIM I#M IM VIM IIM I#M V#M",
+  "rootMajor": "r D#M D#M D#M D#M D#M D#M D#M",
+  "hRhythm": "16 16 16 16 16 16 16 16",
+  "hSteady": "4 4 4 4 4 4 4 4"
+}
