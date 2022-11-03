@@ -192,5 +192,5 @@ function evalTrack( song, track, mOct, hOct ){  // calc events for song & track
   _trk.evts.sort( (a,b) => (a.t - b.t) );
   return _trk;
 }
-module.exports = { trackNames, findTrack, evalTrack, trackLoHi, mNt, hNt, maxTic  };
-// const { trackNames, findTrack, evalTrack, trackLoHi, mNt, hNt, maxTic  } = require( './etrack.js' );
+module.exports = { trackNames, findTrack, evalTrack, trackLoHi, asChord, maxTic  };
+// const { trackNames, findTrack, evalTrack, trackLoHi, asChord, maxTic  } = require( './etrack.js' );

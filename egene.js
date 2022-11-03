@@ -1,9 +1,8 @@
-const { toKeyNum, toScale, scaleRows, modeNames, chordNames, toChord, chordName, asStr, asDeg, test } = require("./emuse");
-const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic } = require("./etrack");
+const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chordName } = require("./emuse");
+const { asChord } = require( './etrack.js' );
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
 const { msg } = require( './msg.js' );
-const { eNt, hNt } = require( './eplyr.js' );
 
 
 var codon_maps = null;          // codon op & arg mappings
@@ -163,67 +162,6 @@ function chordDuration( dur ){  adjDur( 'CA', dur, _est.cdur ); _est.cdur = dur;
 function playChord(  ){         addCodon( 'PC' );       }
 function playNote(  ){          addCodon( 'PN' );       }
 
-function romanDegree( sdeg ){
-    let sharps = '';
-    while ( sdeg[sdeg.length-1]=='#' ){
-        sharps += '#'; 
-        sdeg = sdeg.substring(0, sdeg.length-1 );
-    }
-    let n = Number(sdeg);
-    while ( n > 7 ) n -= 7;
-    while ( n < 0 ) n += 7;
-    let roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
-    return roman[n] + sharps;
-}
-function extractEvents( evts, scaleRows, root, style ){
-    let extr = [];
-    let prevnt = toKeyNum(root);
-    let mtic = 0, htic = 0;
-    let isRhythm, isMelody;
-    switch ( style ){
-        case 'notes':       isRhythm = false; isMelody = true; break;
-        case 'intervals':   isRhythm = false; isMelody = true; break;
-        case 'scaledegree': isRhythm = false; isMelody = true; break;
-        case 'm_rhythm':    isRhythm = true;  isMelody = true; break;
-        case 'chords':      isRhythm = false; isMelody = false; break;
-        case 'roman':       isRhythm = false; isMelody = false; break;
-        case 'h_rhythm':    isRhythm = true;  isMelody = false; break;
-        default:        err( `unrecognized style ${style}` );   break;
-    }
-    for ( let e of evts ){
-        if ( isMelody && e.nt != undefined ){
-            if ( e.t > mtic ){
-                extr.push( style=='m_rhythm'? e.t-mtic : 'r' );
-                mtic = e.t;
-            }
-            switch( style ){
-                case 'notes':       extr.push( e.nt ); break;
-                case 'intervals':   extr.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
-                case 'scaledegree': extr.push( scaleRows[e.nt].bdeg ); break;
-                case 'm_rhythm':    extr.push( e.d );
-                default: break;
-            }
-            prevnt = e.nt;
-            mtic += e.d;
-        } 
-        if ( !isMelody && e.chord != undefined ){
-            if ( e.t > htic ){
-                extr.push( isRhythm? e.t-htic : 'r' );
-                htic = e.t; 
-            }
-            switch( style ){
-                case 'chords':      extr.push( chordName( e.chord, true )); break;
-                case 'roman':       // convert leading note to roman scale degree 1..7
-                    let [ rt, chnm ] = chordName( e.chord, false, true );     // split root & name
-                    extr.push( `${ romanDegree( scaleRows[ e.chord[0] ].bdeg) }${chnm}` ); break;
-                case 'h_rhythm':    extr.push( e.d );
-                default: break;
-            }
-            htic += e.d;
-        }
-    }
-    return extr;
-}
 function encodeEvent( e ){
     _encHist.push( { evt: _est.iEvt, t: e.t, typ: e.nt? 'N':'C', nt: _est.nt, nd: _est.ntdur, rt: _est.chdrt, cd: _est.cdur  } );
     if ( e.nt != undefined ){
@@ -360,10 +298,213 @@ function genEvts( gene ){
       decodeCodon( gene );
     }
 }
+//**************************************** */
+function romanDegree( sdeg ){
+    let sharps = '';
+    while ( sdeg[sdeg.length-1]=='#' ){
+        sharps += '#'; 
+        sdeg = sdeg.substring(0, sdeg.length-1 );
+    }
+    let n = Number(sdeg);
+    while ( n > 7 ) n -= 7;
+    while ( n < 0 ) n += 7;
+    let roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
+    return roman[n] + sharps;
+}
+const encodings = { 
+    notes:          { isRhythm: false, isMelody:  true,  isConst: false },
+    intervals:      { isRhythm: false, isMelody:  true,  isConst: false },
+    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false },
+    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true  },
+    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false },
+    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true  },
+    chords:         { isRhythm: false, isMelody:  false, isConst: false },
+    romans:         { isRhythm: false, isMelody:  false, isConst: false },
+    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true  },     
+    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false },
+    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true  }
+};
+function fromEvents( gene, style ){
+    let cd = [];
+    let evts = gene.evts;
+    let rootnt = toKeyNum( gene.root );
+    let prevnt = rootnt;
+    let scRows = scaleRows();
+    let mtic = 0, htic = 0;
+    if ( encodings[style] == undefined ) debugger;
+    let { isRhythm, isMelody, isConst } = encodings[ style ];
+    
+    for ( let e of evts ){
+        if ( isMelody && e.nt != undefined ){   // process melody event
+            if ( e.t > mtic ){
+                let rst = isConst? gene.tpb : e.t - mtic;
+                cd.push( isRhythm? rst : 'r' );
+                mtic = e.t;
+            }
+            switch( style ){
+                case 'notes':       cd.push( e.nt ); break;
+                case 'rootNote':    cd.push( rootnt );
+                case 'intervals':   cd.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
+                case 'scaledegrees': cd.push( scRows[e.nt].bdeg ); break;
+                case 'mRhythm':     cd.push( e.d ); break;
+                case 'mSteady':     cd.push( gene.tpb ); break;
+                default: err( `fromEvents: unrecognized style: ${style}`, true ); break;
+            }
+            prevnt = e.nt;
+            mtic += e.d;
+        } 
+        if ( !isMelody && e.chord != undefined ){   // process harmony event
+            if ( e.t > htic ){
+                let rst = isConst? gene.tpb : e.t - htic;
+                cd.push( isRhythm? rst : 'r' );
+                htic = e.t; 
+            }
+            switch( style ){
+                case 'chords':      cd.push( chordName( e.chord, true )); break;
+                case 'romans':       // convert leading note to roman scale degree 1..7
+                    let [ rt, chnm ] = chordName( e.chord, false, true );     // split root & name
+                    cd.push( `${ romanDegree( scRows[ e.chord[0] ].bdeg) }${chnm}` ); break;
+                case 'rootMajor':  cd.push( gene.root+'M' ); break;
+                case 'hRhythm':    cd.push( e.d ); break;
+                case 'hSteady':    cd.push( gene.tpb ); break;
+                default: err( `fromEvents: unrecognized style: ${style}`, true ); break;
+            }
+            htic += e.d;
+        }
+    }
+    return cd;
+}
+class cdStepper {
+    constructor( gene, style ){
+        this.gene = gene;
+        this.style = style;
+        if ( gene[style]==undefined ) debugger; 
+        this.idx = 0;
+        this.code = gene[ style ].split(' ');
+    }
+    nextCd(){
+        return this.code[ this.idx++ ];
+    }
+}
+function getStyles( styles, melody ){
+    let noteStyle = '', rhythmStyle = '';
+    for ( let s of styles ){
+        let enc = encodings[ s ];
+        if ( enc==undefined ) debugger;
+        if ( enc.isMelody==melody ){
+            if ( enc.isRhythm ){ 
+                if ( rhythmStyle != '' ) debugger;  // duplicate rhythm
+                rhythmStyle = s;
+            } else {
+                if ( noteStyle != '' ) debugger;  // duplicate tune
+                noteStyle = s;
+            }
+        }
+    }
+    return [ noteStyle, rhythmStyle ];
+}
+function toMelody( gene, styles ){
+    let [ noteStyle, rhythmStyle ] = getStyles( styles, true );
+    if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no melody requested
 
+    if ( noteStyle=='' )    noteStyle   = 'rootNote';     // constant tune
+    if ( rhythmStyle=='' )  rhythmStyle =  'mSteady';     // constant rhythm
+    let nts = new cdStepper( gene, noteStyle );
+    let rhy  = new cdStepper( gene, rhythmStyle );
+
+    let evts = [];
+    let nt = toKeyNum( gene.root ), tic = 0;
+    let dur = gene.tpb;
+    while ( true ){
+        let rcd = rhy.nextCd();     // get next duration
+        if ( rcd != undefined ){    // if cds run out, repeat last dur
+            switch ( rhythmStyle ){
+                case 'mRhythm':    dur = Number( rcd );   break;
+                default:
+                case 'mSteady':    break;   // dur stays at tpb
+            }
+        }
+        let ncd = nts.nextCd();     // get next note (or rest)
+
+        if ( rcd==undefined && ncd==undefined ) break;  // stop when both codes are exhausted
+        if ( ncd != 'r' ){
+            if ( ncd!=undefined ){  // if cds run out, repeat last nt
+                switch ( noteStyle ){
+                    case 'notes':       nt = toKeyNum( ncd );        break;
+                    case 'intervals':   nt += Number( ncd );         break;
+                    case 'scaledegrees': nt = scDegToKeyNum[ ncd ];  break;
+                    default:
+                    case 'rootNote':    break;      // nt stays at root
+                }
+            }
+            evts.push( { t:tic, d:dur, nt: nt } );
+        }
+        tic += dur;
+    }
+    return evts;
+}
+function toHarmony( gene, styles ){
+    let [ noteStyle, rhythmStyle ] = getStyles( styles, false );
+    if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no harmony requested
+
+    if ( noteStyle=='' )    noteStyle   = 'rootMajor';     // constant chords
+    if ( rhythmStyle=='' )  rhythmStyle =  'hSteady';     // constant rhythm
+    let nts = new cdStepper( gene, noteStyle );
+    let rhy  = new cdStepper( gene, rhythmStyle );
+
+    let evts = [];
+    let nt = toKeyNum( gene.root ), tic = 0;
+    let chd = [ nt, nt+4, nt+7 ];   // major chord
+    let dur = gene.tpb;
+    while ( true ){
+        let rcd = rhy.nextCd();     // get next duration
+        if ( rcd != undefined ){    // if cds run out, repeat last dur
+            switch ( rhythmStyle ){
+                case 'hRhythm':    dur = Number( rcd );   break;
+                default:
+                case 'hSteady':    break;   // dur stays at tpb
+            }
+        }
+        let ncd = nts.nextCd();     // get next chord (or rest)
+
+        if ( rcd==undefined && ncd==undefined ) break;  // stop when both codes are exhausted
+        if ( ncd != 'r' ){
+            if ( ncd!=undefined ){  // if cds run out, repeat last chd
+                switch ( noteStyle ){
+                    case 'chords':  
+                    case 'romans':   chd = asChord( ncd );   break;
+                    default:
+                    case 'rootMajor':    break;      // nt stays at root
+                }
+            }
+            evts.push( { t:tic, d:dur, chord: chd } );
+        }
+        tic += dur;
+    }
+    return evts;
+}
+function toEvents( gene, styles ){
+    // 'notes,mRhythm'  => melody events from gene.notes & gene.mRhythm
+    // 'notes'          => melody events from gene.notes w/ 1 note per beat
+    // 'intervals'      => melody events from gene.intervals starting at gene.root
+    // 'scaledegrees'   => melody events from gene.key & gene.scaledegrees
+    // 'mRhythm'        => melody events repeating gene.root according to gene.mRhythm
+    // 'chords,hRhythm' => harmony events from gene.chords & gene.hRhythm
+    // 'chords'         => harmony events from gene.chords at 1 chord per beat
+    // 'romans'         => harmony events from gene.romans & gene.key (at 1 chord per beat)
+    // 'hRhythm'        => harmony events repeatings gene.root Major according to gene.hRhythm
+
+    if ( typeof styles == 'string' || styles instanceof String ) styles = styles.split(',');
+
+    let melody = toMelody( gene, styles );
+    let harmony = toHarmony( gene, styles );
+
+    let evts = melody.concat( harmony ); 
+    evts.sort( (a,b) => a.t - b.t );
+    return evts;
+}
 //**************************************** */
 function saveTrack( song, trk, _trk ){
-
     let data = jetpack.cwd( './data' );
     data.write( `${song.nm}_def.json`, song );
 
@@ -379,18 +520,34 @@ function saveTrack( song, trk, _trk ){
         evts: []
     };
     genCodons( gene );
+
+    for ( let enc of Object.keys( encodings )){
+        gene[ enc ] = fromEvents( gene, enc ).join(' ');
+    }
+    // gene.notes       = fromEvents( gene, 'notes'        ).join(' ');
+    // gene.intervals   = fromEvents( gene, 'intervals'    ).join(' ');
+    // gene.scaledegrees= fromEvents( gene, 'scaledegrees' ).join(' ');
+    // gene.rootNote    = fromEvents( gene, 'rootNote'     ).join(' ');
+    // gene.mRhythm     = fromEvents( gene, 'mRhythm'      ).join(' ');
+    // gene.mSteady     = fromEvents( gene, 'mSteady'      ).join(' ');
+    // gene.chords      = fromEvents( gene, 'chords'       ).join(' ');
+    // gene.romans      = fromEvents( gene, 'romans'       ).join(' ');
+    // gene.rootMajor   = fromEvents( gene, 'rootMajor'    ).join(' ');
+    // gene.hRhythm     = fromEvents( gene, 'hRhythm'      ).join(' ');
+ 
+    let evts = gene.evts;
     delete gene.orig_events;        // since gene.evts matches
+    delete gene.evts;
 
-    gene.notes       = extractEvents( gene.evts, scaleRows(), song.root, 'notes'        ).join(' ');
-    gene.intervals   = extractEvents( gene.evts, scaleRows(), song.root, 'intervals'    ).join(' ');
-    gene.scaledegree = extractEvents( gene.evts, scaleRows(), song.root, 'scaledegree'  ).join(' ');
-    gene.m_rhythm    = extractEvents( gene.evts, scaleRows(), song.root, 'm_rhythm'     ).join(' ');
-    gene.chords      = extractEvents( gene.evts, scaleRows(), song.root, 'chords'       ).join(' ');
-    gene.roman       = extractEvents( gene.evts, scaleRows(), song.root, 'roman'        ).join(' ');
-    gene.h_rhythm    = extractEvents( gene.evts, scaleRows(), song.root, 'h_rhythm'     ).join(' ');
-
-    data.write( `${song.nm}_${trk.nm}_gene.json`, gene )
+    data.write( `${song.nm}_${trk.nm}_gene.json`, gene );
+    gene.evts = evts;
 }
+function loadTrack( song, trk ){
+    let data = jetpack.cwd( './data' );
+    let gene = data.read( `${song.nm}_${trk.nm}_gene.json`, 'json' );
+    return gene;
+}
+
 var songs = [];
 var song_paths = [];
 var song_names = [];
@@ -422,5 +579,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { saveTrack, findSong, songNames, extractEvents };
-// const { saveTrack, extractEvents, findSong, songNames, extractEvents } = require("./egene");
+module.exports = { saveTrack, loadTrack, toEvents, findSong, songNames };
+// const { saveTrack, loadTrack, toEvents, findSong, songNames } = require("./egene");

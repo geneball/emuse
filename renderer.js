@@ -5,8 +5,8 @@ const { shell } = require('electron');
 const { toKeyNum, toScale, setScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
 const { midiOutDev, clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
-const { trackNames, findTrack, evalTrack, trackRowMap, trackLoHi, maxTic  } = require('./etrack.js');
-const { saveTrack, findSong, songNames, extractEvents } = require("./egene");
+const { trackNames, findTrack, evalTrack, trackLoHi, maxTic  } = require('./etrack.js');
+const { saveTrack, loadTrack, findSong, songNames, toEvents  } = require("./egene");
 const { resetPlyr, startPlay, stopPlay, setTic, mNt, hNt, setChordRoot,  chordRoot, setChordType, adjInversion, plyrVal, playEvent, selectEl } = require( './eplyr.js' );
 
 function loadSelect( sel, nms ){
@@ -111,15 +111,8 @@ function initChordUI(){
   });
 }
 
-// btnsExtract.addEventListener('click', (ev) => {
-//   if ( ev.target.nodeName != 'BUTTON' ) return;
-//   let extr = extractEvents( _trk.evts, scaleRows(), chordRoot(), ev.target.innerText.trim() );
-//   statusMsg( `${extr}` );
-// });
-
-
 /* **********************  Song & Track UI  *******************  */
-var _song, _track;  
+var _song, _track, _trk, _evts;  
 selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
 selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
 
@@ -127,11 +120,7 @@ function setKey( root, mode ){
   clearChordBtns();
   rmClassFrChildren( scaleDegrees, 'root' );
   selRoot.value = root;
-  // for (let i=0; i<selRoot.options.length; i++){  // select song's key in selRoot
-  //   let txt = selRoot.options[i].innerText.trim();
-  //   if ( txt==root || (root.length>1 && txt.includes(root)))
-  //     selRoot.options[i].selected = true;
-  // }
+  
   selMode.value = mode;
 
   let rkey = toKeyNum( root );    // root key in octave 4
@@ -161,7 +150,7 @@ selTrk.addEventListener("change", function() {      // change Track
   refreshTrack();
 });
 selEvts.addEventListener("change", function() {     // change Event
-  var evt = _trk.evts[ selEvts.selectedIndex ];
+  var evt = _evts[ selEvts.selectedIndex ];
   playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
 });
 function initValue( ctl, nm, val, def ){
@@ -171,25 +160,48 @@ function initValue( ctl, nm, val, def ){
   else
     ctl.value = plyrVal( nm, val );
 }
+function getEvents(){
+  if ( !m_tune.checked || !m_rhythm.checked || !h_chords.checked || !h_rhythm.checked ){
+    let style = '';
+    if ( m_tune.checked  ) style += ',notes';
+    if ( m_rhythm.checked ) style += ',mRhythm';
+    if ( h_chords.checked ) style += ',chords';
+    if ( h_rhythm.checked ) style += ',hRhythm';
+    _evts = toEvents( _gene, style.substring(1) );
+  }
+}
 function refreshTrack(){     // evaluate new track
   resetPlyr( 0 );
   _song = findSong( selSong.value );
   _track = findTrack( _song, selTrk.value );
-  
+  // parse events from song_def.json, then save track as song_track_gene.json
+  _trk = evalTrack( _song, _track, m_octave.value, h_octave.value ); 
+  _evts = _trk.evts;
+  saveTrack( _song, _track, _trk );
+  _gene = loadTrack( _song, _track );
+
   initValue( bpb, 'bpb', _song.beatsPerBar, 4 );
   initValue( tpb, 'tpb', _song.ticsPerBeat, 4 );
   initValue( tempo, 'tempo', _song.tempo, 80 );
   plyrVal( 'msTic', 60000 / plyrVal('tempo') / plyrVal( 'tpb' ) );
 
-  initValue( m_octave, 'm_octave', _song.melodyOctave, 4 );
-  initValue( h_octave, 'h_octave', _song.harmonyOctave, 3 );
+  m_octave.value = _song.melodyOctave == undefined? 4 : _song.melodyOctave;
+  h_octave.value = _song.harmonyOctave == undefined? 3 : _song.harmonyOctave;
+ 
+  getEvents();  // recalc events given  melody/harmony tune/rhythm settings
 
-  _trk = evalTrack( _song, _track, plyrVal('m_octave'), plyrVal('h_octave') ); 
-  showEventList();
+  showEventList(  );
 
-  var evts = _trk.evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
+  var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
   loadSelect( selEvts, evts );
   btnPlay.innerText = 'Play';
+}
+
+function reEval(){
+  _trk = evalTrack( _song, _track, m_octave.value, h_octave.value ); 
+  _evts = _trk.evts;
+  getEvents();
+  showEventList();  
 }
 
 function initDialogs(){
@@ -199,27 +211,20 @@ function initDialogs(){
   });
   // Melody/Harmony Adjust dialogues
   m_velocity.addEventListener("change", (ev) => plyrVal( 'm_velocity', m_velocity.value ) );
-  m_octave.addEventListener("change", (ev) => {
-    plyrVal( 'm_octave', m_octave.value );
-    _trk = evalTrack( _song, _track, plyrVal( 'm_octave'), plyrVal( 'h_octave') ); 
-    showEventList();
-  });
-  m_tune.addEventListener('change',     (ev) => {  plyrVal( 'm_tune', m_tune.checked );  } );
-  m_rhythm.addEventListener('change',   (ev) => {  plyrVal( 'm_rhythm', m_rhythm.checked );  } );
+  m_octave.addEventListener("change", (ev) => {  reEval();  });
+  m_tune.addEventListener('change',     (ev) => {  refreshTrack(); } );
+  m_rhythm.addEventListener('change',   (ev) => {  refreshTrack(); } ); //plyrVal( 'm_rhythm', m_rhythm.checked );  } );
  
   h_velocity.addEventListener("change", (ev) => {  plyrVal( 'h_velocity', h_velocity.value );  } );
-  h_octave.addEventListener("change",   (ev) => { 
-    plyrVal( 'h_octave', h_octave.value );
-    _trk = evalTrack( _song, _track, plyrVal( 'm_octave'), plyrVal( 'h_octave') ); 
-    showEventList();
-  });
-  h_chords.addEventListener('change',     (ev) => {  plyrVal( 'h_chords', h_chords.checked );  } );
-  h_rhythm.addEventListener('change',     (ev) => {  plyrVal( 'h_rhythm', h_rhythm.checked );  } );
+  h_octave.addEventListener("change",   (ev) => { reEval(); });
+  h_chords.addEventListener('change',     (ev) => {  refreshTrack(); } ); //plyrVal( 'h_chords', h_chords.checked );  } );
+  h_rhythm.addEventListener('change',     (ev) => {  refreshTrack(); } ); //plyrVal( 'h_rhythm', h_rhythm.checked );  } );
 }
 btnPlay.addEventListener("click", (ev) => {     // Play
   if ( btnPlay.innerText=='Play' ){
     btnPlay.innerText = 'Stop';
-    startPlay();
+    let { maxtic: maxtic } = eventRange( _evts );
+    startPlay( _evts, _trk.tpb, maxtic );
   } else {
     btnPlay.innerText = 'Play';
     stopPlay();
@@ -273,13 +278,31 @@ function rowInfo( rw ){
   if (isNaN(rw)) debugger;
   return scaleRows()[ rw + _row0key ];
 }
-function showEventList(){     // build rows display from _trk.evts
+function eventRange( evts ){
+  let lo = 128, hi = 0, maxtic = 0;
+  for ( let e of evts ){
+    if ( e.t + e.d > maxtic )
+      maxtic = e.t + e.d;
+    if ( e.nt!=undefined ){
+      if ( e.nt < lo ) lo = e.nt;
+      if ( e.nt > hi ) hi = e.nt;
+    }
+    if ( e.chord != undefined ){
+      for ( let nt of e.chord ){
+        if ( nt < lo ) lo = nt;
+        if ( nt > hi ) hi = nt;
+      }
+    }
+  }
+  return { lo: lo, hi: hi, maxtic: maxtic };
+}
+function showEventList(){     // build rows display from _evts
   clearKeyMarkers();
   let html = '';  
   let root = toKeyNum( _song.root );
   //setScale( _song.mode, root );
-  let [ lo, hi ] = trackLoHi();
-  let maxtic = maxTic();
+  let { lo:lo, hi: hi, maxtic: maxtic } = eventRange( _evts );
+ // let maxtic = maxTic();
 
   statusMsg( `Notes: ${lo}..${hi}  Tics: 0..${maxtic} ` );
   let rows = scaleRows(); 
@@ -330,8 +353,8 @@ function showEventList(){     // build rows display from _trk.evts
   html = '';
   lblhtml = '';
   let chtml = '', cnt=0, ccnt=0, lastChd = '';
-  for ( let iE=0; iE<_trk.evts.length; iE++ ){
-    let e = _trk.evts[iE]; 
+  for ( let iE=0; iE<_evts.length; iE++ ){
+    let e = _evts[iE]; 
      if ( e.nt != undefined ){
        let rw = rows[ e.nt ];
        let r = e.nt - lo;
@@ -375,13 +398,14 @@ divBars.addEventListener("click",  (evt) => {    // click on Notes scroll
   for ( let cl of tgt.className.split(' ') ){ 
     if ( cl[0]=='r' && '0123456789'.includes(cl[1])){ 
       rw = rowInfo( Number( cl.substring(1) ));
+      if (rw==undefined) debugger;
       tip = `${rw.nt} (${rw.bdeg})`;
     }
     if ( cl[0]=='e' ) iEvt = Number( cl.substring(1));
   }
 
 
-  let e = _trk.evts[ iEvt ];
+  let e = _evts[ iEvt ];
   if (tgt.id.startsWith('nt')){
     tip = `m${iEvt} ${asBar(e.t)} ${emStr(e.nt, false)} (${rw.bdeg}) for ${inBeats(e.d)}`;
     selectEl( tgt );
