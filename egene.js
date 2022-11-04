@@ -612,10 +612,39 @@ function loadTrack( song, trk ){
     return gene;
 }
 
+var genes = [];
+var gene_paths = [];
+var gene_names = [];
+function findGene( nm ){
+    if ( gene_paths.length==0 ) findGenes();
+    for ( let g of genes ){
+        if ( nm == g.nm ) return g;
+    }
+    console.log( `findGene: didn't find ${nm}` );
+}
+function findGenes( ){
+    let data = jetpack.cwd( './data' );
+    gene_paths = data.find( { matching: '*_gene.json'} );
+    for ( let p of gene_paths ){
+        let gene = null;
+        try {  
+            gene = data.read( p, 'json' );
+            genes.push(  gene );
+        } catch ( err ){
+            console.log( `Err parsing ${p} ${err}` );
+            if ( typeof msg == 'function' ) msg( `Err parsing ${p} ${err}` );
+        }
+    }
+    gene_names = genes.map( x => x.nm );
+}
+function geneNames(){
+    if ( gene_paths.length==0 ) findGenes();
+    return gene_names;
+}
+
 var songs = [];
 var song_paths = [];
 var song_names = [];
-
 function findSongs( ){
     let data = jetpack.cwd( './data' );
     song_paths = data.find( { matching: '*_def.json'} );
@@ -643,5 +672,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { saveTrack, loadTrack, toEvents, findSong, songNames };
-// const { saveTrack, loadTrack, toEvents, findSong, songNames } = require("./egene");
+module.exports = { saveTrack, loadTrack, toEvents, findGene, geneNames, findSong, songNames };
+// const { saveTrack, loadTrack, toEvents, findGene, geneNames, findSong, songNames } = require("./egene");

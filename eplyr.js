@@ -107,8 +107,9 @@ var _plyr = {
         if ( e.nt != undefined ) return emStr(e.nt,false);
         if ( e.chord != undefined ) return chordName(e.chord, true);
     }
-    function setTic( tic ){
-        let bt = Math.trunc( tic / _song.ticsPerBeat );
+    function setTic( evts, tic ){
+        _plyr.evts = evts;
+        let bt = Math.trunc( tic / _gene.ticsPerBeat );
         let divBeat = document.getElementById( `beat${_plyr.currBeat}` );
         removeClass( divBeat, 'on' );
         let eIdx = _plyr.currEvtIdx;
@@ -161,11 +162,11 @@ var _plyr = {
         _plyr.msStart = Date.now();
          _plyr.msMax = _plyr.msStart + _plyr.maxTic * _plyr.msTic;
         var beat = _plyr.currBeat;
-        let tic = beat * _song.ticsPerBeat;
+        let tic = beat * _gene.ticsPerBeat;
     
         function playtic(){
             addHist( asBar(tic) );
-            setTic( tic );
+            setTic( _evts, tic );
             let ntson = _plyr.notesOn;
             _plyr.notesOn = [];
             for ( let n of ntson ){
