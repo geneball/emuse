@@ -311,18 +311,22 @@ function romanDegree( sdeg ){
     let roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
     return roman[n] + sharps;
 }
+const encStyles = [  // in preferred order for generating events
+        'notes', 'intervals', 'scaledegrees', 'rootNote', 'mRhythm', 'mSteady',
+        'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady' 
+];
 const encodings = { 
-    notes:          { isRhythm: false, isMelody:  true,  isConst: false },
-    intervals:      { isRhythm: false, isMelody:  true,  isConst: false },
-    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false },
-    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true  },
-    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false },
-    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true  },
-    chords:         { isRhythm: false, isMelody:  false, isConst: false },
-    romans:         { isRhythm: false, isMelody:  false, isConst: false },
-    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true  },     
-    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false },
-    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true  }
+    notes:          { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
+    intervals:      { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
+    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
+    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true,  type: 0  },
+    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false, type: 1  },
+    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true,  type: 1  },
+    chords:         { isRhythm: false, isMelody:  false, isConst: false, type: 2  },
+    romans:         { isRhythm: false, isMelody:  false, isConst: false, type: 2  },
+    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true,  type: 2  },     
+    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false, type: 3  },
+    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  type: 3  }
 };
 function fromEvents( gene, style ){
     let cd = [];
@@ -521,19 +525,9 @@ function saveTrack( song, trk, _trk ){
     };
     genCodons( gene );
 
-    for ( let enc of Object.keys( encodings )){
+    for ( let enc of encStyles ){
         gene[ enc ] = fromEvents( gene, enc ).join(' ');
     }
-    // gene.notes       = fromEvents( gene, 'notes'        ).join(' ');
-    // gene.intervals   = fromEvents( gene, 'intervals'    ).join(' ');
-    // gene.scaledegrees= fromEvents( gene, 'scaledegrees' ).join(' ');
-    // gene.rootNote    = fromEvents( gene, 'rootNote'     ).join(' ');
-    // gene.mRhythm     = fromEvents( gene, 'mRhythm'      ).join(' ');
-    // gene.mSteady     = fromEvents( gene, 'mSteady'      ).join(' ');
-    // gene.chords      = fromEvents( gene, 'chords'       ).join(' ');
-    // gene.romans      = fromEvents( gene, 'romans'       ).join(' ');
-    // gene.rootMajor   = fromEvents( gene, 'rootMajor'    ).join(' ');
-    // gene.hRhythm     = fromEvents( gene, 'hRhythm'      ).join(' ');
  
     let evts = gene.evts;
     delete gene.orig_events;        // since gene.evts matches
@@ -545,6 +539,18 @@ function saveTrack( song, trk, _trk ){
 function loadTrack( song, trk ){
     let data = jetpack.cwd( './data' );
     let gene = data.read( `${song.nm}_${trk.nm}_gene.json`, 'json' );
+
+    let style = [], haveType = [false,false,false,false];
+    for ( let e of encStyles ){  // styles in order of preference
+        let enc = encodings[e];
+        if ( !haveType[ enc.type ] ){
+            style.push( e );
+            haveType[ enc.type ] = true;
+        }      
+    }
+    if ( enc.length > 0 ) 
+      gene.evts = toEvents( gene, enc );
+
     return gene;
 }
 
