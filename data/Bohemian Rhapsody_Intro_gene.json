@@ -1,0 +1,20 @@
+{
+  "nm": "Bohemian Rhapsody_Intro",
+  "root": "Bb",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 144,
+  "codons": "FwAQBFCEDBEwG0OEHtRHtRPIM2NAQHtRMlNAQH0RMoNALwQRHrRM3NAQOEHrRMrNAQRHtRMtNAQOEHtRMhNAQRHrRM3NAQOEHrRMrNAQRHtRMtNAQ",
+  "notes": "r 61 62 63 71 71 70 r 69 69 70 r 71 71 70 r 69 69 70",
+  "intervals": "r -9 +1 +1 +8 +0 -1 r -1 +0 +1 r +1 +0 -1 r -1 +0 +1",
+  "scaledegrees": "r -5# -4 -3 1# 1# 1 r 0 0 1 r 1# 1# 1 r 0 0 1",
+  "rootNote": "r 70 70 70 70 70 70 r 70 70 70 r 70 70 70 r 70 70 70",
+  "mRhythm": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "r A#M D#M BM A#M AM A#M BM A#M AM A#M",
+  "romans": "r IIM VM II#M IIM IM IIM II#M IIM IM IIM",
+  "rootMajor": "r BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM",
+  "hRhythm": "8 4 4 8 8 8 8 8 8 8 8",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4"
+}

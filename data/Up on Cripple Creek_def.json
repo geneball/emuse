@@ -9,68 +9,68 @@
     {
       "nm": "Intro",
       "melody": [
-		"2:8 4:8 4:8 2:5 8:8 4:8 4:10 6:8 4:8 4:8 2:6 8:8 4:6 4:8 4:6",
-		"|5 2:7 4:7 4:7 2:5 8:7 2:7 2:7 4:9 2:5 2:7 2:8 4:8 2:8 4:6 2:6 2:8 2:9 2:9 4:11 8:6#"
+        "2:8 4:8 4:8 2:5 8:8 4:8 4:10 6:8 4:8 4:8 2:6 8:8 4:6 4:8 4:6",
+        "|5 2:7 4:7 4:7 2:5 8:7 2:7 2:7 4:9 2:5 2:7 2:8 4:8 2:8 4:6 2:6 2:8 2:9 2:9 4:11 8:6#"
       ],
       "chords": [
-		"32:A 32:D 32:E 16:F#m 16:G"
+        "32:A 32:D 32:E 16:F#m 16:G"
       ]
     }
   ],
   "lyrics": {
     "Verse1": [
-		"When I get off of this mountain",
-		"You know where I wanna go?",
-		"Straight down the Mississippi River",
-		"To the Gulf of Mexico",
-		"To Lake Charles, Louisiana",
-		"Little Bessie, girl that I once knew",
-		"And she told me just to come on by",
-		"If there's anything she could do"
+      "When I get off of this mountain",
+      "You know where I wanna go?",
+      "Straight down the Mississippi River",
+      "To the Gulf of Mexico",
+      "To Lake Charles, Louisiana",
+      "Little Bessie, girl that I once knew",
+      "And she told me just to come on by",
+      "If there's anything she could do"
     ],
     "Chorus": [],
     "Verse2": [
-		"Good luck had just stung me",
-		"To the race track I did go",
-		"She bet on one horse to win",
-		"And I bet on another to show",
-		"Odds were in my favor",
-		"I had 'em five to one",
-		"And that nag to win came around the track",
-		"Sure enough we had won"
+      "Good luck had just stung me",
+      "To the race track I did go",
+      "She bet on one horse to win",
+      "And I bet on another to show",
+      "Odds were in my favor",
+      "I had 'em five to one",
+      "And that nag to win came around the track",
+      "Sure enough we had won"
     ],
-    "Chorus2": [    ],
+    "Chorus2": [],
     "Verse3": [
-		"I took up all of my winnings",
-		"And I gave my little Bessie half",
-		"And she tore it up and threw it in my face",
-		"Just for a laugh",
-		"Now there's one thing in the whole wide world",
-		"I sure would like to see",
-		"That's when that little love of mine",
-		"Dips her doughnut in my tea"
+      "I took up all of my winnings",
+      "And I gave my little Bessie half",
+      "And she tore it up and threw it in my face",
+      "Just for a laugh",
+      "Now there's one thing in the whole wide world",
+      "I sure would like to see",
+      "That's when that little love of mine",
+      "Dips her doughnut in my tea"
     ],
-    "Chorus3": [    ],
+    "Chorus3": [],
     "Verse4": [
-		"Now me and my mate were back at the shack",
-		"We had Spike Jones on the box",
-		"She said, \"I can't take the way he sings",
-		"But I love to hear him talk\"",
-		"Now that just gave my heart a throb",
-		"To the bottom of my feet",
-		"And I swore and I took another pull",
-		"My Bessie can't be beat"
+      "Now me and my mate were back at the shack",
+      "We had Spike Jones on the box",
+      "She said, \"I can't take the way he sings",
+      "But I love to hear him talk\"",
+      "Now that just gave my heart a throb",
+      "To the bottom of my feet",
+      "And I swore and I took another pull",
+      "My Bessie can't be beat"
     ],
-    "Chorus4": [    ],
+    "Chorus4": [],
     "Verse5": [
-		"There's a flood out in California",
-		"And up north it's freezing cold",
-		"And this living off the road",
-		"Is getting pretty old",
-		"So I guess I'll call up my big mama",
-		"Tell her I'll be rolling in",
-		"But you know, deep down, I'm kinda tempted",
-		"To go and see my Bessie again"
+      "There's a flood out in California",
+      "And up north it's freezing cold",
+      "And this living off the road",
+      "Is getting pretty old",
+      "So I guess I'll call up my big mama",
+      "Tell her I'll be rolling in",
+      "But you know, deep down, I'm kinda tempted",
+      "To go and see my Bessie again"
     ],
     "Chorus5": []
   }

@@ -1,0 +1,20 @@
+{
+  "nm": "Fire and Rain_Chorus",
+  "root": "C",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 77,
+  "codons": "FwAABFCEDBEwGTMxNAQOEH1JqRMnNAQRJtRMuNAQHqJqRJtRMxNAQHqJrRHuJtRMlNAL4QOMHuJrRJvRMxNALgQJpRRJtRMnNAQHqJrRHqRHwJtRMuNAQHqRRMxNAQHqJrRRHrJvRMlNAL4QOLHxJpRJtRMxNALgQRJrRMnNAQHvJtRHpJrRHqRMuNAQHxJtRHpRMxNAQHqRHqJrRHuJtRMlNAL4QOOHpJrRM2NALgQRHtRJtRMnNAQRHrJrRHtJtRMuNAQRHrRMsNAQHoRJuRMlNAL4Q",
+  "notes": "r 69 69 69 67 67 65 67 r 69 69 69 69 69 67 65 69 67 67 65 65 64 r 69 69 69 69 72 69 67 72 69 67 65 67 r 64 64 65 65 65 64 65 65 64 60 60",
+  "intervals": "r +9 +0 +0 -2 +0 -2 +2 r +2 +0 +0 +0 +0 -2 -2 +4 -2 +0 -2 +0 -1 r +5 +0 +0 +0 +3 -3 -2 +5 -3 -2 -2 +2 r -3 +0 +1 +0 +0 -1 +1 +0 -1 -4 +0",
+  "scaledegrees": "r 6 6 6 5 5 4 5 r 6 6 6 6 6 5 4 6 5 5 4 4 3 r 6 6 6 6 8 6 5 8 6 5 4 5 r 3 3 4 4 4 3 4 4 3 1 1",
+  "rootNote": "r 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60",
+  "mRhythm": "4 2 2 3 1 2 1 2 12 1 4 1 1 2 1 1 2 2 2 1 1 4 11 1 2 2 1 2 1 1 2 2 2 1 2 14 1 1 1 2 2 1 2 2 2 2 4",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "FM CM DM GM CM FM CM DM GM CM FM CM DM GM CM A#M FM GM GM CM",
+  "romans": "VM IIM IIIM VIM IIM VM IIM IIIM VIM IIM VM IIM IIIM VIM IIM VII#M VM VIM VIM IIM",
+  "rootMajor": "CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM",
+  "hRhythm": "4 4 4 4 16 4 4 4 4 16 4 4 4 4 16 4 4 4 4 16",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4"
+}

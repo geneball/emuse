@@ -347,7 +347,7 @@ function fromEvents( gene, style ){
             }
             switch( style ){
                 case 'notes':       cd.push( e.nt ); break;
-                case 'rootNote':    cd.push( rootnt );
+                case 'rootNote':    cd.push( rootnt ); break;
                 case 'intervals':   cd.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
                 case 'scaledegrees': cd.push( scRows[e.nt].bdeg ); break;
                 case 'mRhythm':     cd.push( e.d ); break;
@@ -528,8 +528,39 @@ function saveTrack( song, trk, _trk ){
     for ( let enc of encStyles ){
         gene[ enc ] = fromEvents( gene, enc ).join(' ');
     }
+<<<<<<< .merge_file_tbgKqj
  
+=======
+
+    let evts2 = toEvents( gene, 'notes,mRhythm,chords,hRhythm' );
+>>>>>>> .merge_file_nJRVxP
     let evts = gene.evts;
+    let f = [ 't', 'd', 'nt' ];
+    let diffcnt = 0;
+    for ( let i=0; i<gene.orig_events.length; i++ ){
+        let diff = false;
+        let oediff = false;
+        let e1 = evts[i], e2 = evts2[i], oe = gene.orig_events[i];
+        for ( let fld of f ){
+          if ( e1[fld] != oe[fld] ) oediff = true;
+          if ( e1[fld] != e2[fld] ){
+            console.log( `${i}.${fld}: e1=${e1[fld]} e2=${e2[fld]} ${oediff? oe[fld]:''}` );
+            diffcnt++;
+          }
+        }
+        oediff = false;
+        if (e1.chord != undefined){
+            let clen = e1.chord.length;
+            for ( let k=0; k<clen; k++ ){
+                if ( e1.chord[k]!=oe.chord[k] ) oediff = true;
+                if ( e1.chord[k]!=e2.chord[k] && Math.abs(e1.chord[k]-e2.chord[k])!=12 ){
+                  console.log( `${i}.chord[${k}]: e1=${e1.chord[k]} e2=${e2.chord[k]} ${oediff? oe.chord[k]:''} ` );
+                  diffcnt++;
+                }
+            }
+        }
+    }
+    if (diffcnt > 0) console.log( `saveTrack: ${diffcnt} diffs in ${song.nm} ${trk.nm}` );
     delete gene.orig_events;        // since gene.evts matches
     delete gene.evts;
 
