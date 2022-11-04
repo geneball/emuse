@@ -313,21 +313,29 @@ function romanDegree( sdeg ){
 }
 const encStyles = [  // in preferred order for generating events
         'notes', 'intervals', 'scaledegrees', 'rootNote', 'mRhythm', 'mSteady',
-        'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady' 
+        'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady', 'hmSteady'
 ];
+const mTune = 0, mRhythm = 1, hTune = 2, hRhythm = 3;
 const encodings = { 
-    notes:          { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
-    intervals:      { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
-    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false, type: 0  },
-    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true,  type: 0  },
-    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false, type: 1  },
-    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true,  type: 1  },
-    chords:         { isRhythm: false, isMelody:  false, isConst: false, type: 2  },
-    romans:         { isRhythm: false, isMelody:  false, isConst: false, type: 2  },
-    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true,  type: 2  },     
-    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false, type: 3  },
-    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  type: 3  }
+    notes:          { isRhythm: false, isMelody:  true,  isConst: false, type: mTune    },
+    intervals:      { isRhythm: false, isMelody:  true,  isConst: false, type: mTune    },
+    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false, type: mTune    },
+    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true,  type: mTune    },
+    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false, type: mRhythm  },
+    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true,  type: mRhythm  },
+    chords:         { isRhythm: false, isMelody:  false, isConst: false, type: hTune    },
+    romans:         { isRhythm: false, isMelody:  false, isConst: false, type: hTune    },
+    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true,  type: hTune    },     
+    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false, type: hRhythm  },
+    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  type: hRhythm  },
+    hmSteady:       { isRhythm: true,  isMelody:  false, isConst: true,  type: hRhythm  }
 };
+function typeCnt( styles, typeToCount ){
+    let cnt = 0;
+    for ( let s of styles )
+        if ( encodings[s].type==typeToCount ) cnt++;
+    return cnt;
+}
 function fromEvents( gene, style ){
     let cd = [];
     let evts = gene.evts;
@@ -337,6 +345,7 @@ function fromEvents( gene, style ){
     let mtic = 0, htic = 0;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];
+    let mcnt = 0;  // cnt of melody events, if hmSteady => chords match notee count
     
     for ( let e of evts ){
         if ( isMelody && e.nt != undefined ){   // process melody event
@@ -357,6 +366,10 @@ function fromEvents( gene, style ){
             prevnt = e.nt;
             mtic += e.d;
         } 
+        if ( !isMelody && style=='hmSteady' && e.nt != undefined ){
+            if ( e.t > mtic ) mcnt++;   // count the rest
+             mcnt++;
+        }
         if ( !isMelody && e.chord != undefined ){   // process harmony event
             if ( e.t > htic ){
                 let rst = isConst? gene.tpb : e.t - htic;
@@ -371,6 +384,7 @@ function fromEvents( gene, style ){
                 case 'rootMajor':  cd.push( gene.root+'M' ); break;
                 case 'hRhythm':    cd.push( e.d ); break;
                 case 'hSteady':    cd.push( gene.tpb ); break;
+                case 'hmSteady':   cd.push( mcnt * gene.tpb ); mcnt = 0; break;
                 default: err( `fromEvents: unrecognized style: ${style}`, true ); break;
             }
             htic += e.d;
@@ -411,8 +425,6 @@ function toMelody( gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, true );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no melody requested
 
-    if ( noteStyle=='' )    noteStyle   = 'rootNote';     // constant tune
-    if ( rhythmStyle=='' )  rhythmStyle =  'mSteady';     // constant rhythm
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
 
@@ -451,8 +463,6 @@ function toHarmony( gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, false );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no harmony requested
 
-    if ( noteStyle=='' )    noteStyle   = 'rootMajor';     // constant chords
-    if ( rhythmStyle=='' )  rhythmStyle =  'hSteady';     // constant rhythm
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
 
@@ -464,7 +474,8 @@ function toHarmony( gene, styles ){
         let rcd = rhy.nextCd();     // get next duration
         if ( rcd != undefined ){    // if cds run out, repeat last dur
             switch ( rhythmStyle ){
-                case 'hRhythm':    dur = Number( rcd );   break;
+                case 'hRhythm':
+                case 'hmSteady':   dur = Number( rcd );   break; 
                 default:
                 case 'hSteady':    break;   // dur stays at tpb
             }
@@ -488,18 +499,38 @@ function toHarmony( gene, styles ){
     return evts;
 }
 function toEvents( gene, styles ){
-    // 'notes,mRhythm'  => melody events from gene.notes & gene.mRhythm
-    // 'notes'          => melody events from gene.notes w/ 1 note per beat
-    // 'intervals'      => melody events from gene.intervals starting at gene.root
-    // 'scaledegrees'   => melody events from gene.key & gene.scaledegrees
-    // 'mRhythm'        => melody events repeating gene.root according to gene.mRhythm
-    // 'chords,hRhythm' => harmony events from gene.chords & gene.hRhythm
-    // 'chords'         => harmony events from gene.chords at 1 chord per beat
-    // 'romans'         => harmony events from gene.romans & gene.key (at 1 chord per beat)
-    // 'hRhythm'        => harmony events repeatings gene.root Major according to gene.hRhythm
-
     if ( typeof styles == 'string' || styles instanceof String ) styles = styles.split(',');
 
+    // 'notes'        => 'notes,mSteady'
+    // 'notes,mRhythm,chords' => 'hSteady'  -- so chords match notes
+    // 'notes,mSteady,chords' => 'hmSteady' -- so chords match steady notes
+    // 'mRhythm'      => 'rootNote,mRhythm'
+    // 'chords'       => 'chords,hSteady'
+    // 'hRhythm'      => 'rootMajor,hRhythm'
+    // 'notes,chords' => 'notes,mSteady,chords,hmSteady'
+    let typeCnts = [];
+    for ( let typ of [ mTune, mRhythm, hTune, hRhythm ] ) typeCnts[ typ ] = typeCnt( styles, typ );
+    if ( typeCnts[mTune] > 0 && typeCnts[mRhythm]== 0 ) styles.push( 'mSteady' );
+    if ( typeCnts[mTune]== 0 && typeCnts[mRhythm] > 0 ) styles.push( 'rootNote' );
+    if ( typeCnts[hTune] > 0 && typeCnts[hRhythm]== 0 ) 
+        styles.push( typeCnts[mRhythm]==0?  'hmSteady' : 'hRhythm' );
+    if ( typeCnts[hTune]== 0 && typeCnts[hRhythm] > 0 ) styles.push( 'rootMajor' );
+    if ( styles.includes('mSteady')){
+        let idx = styles.indexOf('hRhythm');
+        if (idx>=0) styles[idx] = 'hmSteady';
+    }
+    // 'notes,mRhythm'    => melody events from gene.notes & gene.mRhythm
+    // 'notes,mSteady'    => melody events from gene.notes w/ 1 note per beat
+    // 'intervals'        => melody events from gene.intervals starting at gene.root
+    // 'scaledegrees'     => melody events from gene.key & gene.scaledegrees
+    // 'rootNote,mRhythm' => melody events repeating gene.root according to gene.mRhythm
+    // 'chords,hRhythm'   => harmony events from gene.chords & gene.hRhythm
+    // 'chords,hSteady'   => harmony events from gene.chords  w/ 1 chord per beat
+    // 'rootMajor,hRhythm'=> harmony events repeat rootMajor according to gene.hRhythm
+    // 'mSteady,hmSteady' => chord /num steady notes
+    // 'romans'           => harmony events from gene.romans & gene.key (at 1 chord per beat)
+
+    msg( styles.join(',') );
     let melody = toMelody( gene, styles );
     let harmony = toHarmony( gene, styles );
 
@@ -528,12 +559,8 @@ function saveTrack( song, trk, _trk ){
     for ( let enc of encStyles ){
         gene[ enc ] = fromEvents( gene, enc ).join(' ');
     }
-<<<<<<< .merge_file_tbgKqj
- 
-=======
 
     let evts2 = toEvents( gene, 'notes,mRhythm,chords,hRhythm' );
->>>>>>> .merge_file_nJRVxP
     let evts = gene.evts;
     let f = [ 't', 'd', 'nt' ];
     let diffcnt = 0;
@@ -579,8 +606,8 @@ function loadTrack( song, trk ){
             haveType[ enc.type ] = true;
         }      
     }
-    if ( enc.length > 0 ) 
-      gene.evts = toEvents( gene, enc );
+    if ( style.length > 0 ) 
+      gene.evts = toEvents( gene, style );
 
     return gene;
 }
