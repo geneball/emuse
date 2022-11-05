@@ -598,6 +598,10 @@ function loadTrack( song, trk ){
     let data = jetpack.cwd( './data' );
     let gene = data.read( `${song.nm}_${trk.nm}_gene.json`, 'json' );
 
+    loadGeneEvents( gene );
+    return gene;
+}
+function loadGeneEvents( gene ){
     let style = [], haveType = [false,false,false,false];
     for ( let e of encStyles ){  // styles in order of preference
         let enc = encodings[e];
@@ -608,8 +612,6 @@ function loadTrack( song, trk ){
     }
     if ( style.length > 0 ) 
       gene.evts = toEvents( gene, style );
-
-    return gene;
 }
 
 var genes = [];
@@ -630,6 +632,7 @@ function findGenes( ){
         try {  
             gene = data.read( p, 'json' );
             genes.push(  gene );
+            loadGeneEvents( gene );
         } catch ( err ){
             console.log( `Err parsing ${p} ${err}` );
             if ( typeof msg == 'function' ) msg( `Err parsing ${p} ${err}` );

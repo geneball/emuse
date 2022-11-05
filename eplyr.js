@@ -109,7 +109,7 @@ var _plyr = {
     }
     function setTic( evts, tic ){
         _plyr.evts = evts;
-        let bt = Math.trunc( tic / _gene.ticsPerBeat );
+        let bt = Math.trunc( tic / _gene.tpb );
         let divBeat = document.getElementById( `beat${_plyr.currBeat}` );
         removeClass( divBeat, 'on' );
         let eIdx = _plyr.currEvtIdx;
@@ -160,9 +160,9 @@ var _plyr = {
         resetPlyr();  // leave currBeat intact
 
         _plyr.msStart = Date.now();
-         _plyr.msMax = _plyr.msStart + _plyr.maxTic * _plyr.msTic;
+        _plyr.msMax = _plyr.msStart + _plyr.maxTic * _plyr.msTic;
         var beat = _plyr.currBeat;
-        let tic = beat * _gene.ticsPerBeat;
+        let tic = beat * _plyr.tpb;
     
         function playtic(){
             addHist( asBar(tic) );

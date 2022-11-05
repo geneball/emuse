@@ -144,8 +144,8 @@ selGene.addEventListener("change", function() {
   _gene = findGene( selGene.value );
   setKey( _gene.root, _gene.mode );
 
-  initValue( bpb, 'bpb', _gene.beatsPerBar, 4 );
-  initValue( tpb, 'tpb', _gene.ticsPerBeat, 4 );
+  initValue( bpb, 'bpb', _gene.bpb, 4 );
+  initValue( tpb, 'tpb', _gene.tpb, 4 );
   initValue( tempo, 'tempo', _gene.tempo, 80 );
   plyrVal( 'msTic', 60000 / plyrVal('tempo') / plyrVal( 'tpb' ) );
 
@@ -268,7 +268,7 @@ function inBeats( tics ){     // return tics as string in beats
   return `${bts} ${fr}/${denom} beats`;
 }
 function asBar( tics ){    // return tics as string in bars
-  let tpm = _gene.ticsPerBeat * _gene.beatsPerBar;
+  let tpm = _gene.ticsPerBeat * _gene.bpb;
   let bar = Math.trunc( tics/tpm )+1;
   tics = tics % tpm;   // tics past bar
   return `|${bar}.${(tics/tpm).toFixed(2)}`;
@@ -327,7 +327,7 @@ function showBeats( maxtic, lblRw ){         // set up measure bars & labels
   let beathtml = '';
   let tic = 0;
   let tpb =  _gene.ticsPerBeat;
-  let tpm = _gene.beatsPerBar * tpb;
+  let tpm = _gene.bpb * tpb;
   let bt = 0;
   for( tic=0; tic <= maxtic; tic += tpb ){    // beat & measure bars + measure labels
     let  mrk = 'tic';
@@ -388,7 +388,7 @@ function showEventList(){     // build rows display from _evts
   let lblRow = showRows( lo, hi );       // set up row & label backgrounds & resize
   showBeats( maxtic, lblRow );      // set up measure bars & labels
   showEvents( lo, lblRow );            // place events on bars display
-  setTic(0);
+  setTic( _evts, 0);
 }
 divBars.addEventListener("click",  (evt) => {    // click on Notes scroll
   let tgt = evt.target;
