@@ -16,5 +16,8 @@
   "romans": "IIM VM IIM VIM IIM VM IIM VIM IIM VM IIM VIM VIIM IIIM VIIM VIM",
   "rootMajor": "GM GM GM GM GM GM GM GM GM GM GM GM GM GM GM GM",
   "hRhythm": "8 8 8 8 8 8 8 8 8 8 8 8 16 16 16 32",
-  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4"
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 16 24 24 16 32 24 40 8 16 24 24 24 56 8 56"
 }

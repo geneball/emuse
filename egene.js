@@ -434,6 +434,7 @@ function toMelody( gene, styles ){
 
     let evts = [];
     let nt = toKeyNum( gene.root ), tic = 0;
+    let ntOff = gene.mOct*12 - nt;      // to shift root to mOct
     let dur = gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
@@ -449,7 +450,7 @@ function toMelody( gene, styles ){
             }
         }
         let ncd = nts.nextCd();     // get next note (or rest)
-        if ( rcd == '.' ){   // measure boundary check
+        if ( ncd == '.' ){   // measure boundary check
             if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: note . at tic=${tic} idx=${nts.idx}` );
             ncd = nts.nextCd();
         }
@@ -465,7 +466,7 @@ function toMelody( gene, styles ){
                     case 'rootNote':    break;      // nt stays at root
                 }
             }
-            evts.push( { t:tic, d:dur, nt: nt } );
+            evts.push( { t:tic, d:dur, nt: Number(nt) + ntOff } );
         }
         tic += dur;
     }
@@ -480,7 +481,7 @@ function toHarmony( gene, styles ){
     if (nts==null || rhy==null ) return [];         // no harmony data
 
     let evts = [];
-    let nt = toKeyNum( gene.root ), tic = 0;
+    let rtNt = toKeyNum( gene.root ), nt = rtNt, tic = 0;
     let chd = [ nt, nt+4, nt+7 ];   // major chord
     let dur = gene.tpb;
     while ( true ){
@@ -508,7 +509,7 @@ function toHarmony( gene, styles ){
             if ( ncd!=undefined ){  // if cds run out, repeat last chd
                 switch ( noteStyle ){
                     case 'chords':  
-                    case 'romans':   chd = asChord( ncd );   break;
+                    case 'romans':   chd = asChord( ncd, rtNt);   break;
                     default:
                     case 'rootMajor':    break;      // nt stays at root
                 }
@@ -631,8 +632,38 @@ function loadGeneEvents( gene ){
             haveType[ enc.type ] = true;
         }      
     }
-    if ( style.length > 0 ) 
-      gene.evts = toEvents( gene, style );
+    let evts;
+    if ( style.length > 0 ) {
+        if ( gene.mOct==undefined ) gene.mOct = 4;
+        if ( gene.hOct==undefined ) gene.hOct = 3;
+        try {
+            gene.evts = evts = toEvents( gene, style );
+        }
+        catch( err ){
+            console.log( `Err in toEvents for  ${gene.nm} ${err}` );
+            if ( typeof msg == 'function' ) msg( `loadGeneEvents: err in toEvents for  ${gene.nm} ${err}` );
+            return;
+        }
+    }
+    let save = false;
+    for ( let enc of encStyles ){       // recreate all gene forms
+        if ( gene[ enc ]==undefined ){
+            save = true;
+            try{
+                gene[ enc ] = fromEvents( gene, enc ).join(' ');
+            } catch (err){
+                console.log( `loadGeneEvents: err in fromEvents ${enc} for ${gene.nm} ${err}` );
+                return;
+            }
+        }
+    }
+    if ( save ){
+        delete gene.evts;
+        let data = jetpack.cwd( './data' );
+        data.write( `${gene.nm}_gene.json`, gene );
+    }
+
+    gene.evts = evts;
 }
 
 var genes = [];
@@ -653,11 +684,11 @@ function findGenes( ){
         try {  
             gene = data.read( p, 'json' );
             genes.push(  gene );
-            loadGeneEvents( gene );
         } catch ( err ){
             console.log( `Err parsing ${p} ${err}` );
             if ( typeof msg == 'function' ) msg( `Err parsing ${p} ${err}` );
         }
+        loadGeneEvents( gene );
     }
     gene_names = genes.map( x => x.nm );
 }

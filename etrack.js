@@ -16,14 +16,14 @@ function splitPrefix( s, prefix ){   // return s split into [ 'leading chars in 
     if ( !prefix.includes( s[i] ))  return [ s.substring(0,i), s.substring(i) ];
   return [ s, '' ];
 }
-function asChord( nm ){    // decode chord string
+function asChord( nm, rootkey ){    // decode chord string
   //  roman:  e.g. 'Im' or 'iii6(9)'
   //  scdeg:  1#m  2##sus2
   //  note:   G#m  A6(9)
   let roman = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7 };
   nm = nm.trim();
   let rootnm = '', chdnm = '';
-  let rootkey = 60;
+  if ( rootkey==undefined ) rootkey = 60;
   let fch = nm.toUpperCase().substring(0,1);
   switch ( fch ){
     case "I":   case "V":

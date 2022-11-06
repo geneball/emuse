@@ -1,0 +1,13 @@
+{
+  "nm": "Take Me Home Tonight _chorus",
+  "root": "Db",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 128,
+
+	"notes": "10 12 13 10 10 r 11 10 9 8 . 10 10 9 9 9 . 10 8 8 r 10 12 13 10 10 r 11 10 9 8 . 6 8 9 9 6 . r 11 10 9 8",
+	"mRythm": "4 4 4 2 6 2 4 2 2 2 . 4 4 4 2 2 . 2 4 6 4 . 4 4 4 2 6 2 4 2 2 2 . 4 4 2 2 4 . 6 4 2 2 2",
+	"chords": "Db Ab Bbm Gb Db Ab Bbm Gb Db Ab Bbm Gb Gb Gb",
+	"hRhythm": "8 8 6 10 8 8 6 10 8 8 6 10 16 16"
+}

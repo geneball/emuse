@@ -257,10 +257,10 @@ btnSave.addEventListener("click", (ev) => {     // Save
 
 /*  ********************* Note scroll #bars display ************************ */
 function inBeats( tics ){     // return tics as string in beats
-  let bts = Math.trunc( tics / _gene.ticsPerBeat );
-  let fr = tics % _gene.ticsPerBeat;
+  let bts = Math.trunc( tics / _gene.tpb );
+  let fr = tics % _gene.tpb;
   if ( fr==0 ) return bts==1? '1 beat' : `${bts} beats`;
-  let denom = _gene.ticsPerBeat;
+  let denom = _gene.tpb;
   for (let i=2; i < denom; i++){
     if ( (fr%i)==0 && (denom % i)==0 ) { fr /= i; denom /= i; }
   }
@@ -268,7 +268,7 @@ function inBeats( tics ){     // return tics as string in beats
   return `${bts} ${fr}/${denom} beats`;
 }
 function asBar( tics ){    // return tics as string in bars
-  let tpm = _gene.ticsPerBeat * _gene.bpb;
+  let tpm = _gene.tpb * _gene.bpb;
   let bar = Math.trunc( tics/tpm )+1;
   tics = tics % tpm;   // tics past bar
   return `|${bar}.${(tics/tpm).toFixed(2)}`;
@@ -326,7 +326,7 @@ function showBeats( maxtic, lblRw ){         // set up measure bars & labels
   let lblhtml = '';
   let beathtml = '';
   let tic = 0;
-  let tpb =  _gene.ticsPerBeat;
+  let tpb =  _gene.tpb;
   let tpm = _gene.bpb * tpb;
   let bt = 0;
   for( tic=0; tic <= maxtic; tic += tpb ){    // beat & measure bars + measure labels
