@@ -396,7 +396,10 @@ class cdStepper {
     constructor( gene, style ){
         this.gene = gene;
         this.style = style;
-        if ( gene[style]==undefined ) debugger; 
+        if ( gene[style]==undefined || gene[style].trim()=='' ){
+            msg( `toEvents.cdStepper: gene.${style} empty` );
+            return null;
+        }  
         this.idx = 0;
         this.code = gene[ style ].split(' ');
     }
@@ -427,12 +430,17 @@ function toMelody( gene, styles ){
 
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
+    if (nts==null || rhy==null ) return [];     // no melody data
 
     let evts = [];
     let nt = toKeyNum( gene.root ), tic = 0;
     let dur = gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
+        if ( rcd == '.' ){   // measure boundary check
+            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: rhythm . at tic=${tic} idx=${rhy.idx}` );
+            rcd = rhy.nextCd();
+        }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
             switch ( rhythmStyle ){
                 case 'mRhythm':    dur = Number( rcd );   break;
@@ -441,6 +449,10 @@ function toMelody( gene, styles ){
             }
         }
         let ncd = nts.nextCd();     // get next note (or rest)
+        if ( rcd == '.' ){   // measure boundary check
+            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: note . at tic=${tic} idx=${nts.idx}` );
+            ncd = nts.nextCd();
+        }
 
         if ( rcd==undefined && ncd==undefined ) break;  // stop when both codes are exhausted
         if ( ncd != 'r' ){
@@ -465,6 +477,7 @@ function toHarmony( gene, styles ){
 
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
+    if (nts==null || rhy==null ) return [];         // no harmony data
 
     let evts = [];
     let nt = toKeyNum( gene.root ), tic = 0;
@@ -472,6 +485,10 @@ function toHarmony( gene, styles ){
     let dur = gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
+        if ( rcd == '.' ){   // measure boundary check
+            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toHarmony: rhythm . at tic=${tic} idx=${rhy.idx}` );
+            rcd = rhy.nextCd();
+        }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
             switch ( rhythmStyle ){
                 case 'hRhythm':
@@ -481,6 +498,10 @@ function toHarmony( gene, styles ){
             }
         }
         let ncd = nts.nextCd();     // get next chord (or rest)
+        if ( ncd == '.' ){   // measure boundary check
+            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toHarmony: chord . at tic=${tic} idx=${nts.idx}` );
+            ncd = nts.nextCd();
+        }
 
         if ( rcd==undefined && ncd==undefined ) break;  // stop when both codes are exhausted
         if ( ncd != 'r' ){
