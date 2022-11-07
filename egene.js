@@ -2,7 +2,8 @@ const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chor
 const { asChord } = require( './etrack.js' );
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
-const { msg } = require( './msg.js' );
+const { msg, err } = require( './msg.js' );
+const { setKeyScale } = require("./piano");
 
 
 var codon_maps = null;          // codon op & arg mappings
@@ -312,7 +313,7 @@ function romanDegree( sdeg ){
     return roman[n] + sharps;
 }
 const encStyles = [  // in preferred order for generating events
-        'notes', 'intervals', 'scaledegrees', 'rootNote', 'mRhythm', 'mSteady',
+        'scaledegrees', 'notes', 'intervals', 'rootNote', 'mRhythm', 'mSteady',
         'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady', 'hmSteady'
 ];
 const mTune = 0, mRhythm = 1, hTune = 2, hRhythm = 3;
@@ -341,7 +342,7 @@ function fromEvents( gene, style ){
     let evts = gene.evts;
     let rootnt = toKeyNum( gene.root );
     let prevnt = rootnt;
-    let scRows = scaleRows();
+    let scRows = scaleRows( rootnt, gene.mode );
     let mtic = 0, htic = 0;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];
@@ -358,7 +359,9 @@ function fromEvents( gene, style ){
                 case 'notes':       cd.push( e.nt ); break;
                 case 'rootNote':    cd.push( rootnt ); break;
                 case 'intervals':   cd.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
-                case 'scaledegrees': cd.push( scRows[e.nt].bdeg ); break;
+                case 'scaledegrees': 
+                    if ( scRows[e.nt]==undefined ) err( `fromEvents: ${gene.nm} ${style} unrecognized ${e.nt}`, true );
+                    cd.push( scRows[e.nt].bdeg ); break;
                 case 'mRhythm':     cd.push( e.d ); break;
                 case 'mSteady':     cd.push( gene.tpb ); break;
                 default: err( `fromEvents: unrecognized style: ${style}`, true ); break;
@@ -396,16 +399,23 @@ class cdStepper {
     constructor( gene, style ){
         this.gene = gene;
         this.style = style;
+        this.idx = 0;
+        this.cnt = 0;
         if ( gene[style]==undefined || gene[style].trim()=='' ){
-            msg( `toEvents.cdStepper: gene.${style} empty` );
+            msg( `cdStepper: ${gene.nm} gene.${style} empty` );
             return null;
         }  
-        this.idx = 0;
-        this.code = gene[ style ].split(' ');
+        let cd = this.code = gene[ style ].split(' ');
+        this.cnt = cd.length;
+        for ( let i=0; i<cd.length; i++ ){
+            cd[i] = cd[i].trim();
+            if ( cd[i]=='' ) err( `cdStepper:  ${gene.nm} gene.${style} [${i}] is '' ` );
+        }
     }
     nextCd(){
         return this.code[ this.idx++ ];
     }
+    isEmpty(){ return this.idx >= this.cnt; }
 }
 function getStyles( styles, melody ){
     let noteStyle = '', rhythmStyle = '';
@@ -430,10 +440,10 @@ function toMelody( gene, styles ){
 
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
-    if (nts==null || rhy==null ) return [];     // no melody data
+    if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
-    let nt = toKeyNum( gene.root ), tic = 0;
+    let rtnt = nt = toKeyNum( gene.root ), tic = 0;
     let ntOff = gene.mOct*12 - nt;      // to shift root to mOct
     let dur = gene.tpb;
     while ( true ){
@@ -449,6 +459,10 @@ function toMelody( gene, styles ){
                 case 'mSteady':    break;   // dur stays at tpb
             }
         }
+        if ( dur < 0 ){
+            err( `toMelody: ${gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
+            dur = gene.tpb; 
+        }
         let ncd = nts.nextCd();     // get next note (or rest)
         if ( ncd == '.' ){   // measure boundary check
             if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: note . at tic=${tic} idx=${nts.idx}` );
@@ -461,10 +475,15 @@ function toMelody( gene, styles ){
                 switch ( noteStyle ){
                     case 'notes':       nt = toKeyNum( ncd );        break;
                     case 'intervals':   nt += Number( ncd );         break;
-                    case 'scaledegrees': nt = scDegToKeyNum[ ncd ];  break;
+                    case 'scaledegrees': nt = scDegToKeyNum( ncd );  break;
                     default:
                     case 'rootNote':    break;      // nt stays at root
                 }
+            }
+            nt = Number(nt);
+            if ( nt<0 || nt>127 ){ 
+                err( `toMelody: ${gene.nm} ${noteStyle} cd ${ncd} => out of range ${nt}` ); 
+                nt = rtnt; 
             }
             evts.push( { t:tic, d:dur, nt: Number(nt) + ntOff } );
         }
@@ -478,7 +497,7 @@ function toHarmony( gene, styles ){
 
     let nts = new cdStepper( gene, noteStyle );
     let rhy  = new cdStepper( gene, rhythmStyle );
-    if (nts==null || rhy==null ) return [];         // no harmony data
+    if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
     let rtNt = toKeyNum( gene.root ), nt = rtNt, tic = 0;
@@ -497,6 +516,10 @@ function toHarmony( gene, styles ){
                 default:
                 case 'hSteady':    break;   // dur stays at tpb
             }
+        }
+        if ( dur < 0 ){
+            err( `toHarmony: ${gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
+            dur = gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next chord (or rest)
         if ( ncd == '.' ){   // measure boundary check
@@ -521,7 +544,8 @@ function toHarmony( gene, styles ){
     return evts;
 }
 function toEvents( gene, styles ){
-    if ( typeof styles == 'string' || styles instanceof String ) styles = styles.split(',');
+    if ( typeof styles == 'string' || styles instanceof String )
+        styles = styles.split( styles.includes(',')? ',':' ' );
 
     // 'notes'        => 'notes,mSteady'
     // 'notes,mRhythm,chords' => 'hSteady'  -- so chords match notes
@@ -552,7 +576,8 @@ function toEvents( gene, styles ){
     // 'mSteady,hmSteady' => chord /num steady notes
     // 'romans'           => harmony events from gene.romans & gene.key (at 1 chord per beat)
 
-    msg( styles.join(',') );
+    gene.eventStyles = styles.join(',');
+    setScale( gene.mode, gene.root );
     let melody = toMelody( gene, styles );
     let harmony = toHarmony( gene, styles );
 

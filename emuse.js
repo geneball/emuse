@@ -113,9 +113,11 @@
 
 	var currScale;
 	var currRoot;
+	var currMode;
 	var currScaleRows;
 	var currScaleDegMap;
-	function scaleRows(  ){	// return currScaleRows: [0.127] with info for each key in current scale
+	function scaleRows( root, md ){	// return currScaleRows: [0.127] with info for each key in current scale
+		if ( root!=currRoot || md!=currMode ) setScale( md, root );
 		return currScaleRows;
 	}
 	function scaleDegMap(  ){	// return currScaleRows: [0.127] with info for each key in current scale
@@ -180,8 +182,9 @@
 			initModeDegrees();
 
         if (root==undefined) root = 0;
-		currRoot = root;
+		currRoot = toKeyNum( root );
 		if ( md===undefined ) md = 'Major'; // modeDefs[0];
+		currMode = md;
 		currScale = null;
 
 		md = md.trim().toUpperCase();

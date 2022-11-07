@@ -19,5 +19,7 @@
   "romans": "IIM VIM VIIM VM IIM VIM VIIM VM IIM VIM VIIM VM VM VM",
   "rootMajor": "DbM DbM DbM DbM DbM DbM DbM DbM DbM DbM DbM DbM DbM DbM",
   "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4",
-  "hmSteady": "0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+  "hmSteady": "0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+  "eventStyles": "scaledegrees,mRhythm,chords,hRhythm",
+  "scaledegrees": ""
 }

@@ -39,7 +39,8 @@ function asChord( nm, rootkey ){    // decode chord string
       [ rootnm, chordnm ] = splitPrefix( nm, "ABCDEFGabcdefg#b" );
       rootkey = toKeyNum( rootnm );
       break;
-    default: debugger;
+    default: 
+      err( `toChord: unrecognized chord ${nm}`, true );
   }
   // let i = 0;
   // nm = nm + ' ';  

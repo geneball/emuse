@@ -29,7 +29,7 @@
  
     btn              { border: 1px solid black; }
 
-    #selectGene      { width: 8em; }
+    #selectGene      { width: 20em; }
     #selectSong      { width: 8em; }
     #selectTrack     { width: 8em; }
     #m_velocity      { width: 3em; }
@@ -39,6 +39,18 @@
     #selectRoot      { width: 3em; }
     #selectMode      { width: 8em; }
     #selectEvents    { width: 8em; }
+    #selMNotes       { width: 4em; }
+    #selMRhythm      { width: 4em; }
+    #selHNotes       { width: 4em; }
+    #selHRhythm      { width: 4em; }
+
+    #histograms      { position:relative; border: 1px solid black; width:1000px; height:800px;  overflow: auto; }
+    #mNotesHist      { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+    #mRhythmHist     { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+
+    #hNotesHist      { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+    #hRhythmHist     { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+
     #chdInv          { width: 2em; }
     #tempo           { width: 3em; }
     #tpb             { width: 2em; }
