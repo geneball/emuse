@@ -16,13 +16,14 @@ function splitPrefix( s, prefix ){   // return s split into [ 'leading chars in 
     if ( !prefix.includes( s[i] ))  return [ s.substring(0,i), s.substring(i) ];
   return [ s, '' ];
 }
-function asChord( nm, rootkey ){    // decode chord string
+function asChord( nm, rootkey, octave ){    // decode chord string
   //  roman:  e.g. 'Im' or 'iii6(9)'
   //  scdeg:  1#m  2##sus2
   //  note:   G#m  A6(9)
+  if ( octave==undefined ) octave = 3;
   let roman = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7 };
   nm = nm.trim();
-  let rootnm = '', chdnm = '';
+  let rootnm = '', chordnm = '';
   if ( rootkey==undefined ) rootkey = 60;
   let fch = nm.toUpperCase().substring(0,1);
   switch ( fch ){
@@ -49,8 +50,9 @@ function asChord( nm, rootkey ){    // decode chord string
   // }
   // let scdeg = i==0? 0 : toSD( nm.substr(0,i));
   // let chd = nm.substr(i);
-  if (chdnm.trim()=='') chdnm = 'M';
-  return toChord( chdnm, rootkey );
+  if (chordnm.trim()=='') chordnm = 'M';
+  let ntOff = (60 + rootkey % 12) - rootkey + (octave-4)*12;      // offset to shift rootkey to octave
+  return toChord( chordnm, rootkey + ntOff );   // shift root key to desired octave 
 }
 
 function asNote( scdeg ){  // decode scale degree even if <0 or >7

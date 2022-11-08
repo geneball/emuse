@@ -343,17 +343,19 @@ function fromEvents( gene, style ){
     let rootnt = toKeyNum( gene.root );
     let prevnt = rootnt;
     let scRows = scaleRows( rootnt, gene.mode );
-    let mtic = 0, htic = 0;
+    let mtic = 0, htic = 0, bpm = gene.bpb * gene.tpb;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];
     let mcnt = 0;  // cnt of melody events, if hmSteady => chords match notee count
     
     for ( let e of evts ){
+        if ( mtic % bpm == 0 ) cd.push( '.' );
         if ( isMelody && e.nt != undefined ){   // process melody event
             if ( e.t > mtic ){
                 let rst = isConst? gene.tpb : e.t - mtic;
                 cd.push( isRhythm? rst : 'r' );
                 mtic = e.t;
+                if ( mtic % bpm == 0 ) cd.push( '.' );
             }
             switch( style ){
                 case 'notes':       cd.push( e.nt ); break;
@@ -374,10 +376,12 @@ function fromEvents( gene, style ){
              mcnt++;
         }
         if ( !isMelody && e.chord != undefined ){   // process harmony event
+            if ( htic % bpm == 0 ) cd.push( '.' );
             if ( e.t > htic ){
                 let rst = isConst? gene.tpb : e.t - htic;
                 cd.push( isRhythm? rst : 'r' );
                 htic = e.t; 
+                if ( htic % bpm == 0 ) cd.push( '.' );
             }
             switch( style ){
                 case 'chords':      cd.push( chordName( e.chord, true )); break;
@@ -444,7 +448,7 @@ function toMelody( gene, styles ){
 
     let evts = [];
     let rtnt = nt = toKeyNum( gene.root ), tic = 0;
-    let ntOff = gene.mOct*12 - nt;      // to shift root to mOct
+    let ntOff = (60 + rtnt % 12) - rtnt + (gene.mOct-4)*12;      // offset to shift root to mOct
     let dur = gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
@@ -532,7 +536,7 @@ function toHarmony( gene, styles ){
             if ( ncd!=undefined ){  // if cds run out, repeat last chd
                 switch ( noteStyle ){
                     case 'chords':  
-                    case 'romans':   chd = asChord( ncd, rtNt);   break;
+                    case 'romans':   chd = asChord( ncd, rtNt, gene.hOct );   break;
                     default:
                     case 'rootMajor':    break;      // nt stays at root
                 }

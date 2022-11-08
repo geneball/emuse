@@ -162,19 +162,20 @@ selGene.addEventListener("change", function() {
   m_octave.value = _gene.melodyOctave == undefined? 4 : _gene.melodyOctave;
   h_octave.value = _gene.harmonyOctave == undefined? 3 : _gene.harmonyOctave;
  
-  getEvents();  // recalc events given  melody/harmony tune/rhythm settings
+  reEval();
+  // getEvents();  // recalc events given  melody/harmony tune/rhythm settings
 
-  showEventList(  );
+  // showEventList(  );
 
-  var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
-  loadSelect( selEvts, evts );
-  btnPlay.innerText = 'Play';
+  // var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
+  // loadSelect( selEvts, evts );
+  // btnPlay.innerText = 'Play';
 });
 
-selMNotes.addEventListener("change", (ev) => {  evalHist( _gene, selMNotes.value, mNotesHist );  });
-selMRhythm.addEventListener("change", (ev) => {  evalHist( _gene, selMRhythm.value, mRhythmHist );  });
-selHNotes.addEventListener("change", (ev) => {  evalHist( _gene, selHNotes.value, hNotesHist );  });
-selHRhythm.addEventListener("change", (ev) => {  evalHist( _gene, selHRhythm.value, hRhythmHist );  });
+selMNotes.addEventListener( "change", (ev) => {  reEval(); });
+selMRhythm.addEventListener("change", (ev) => {  reEval(); });
+selHNotes.addEventListener( "change", (ev) => {  reEval(); });
+selHRhythm.addEventListener("change", (ev) => {  reEval()  });
 
 selEvts.addEventListener("change", function() {     // change Event
   var evt = _evts[ selEvts.selectedIndex ];
@@ -197,6 +198,11 @@ function getEvents(){
   // if ( h_chords.checked ) style += ',chords';
   // if ( h_rhythm.checked ) style += ',hRhythm';
   _evts = toEvents( _gene, style.substring(1) );
+
+  evalHist( _gene, selMNotes.value, mNotesHist );
+  evalHist( _gene, selMRhythm.value, mRhythmHist );
+  evalHist( _gene, selHNotes.value, hNotesHist );
+  evalHist( _gene, selHRhythm.value, hRhythmHist );
 }
 // function refreshTrack(){     // evaluate new track
 //   resetPlyr( 0 );
@@ -232,6 +238,11 @@ function reEval(){
   _gene.hOct = h_octave.value;
   getEvents();
   showEventList();  
+  
+
+  var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
+  loadSelect( selEvts, evts );
+  btnPlay.innerText = 'Play';
 }
 
 function initDialogs(){

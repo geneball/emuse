@@ -44,12 +44,12 @@
     #selHNotes       { width: 4em; }
     #selHRhythm      { width: 4em; }
 
-    #histograms      { position:relative; border: 1px solid black; width:1000px; height:800px;  overflow: auto; }
-    #mNotesHist      { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
-    #mRhythmHist     { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+    #histograms      { position:relative; border: 1px solid black; width:1000px; overflow: auto; }
+    #mNotesHist      { position:relative; border: 1px solid black; width:1000px; }
+    #mRhythmHist     { position:relative; border: 1px solid black; width:1000px; }
 
-    #hNotesHist      { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
-    #hRhythmHist     { position:relative; border: 1px solid black; width:1000px; height:200px;  overflow: auto; }
+    #hNotesHist      { position:relative; border: 1px solid black; width:1000px; }
+    #hRhythmHist     { position:relative; border: 1px solid black; width:1000px; }
 
     #chdInv          { width: 2em; }
     #tempo           { width: 3em; }
@@ -71,8 +71,10 @@
     .info            { width: 400px;  display: inline-block; font-size: 22px; font-weight: bold; }
     .blk             { display: inline-block; text-align: center;}
     .hdr             { font-weight: bold; text-align: center;}
+    .hTitle          { font-weight: bold; text-align: center; height:20px; }
     .grp             { display: inline-block; margin: 0; padding: 2px; border: 1px solid black; }
-
+    .hist            { width: 800px; display:flex; flex-direction: column; }
+    .histBar         { flex-basis: 20px; font-size: small; border: 1px solid black; }
     .bt1             { width:10px; height:10px; z-index: 2; border: 1px solid lightgray; }
     .bt2             { width:20px; height:10px; z-index: 2; border: 1px solid lightgray; }
     .bt3             { width:30px; height:10px; z-index: 2; border: 1px solid lightgray; }

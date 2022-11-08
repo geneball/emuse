@@ -117,7 +117,7 @@
 	var currScaleRows;
 	var currScaleDegMap;
 	function scaleRows( root, md ){	// return currScaleRows: [0.127] with info for each key in current scale
-		if ( root!=currRoot || md!=currMode ) setScale( md, root );
+		if ( (root!=undefined && root!=currRoot) || (md!=undefined && md!=currMode) ) setScale( md, root );
 		return currScaleRows;
 	}
 	function scaleDegMap(  ){	// return currScaleRows: [0.127] with info for each key in current scale
