@@ -29,7 +29,9 @@
  
     btn              { border: 1px solid black; }
 
-    #selectGene      { width: 20em; }
+    #question        { display:none; border: 2px solid black; margin: 10px; }
+    .show            { display:block; position: absolute; bottom: 100px; height: 500px; width: 500px; }
+
     #selectSong      { width: 8em; }
     #selectTrack     { width: 8em; }
     #m_velocity      { width: 3em; }
@@ -43,6 +45,11 @@
     #selMRhythm      { width: 4em; }
     #selHNotes       { width: 4em; }
     #selHRhythm      { width: 4em; }
+
+    #sel_MN_gene     { width: 20em; }
+    #sel_MR_gene     { width: 20em; }
+    #sel_HN_gene     { width: 20em; }
+    #sel_HR_gene     { width: 20em; }
 
     #histograms      { position:relative; border: 1px solid black; width:1000px; overflow: auto; }
     #mNotesHist      { position:relative; border: 1px solid black; width:1000px; }

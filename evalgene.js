@@ -57,7 +57,7 @@ class histogram {
         for ( let i=0; i<valNms.length; i++ ){
             let nm = valNms[i];
             let num = Number( nm );
-            if ( nm!='r' ){
+            if ( nm!='r' && nm!='.' ){
                 switch ( this.style ){
                     case 'mRhythm':
                     case 'hRhythm':  

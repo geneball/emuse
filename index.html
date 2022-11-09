@@ -68,40 +68,19 @@
     </div>
 
     <!--   Controls    -->
-    <select id="selectGene"> </select> <br>
+    <span class="grp">   
+      M Nt: <select id="sel_MN_gene"> </select> <br>
+      Rhyth: <select id="sel_MR_gene"> </select>
+    </span>
+    <span class="grp">   
+      H Nt: <select id="sel_HN_gene"> </select> <br>
+      Rhyth: <select id="sel_HR_gene"> </select>
+    </span> <br>
 
     <span class="grp"> &nbsp; <br>
       <button id="btnPlay"  class="blk">Play</button> <br>
       <button id="btnSave" class="blk">Save</button>
     </span>
-
-     <!-- <span class="grp">   <select id="selectGene"> </select> <br> <!-- <span class="hdr">Song & Track: </span><br>
-      <select id="selectSong"> </select> <br>
-      <select id="selectTrack"> </select>  
-
-    <span class="grp"> <span class="hdr"> Melody from:</span> <br>
-    <select id="selMNotes"></select>
-    <select id="selMRhythm"></select>
-    <!--
-    <label> ScD     <input type="radio" name="mNotes" id="scaledegrees">  </label>
-    <label> Nt    <input type="radio" name="mNotes" id="Notes">         </label>
-    <label> Ivl <input type="radio" name="mNotes" id="Intervals">     </label>
-    <label> Rt  <input type="radio" name="mNotes" id="RootNote">      </label> <br>
-
-    <label> mRh   <input type="radio" name="mRhythm" id="mRhythm">      </label>
-    <label> mSt   <input type="radio" name="mRhythm" id="mSteady">      </label>
-    </span>
-
-    <span class="grp"> <span class="hdr"> Harmony from: </span> <br>
-    <select id="selHNotes"></select>
-    <select id="selHRhythm"></select>
-    <!--    <label> Chds    <input type="radio" name="hNotes" id="Chords">        </label>
-    <label> Rom    <input type="radio" name="hNotes" id="Romans">        </label>
-    <label> rMaj <input type="radio" name="hNotes" id="RootMajor">     </label> <br>
-
-    <label> hRh   <input type="radio" name="hRhythm" id="hRhythm">      </label>
-    <label> hSt   <input type="radio" name="hRhythm" id="hSteady">      </label> -->
-    </span> 
 
     <span class="grp"> 
       <label class="range">Beats/Bar:  <span id="bpb"> </span>   </label> <br>
@@ -109,24 +88,14 @@
       <label class="range">Beats/min:  <input type="number" id="tempo"  min="20" max="220" value="80"> </label>
     </span>
 
-    <!--
-    <span class="grp"> 
-      <label class="chk"> Melody: <input type="checkbox" checked id="m_tune"> </label>  <br>
-      <label class="chk"> Rhythm: <input type="checkbox" checked id="m_rhythm"> </label>
-    </span>
-    <span class="grp"> 
-      <label class="chk"> Chords: <input type="checkbox" checked id="h_chords">  </label> <br>
-      <label class="chk"> Rhythm: <input type="checkbox" checked id="h_rhythm">  </label> 
-    </span>-->
-
-    <span class="grp"> <span class="hdr"> Melody</span> <br>
+    <span class="grp"> <span class="hdr"> Melody</span> <label class="range"> &nbsp; &nbsp; mute: <input type="checkbox" id="mMute"> </label> <br>
       Nts: <select id="selMNotes"></select>
       <label class="range">Vel:   <input type="number" id="m_velocity"   min="0" max="127" value="127">  </label>  <br>
       Rhy: <select id="selMRhythm"></select>
       <label class="range">Oct:   <input type="number" id="m_octave"   min="-1" max="9" value="4"> </label>
     </span>
 
-    <span class="grp"> <span class="hdr">Harmony </span> <br>
+    <span class="grp"> <span class="hdr">Harmony </span> <label class="range"> &nbsp; &nbsp; mute: <input type="checkbox" id="hMute"> </label><br>
      Chds: <select id="selHNotes"></select>
           <label class="velocity">Vel: <input type="number" id="h_velocity"   min="0" max="127" value="80">  </label> <br>
      Rhy: <select id="selHRhythm"></select>
@@ -159,6 +128,13 @@
     </div>
       
     <span id="status"> </span>
+
+    <div id="question">
+      <div class="hdr" id="msg"> </div>
+      <div id="qdetail"> </div>
+      <button id="qNo">No</button> 
+      <button id="qYes">Yes</button>
+    </div>
   </body>
   <script src="./renderer.js"></script>
 </html>

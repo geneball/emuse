@@ -2,9 +2,8 @@ const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chor
 const { asChord } = require( './etrack.js' );
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
-const { msg, err } = require( './msg.js' );
+const { msg, err, question } = require( './msg.js' );
 const { setKeyScale } = require("./piano");
-
 
 var codon_maps = null;          // codon op & arg mappings
 const codon_ops = [ 
@@ -186,6 +185,7 @@ function encodeEvent( e ){
         _est.ctic += e.d;
     }
 }
+
 function genCodons( gene ){
     _est = initState( gene );   // init encoding state
     _encHist = [];
@@ -223,19 +223,48 @@ function checkDecode( gene ){         // decode codons up to this point & make s
         }
     });
     while ( _dst.iEvt < gene.evts.length ){
-        let e = gene.evts[ _dst.iEvt ];
-        let oe = gene.orig_events[ _dst.iEvt ];
-        if ( oe.t != e.t ) debugger;
-        if ( oe.d != e.d ) debugger;
-        if ( oe.nt != undefined && oe.nt != e.nt ) debugger;
-        if ( oe.chord != undefined ){
-            if ( oe.chord.length != e.chord.length ) debugger;      
-            for ( let j=0; j < oe.chord.length; j++ ){
-              if ( oe.chord[j] != e.chord[j] ) debugger;
-            }
-        }  
+        let diff = eventDiffs( gene.evts[ _dst.iEvt ], gene.orig_events[ _dst.iEvt ], _dst.iEvt );
+        if ( diff!='' ) debugger;
         _dst.iEvt++;
     }
+}
+function eventDiffs( e1, e2, idx ){
+    let diff = '';
+    if ( e1==undefined || e2==undefined ){
+        return `${idx}: ${e1}!=${e2} `;
+    } else {
+        if ( e1.t != e2.t ) diff += `t: ${e1.t}!=${e2.t} `;
+        if ( e1.d != e2.d ) diff += `d: ${e1.d}!=${e2.d} `;
+        if ( e1.nt != e2.nt ) diff += `nt: ${e1.nt}!=${e2.nt} `;
+        if ( e1.chord != undefined || e2.chord != undefined ){
+            if ( e1.chord==undefined || e2.chord==undefined ){ 
+                diff += `chord: ${e1.chord}!=${e2.chord} `; 
+            } else {
+                let same = ( e1.chord.length == e2.chord.length );
+                if ( same )
+                    for ( let i=0; i<e1.chord.length; i++ )
+                        if ( e1.chord[i] != e2.chord[i] ) same = false;
+                if (!same)
+                    diff += `chord: ${e1.chord}!=${e2.chord}`;   
+            }
+        }
+        return diff==''? '' : `${idx}:[ ${diff}] `;
+    }
+}
+function compareEvents( evts1, evts2, descr ){
+    let diff = '';
+    let len = evts1.length;
+    if ( len != evts2.length ){
+        diff += `len: ${evts1.length}!=${evts2.length}`;
+        if (evts2.length > len) len = evts2.length;
+    }
+    let cnt = 0;
+    for ( let i=0; i<len; i++ ){
+        let d = eventDiffs( evts1[i], evts2[i], i );
+        if ( d!='' ){ cnt++; diff += '\r\n  ' + d; }
+    }
+    if ( cnt>0 )
+        err( `${descr}: ${cnt} diffs: ${diff}` );
 }
 
 //DECODING  codons => _dst & g.evts
@@ -337,9 +366,9 @@ function typeCnt( styles, typeToCount ){
         if ( encodings[s].type==typeToCount ) cnt++;
     return cnt;
 }
-function fromEvents( gene, style ){
+function fromEvents( gene, style, evts ){
     let cd = [];
-    let evts = gene.evts;
+    if ( evts==undefined ) evts = gene.evts;
     let rootnt = toKeyNum( gene.root );
     let prevnt = rootnt;
     let scRows = scaleRows( rootnt, gene.mode );
@@ -349,15 +378,15 @@ function fromEvents( gene, style ){
     let mcnt = 0;  // cnt of melody events, if hmSteady => chords match notee count
     
     for ( let e of evts ){
-        if ( mtic % bpm == 0 ) cd.push( '.' );
         if ( isMelody && e.nt != undefined ){   // process melody event
+            if ( mtic % bpm == 0 ) cd.push( '.' );
             if ( e.t > mtic ){
                 let rst = isConst? gene.tpb : e.t - mtic;
                 cd.push( isRhythm? rst : 'r' );
                 mtic = e.t;
                 if ( mtic % bpm == 0 ) cd.push( '.' );
             }
-            switch( style ){
+                switch( style ){
                 case 'notes':       cd.push( e.nt ); break;
                 case 'rootNote':    cd.push( rootnt ); break;
                 case 'intervals':   cd.push( e.nt>=prevnt? `+${e.nt - prevnt}` : `${e.nt-prevnt}` ); break;
@@ -376,18 +405,21 @@ function fromEvents( gene, style ){
              mcnt++;
         }
         if ( !isMelody && e.chord != undefined ){   // process harmony event
-            if ( htic % bpm == 0 ) cd.push( '.' );
+            if ( htic % (4*bpm) == 0 ) cd.push( '.' );
             if ( e.t > htic ){
                 let rst = isConst? gene.tpb : e.t - htic;
                 cd.push( isRhythm? rst : 'r' );
                 htic = e.t; 
-                if ( htic % bpm == 0 ) cd.push( '.' );
+                if ( htic % (4*bpm) == 0 ) cd.push( '.' );
             }
             switch( style ){
-                case 'chords':      cd.push( chordName( e.chord, true )); break;
+                case 'chords':     cd.push( chordName( e.chord, true )); break;
                 case 'romans':       // convert leading note to roman scale degree 1..7
                     let [ rt, chnm ] = chordName( e.chord, false, true );     // split root & name
-                    cd.push( `${ romanDegree( scRows[ e.chord[0] ].bdeg) }${chnm}` ); break;
+                    let rom = romanDegree( scRows[ e.chord[0] ].bdeg );
+                    if (chnm=='m'){ rom = rom.toLowerCase(); chnm=''; } 
+                    if (chnm=='M'){ rom = rom.toUpperCase(); chnm=''; }
+                    cd.push( `${rom}${chnm}` ); break;
                 case 'rootMajor':  cd.push( gene.root+'M' ); break;
                 case 'hRhythm':    cd.push( e.d ); break;
                 case 'hSteady':    cd.push( gene.tpb ); break;
@@ -438,6 +470,28 @@ function getStyles( styles, melody ){
     }
     return [ noteStyle, rhythmStyle ];
 }
+
+function firstDiffPos(a, b) {
+    let len = a.length;
+    if ( b.length > len ) len = b.length;
+    for ( let i=0; i < len; i++ ){
+        if ( a[i] !== b[i] ) return i;
+    }
+    return -1;
+} 
+function updateField( gene, style, evts ){
+    let code = fromEvents( gene, style, evts ).join(' ');
+
+    let idx = firstDiffPos( code, gene[style] );
+    if ( idx < 0 ) return;
+
+    let br = '<br>'; // '\r\n';
+    let detail = `recalc'd version differs at ${idx}: ${br} curr: ${gene[style]} ${br}  new: ${code} `;
+    if ( question( `Update ${gene.nm}.${style}?`, detail )){
+        saveGene( gene );
+    }
+}
+
 function toMelody( gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, true );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no melody requested
@@ -493,6 +547,9 @@ function toMelody( gene, styles ){
         }
         tic += dur;
     }
+
+    updateField( gene, noteStyle, evts );
+    updateField( gene, rhythmStyle, evts );
     return evts;
 }
 function toHarmony( gene, styles ){
@@ -545,6 +602,9 @@ function toHarmony( gene, styles ){
         }
         tic += dur;
     }
+   
+    updateField( gene, noteStyle, evts );
+    updateField( gene, rhythmStyle, evts );
     return evts;
 }
 function toEvents( gene, styles ){
@@ -583,6 +643,7 @@ function toEvents( gene, styles ){
     gene.eventStyles = styles.join(',');
     setScale( gene.mode, gene.root );
     let melody = toMelody( gene, styles );
+
     let harmony = toHarmony( gene, styles );
 
     let evts = melody.concat( harmony ); 
@@ -590,6 +651,15 @@ function toEvents( gene, styles ){
     return evts;
 }
 //**************************************** */
+function saveGene( gene ){
+    let data = jetpack.cwd( './data' );
+    let evts = gene.evts;
+    delete gene.orig_events;  
+    delete gene.evts;
+
+    data.write( `${gene.nm}_gene.json`, gene ); //, 'json' );
+    gene.evts = evts;
+}
 function saveTrack( song, trk, _trk ){
     let data = jetpack.cwd( './data' );
     data.write( `${song.nm}_def.json`, song );
@@ -707,7 +777,7 @@ function findGene( nm ){
 }
 function findGenes( ){
     let data = jetpack.cwd( './data' );
-    gene_paths = data.find( { matching: '*_gene.json'} );
+    gene_paths = data.find( { matching: './*_gene.json'} );
     for ( let p of gene_paths ){
         let gene = null;
         try {  

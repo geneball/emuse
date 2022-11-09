@@ -38,13 +38,19 @@ const selMode     = document.getElementById('selectMode');
 const scaleDegrees= document.getElementById('scaleDegrees');
 const chd_inv     = document.getElementById('chdInv');
 const divChdBtns  = document.getElementById('chdButtons');
-const selGene     = document.getElementById('selectGene');
+const selMNgene   = document.getElementById('sel_MN_gene');
+const selMRgene   = document.getElementById('sel_MR_gene');
+const selHNgene   = document.getElementById('sel_HN_gene');
+const selHRgene   = document.getElementById('sel_HR_gene');
+
+const mMute       = document.getElementById('mMute');
+const hMute       = document.getElementById('hMute');
 
 const selMNotes    = document.getElementById('selMNotes');
 const selMRhythm   = document.getElementById('selMRhythm');
 const selHNotes    = document.getElementById('selHNotes');
 const selHRhythm   = document.getElementById('selHRhythm');
-const selEvts     = document.getElementById('selectEvents');
+const selEvts      = document.getElementById('selectEvents');
 
 const mNotesHist    = document.getElementById('mNotesHist');
 const mRhythmHist   = document.getElementById('mRhythmHist');
@@ -150,8 +156,15 @@ function setKey( root, mode ){
   setChordRoot( rkey, true );
   setChordType( 'M', true );
 }
-selGene.addEventListener("change", function() {
-  _gene = findGene( selGene.value );
+selHNgene.addEventListener("change", function() {
+  selHRgene.value = selHNgene.value;
+});
+selMNgene.addEventListener("change", function() {
+  selMRgene.value = selMNgene.value;
+  selHNgene.value = selMNgene.value;
+  selHRgene.value = selMNgene.value;
+
+  _gene = findGene( selMNgene.value );
   setKey( _gene.root, _gene.mode );
 
   initValue( bpb, 'bpb', _gene.bpb, 4 );
@@ -188,52 +201,35 @@ function initValue( ctl, nm, val, def ){
   else
     ctl.value = plyrVal( nm, val );
 }
+function clearHist(){
+  mNotesHist.innerHTML = '';
+  mRhythmHist.innerHTML = '';
+  hNotesHist.innerHTML = '';
+  hRhythmHist.innerHTML = '';
+}
 function getEvents(){
   let style = '';
-  style += ',' + selMNotes.value;
-  style += ',' + selMRhythm.value;
-  style += ',' + selHNotes.value;
-  style += ',' + selHRhythm.value;
-  // if ( m_rhythm.checked ) style += ',mRhythm';
-  // if ( h_chords.checked ) style += ',chords';
-  // if ( h_rhythm.checked ) style += ',hRhythm';
+  if ( !mMute.checked ){
+    style += ',' + selMNotes.value;
+    style += ',' + selMRhythm.value;
+  }
+  if ( !hMute.checked ){
+    style += ',' + selHNotes.value;
+    style += ',' + selHRhythm.value;
+  }
   _evts = toEvents( _gene, style.substring(1) );
-
-  evalHist( _gene, selMNotes.value, mNotesHist );
-  evalHist( _gene, selMRhythm.value, mRhythmHist );
-  evalHist( _gene, selHNotes.value, hNotesHist );
-  evalHist( _gene, selHRhythm.value, hRhythmHist );
+  clearHist();
+  if ( !mMute.checked ){
+    evalHist( _gene, selMNotes.value, mNotesHist );
+    evalHist( _gene, selMRhythm.value, mRhythmHist );
+  }
+  if ( !hMute.checked ){
+    evalHist( _gene, selHNotes.value, hNotesHist );
+    evalHist( _gene, selHRhythm.value, hRhythmHist );
+  }
 }
-// function refreshTrack(){     // evaluate new track
-//   resetPlyr( 0 );
-//   // _song = findSong( selSong.value );
-//   // _track = findTrack( _song, selTrk.value );
-//   // // parse events from song_def.json, then save track as song_track_gene.json
-//   // _trk = evalTrack( _song, _track, m_octave.value, h_octave.value ); 
-//   // _evts = _trk.evts;
-//   // saveTrack( _song, _track, _trk );
-//   _gene = loadTrack( _song, _track );
-
-//   initValue( bpb, 'bpb', _song.beatsPerBar, 4 );
-//   initValue( tpb, 'tpb', _song.ticsPerBeat, 4 );
-//   initValue( tempo, 'tempo', _song.tempo, 80 );
-//   plyrVal( 'msTic', 60000 / plyrVal('tempo') / plyrVal( 'tpb' ) );
-
-//   m_octave.value = _song.melodyOctave == undefined? 4 : _song.melodyOctave;
-//   h_octave.value = _song.harmonyOctave == undefined? 3 : _song.harmonyOctave;
- 
-//   getEvents();  // recalc events given  melody/harmony tune/rhythm settings
-
-//   showEventList(  );
-
-//   var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
-//   loadSelect( selEvts, evts );
-//   btnPlay.innerText = 'Play';
-// }
 
 function reEval(){
-  //_trk = evalTrack( _song, _track, m_octave.value, h_octave.value ); 
-  //_evts = _trk.evts;
   _gene.mOct = m_octave.value;
   _gene.hOct = h_octave.value;
   getEvents();
@@ -457,7 +453,11 @@ loadSelect( selMNotes, [ 'scaledegrees', 'notes', 'intervals', 'rootNote' ] );
 loadSelect( selMRhythm, [ 'mRhythm', 'mSteady' ] );
 loadSelect( selHNotes, [  'chords', 'romans', 'rootMajor' ] );
 loadSelect( selHRhythm, [ 'hRhythm', 'hSteady' ] );
-loadSelect( selGene, geneNames() );
-selGene.dispatchEvent( new Event('change') );
+
+loadSelect( selMNgene, geneNames() );
+loadSelect( selMRgene, geneNames() );
+loadSelect( selHNgene, geneNames() );
+loadSelect( selHRgene, geneNames() );
+selMNgene.dispatchEvent( new Event('change') );
 //selSong.dispatchEvent( new Event('change') );
 

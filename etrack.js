@@ -29,6 +29,8 @@ function asChord( nm, rootkey, octave ){    // decode chord string
   switch ( fch ){
     case "I":   case "V":
       [ rootnm, chordnm] = splitPrefix( nm, "IViv" );
+      if ( chordnm=='' )
+        chordnm = rootnm.toLowerCase()==rootnm? 'm' : 'M';
       let sd = roman[ rootnm.toUpperCase() ];
       rootkey = scDegToKeyNum( sd );
       break;
