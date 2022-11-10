@@ -114,17 +114,17 @@ var _plyr = {
         removeClass( divBeat, 'on' );
         let eIdx = _plyr.currEvtIdx;
         if ( _plyr.currBeat < bt ) eIdx = 0;
-        _plyr.currEvtIdx = -1;
+        _plyr.currEvtIdx = 0;
         let e = null;
         for( let i= eIdx; i<_plyr.evts.length; i++ ){
-        e = _plyr.evts[ i ];
-        if ( e.t >= tic ){ // next event
-            _plyr.currEvtIdx = i;
-            break;
+            e = _plyr.evts[ i ];
+            if ( e.t >= tic ){ // next event
+                _plyr.currEvtIdx = i;
+                break;
+            }
         }
-        }
-        if ( _plyr.currEvtIdx < 0 ){ 
-        bt = 0;     // restart
+        if ( _plyr.currEvtIdx <= 0 ){ 
+            bt = 0;     // restart
         };
         
         if ( e==null ) return;

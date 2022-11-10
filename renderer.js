@@ -184,16 +184,30 @@ selMNgene.addEventListener("change", function() {
   // loadSelect( selEvts, evts );
   // btnPlay.innerText = 'Play';
 });
+var MN_gene, MR_gene, HN_gene, HR_gene;
 
-selMNotes.addEventListener( "change", (ev) => {  reEval(); });
-selMRhythm.addEventListener("change", (ev) => {  reEval(); });
-selHNotes.addEventListener( "change", (ev) => {  reEval(); });
-selHRhythm.addEventListener("change", (ev) => {  reEval()  });
+selMNotes.addEventListener( "change", (ev) => { 
+  selMRgene.value = selHNgene.value = selHRgene.value = selMNgene.value;
+  reEval();  
+});
+selMRhythm.addEventListener("change", (ev) => { 
+  reEval(); 
+});
+selHNotes.addEventListener( "change", (ev) => { 
+  selHRgene.value = selHNgene.value;
+  reEval();  
+});
+selHRhythm.addEventListener("change", (ev) => { 
+  reEval(); 
+});
 
 selEvts.addEventListener("change", function() {     // change Event
   var evt = _evts[ selEvts.selectedIndex ];
   playEvent( {t:0, nt: evt.nt, chord: evt.chord, d: evt.d } );
 });
+mMute.addEventListener( 'change', (ev)=>{ reEval(); });
+hMute.addEventListener( 'change', (ev)=>{ reEval(); });
+
 function initValue( ctl, nm, val, def ){
   if ( val==undefined ) val = def;
   if ( ctl.value==undefined )
@@ -217,8 +231,11 @@ function getEvents(){
     style += ',' + selHNotes.value;
     style += ',' + selHRhythm.value;
   }
-  _evts = toEvents( _gene, style.substring(1) );
   clearHist();
+  _evts = [];
+  if (style!='')
+    _evts = toEvents( _gene, style.substring(1) );
+
   if ( !mMute.checked ){
     evalHist( _gene, selMNotes.value, mNotesHist );
     evalHist( _gene, selMRhythm.value, mRhythmHist );
@@ -230,12 +247,18 @@ function getEvents(){
 }
 
 function reEval(){
-  _gene.mOct = m_octave.value;
-  _gene.hOct = h_octave.value;
+  MN_gene = findGene( selMNgene.value );
+  _gene = MN_gene;
+  MR_gene = findGene( selMRgene.value ); 
+  HN_gene = findGene( selHNgene.value ); 
+  HR_gene = findGene( selHRgene.value ); 
+
+  MN_gene.mOct = m_octave.value;
+  HN_gene.hOct = h_octave.value;
+
   getEvents();
   showEventList();  
   
-
   var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
   loadSelect( selEvts, evts );
   btnPlay.innerText = 'Play';

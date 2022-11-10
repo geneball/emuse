@@ -1,5 +1,5 @@
 async function main(){
-  const { app, BrowserWindow } = require('electron')
+  const { app, BrowserWindow, dialog, ipcMain } = require('electron')
 //  const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
   const path = require('path')
@@ -7,8 +7,10 @@ async function main(){
 
   console.log(process.env);
 
+  var win = null;
+
   const createWindow = () => {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
       width: 1100,
       height: 1000,    
       webPreferences: {
@@ -38,6 +40,11 @@ async function main(){
     if (process.platform !== 'darwin') app.quit()
   })
 
+  ipcMain.on('message', (event, opts) => {
+    let ans = dialog.showMessageBoxSync( win, opts );  
+    event.returnValue = ans;
+  });
+ 
   if (isDevelopment) {
     // this is to give Chrome Debugger time to attach to the new window 
     await new Promise(r => setTimeout(r, 1000));

@@ -1,32 +1,36 @@
-const { dialog } = require('electron')
 
-function msg( s ){
+const { ipcRenderer } = require( 'electron' );
+
+function msg( s, append ){
   let info = document.getElementById( 'info' );
-  info.innerHTML = s;
+  info.innerHTML = append? info.innerHTML + s : s;
 }
 
 function err( s ){
   console.log( s );  
   let opts = {
-    msg: s, 
+    title: 'Emuse error:  debug?', 
+    detail: s,
     type: 'error',
-    buttons: [ 'cancel', 'debug' ], defaultId: 0
+    buttons: [ 'cancel', 'debug' ],
+    defaultId: 0
   };
-  if (dialog==undefined) msg( s );
-  else
-  if ( dialog.showMessageBoxSync( opts )==1 ) debugger;
+  if ( ipcRenderer.sendSync('message', opts )) debugger;
 }
 
 function question( s, detail ){
   let opts = {
-    msg: s, 
+    title: s, 
     type: 'question',
-    buttons: [ 'no', 'yes' ], defaultId: 0
+    icon: 'none',
+    buttons: [ 'no', 'yes' ], 
+    defaultId: 0,
+    detail: detail
   };
-  if (dialog==undefined){ msg( s + detail ); return 0; }
-  else
-   return dialog.showMessageBoxSync( opts )==1;
+  let ans = ipcRenderer.sendSync('message', opts );
+  return ans==1;
 }
+
 
 function statusMsg( s ){
   let stat = document.getElementById( 'status' );
