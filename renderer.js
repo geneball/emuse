@@ -307,11 +307,14 @@ function inBeats( tics ){     // return tics as string in beats
   if (bts==0) return `${fr}/${denom} beat`;
   return `${bts} ${fr}/${denom} beats`;
 }
-function asBar( tics ){    // return tics as string in bars
-  let tpm = _gene.tpb * _gene.bpb;
-  let bar = Math.trunc( tics/tpm )+1;
-  tics = tics % tpm;   // tics past bar
-  return `|${bar}.${(tics/tpm).toFixed(2)}`;
+function asBar( tics ){    // return tics as string as |bar.bt.tic
+  let ticsPerBeat = _gene.tpb, beatsPerBar = _gene.bpb, ticsPerBar = ticsPerBeat * beatsPerBar;
+  let bar = Math.trunc( tics / ticsPerBar );
+  tics -= bar * ticsPerBar;
+  let beat = Math.trunc( tics / ticsPerBeat );
+  tics -= beat * ticsPerBeat;
+
+  return `|${bar+1}.${beat}.${tics}`;
 }
 
 var _row0key;
@@ -457,7 +460,7 @@ divBars.addEventListener("click",  (evt) => {    // click on Notes scroll
     selectEl( tgt.parentElement );
     playEvent( { t:0, chord: e.chord, d: e.d } );
   } else if (tgt.id.startsWith('beat')){
-    setTic( Number(tgt.id.substring(4))*_gene.ticsPerBeat );
+    setTic( _evts, Number(tgt.id.substring(4))*_gene.tpb );
     return;
   } 
   msg( tip );

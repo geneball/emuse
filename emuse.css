@@ -29,7 +29,7 @@
  
     btn              { border: 1px solid black; }
 
-    #question        { display:none; border: 2px solid black; margin: 10px; }
+    #status          { font-size: 14px; font-weight: bold; }
     .show            { display:block; position: absolute; bottom: 100px; height: 500px; width: 500px; }
 
     #selectSong      { width: 8em; }
@@ -75,7 +75,7 @@
     .tic             { position: absolute; bottom:1px; height:400px; width:1px; background-color: white; }
     .bar             { position: absolute; bottom:1px; height:400px; width:1px; background-color: gray; }
     .lbl             { width: 10000px; height:40px; background-color: white;  font-size: x-small; }
-    .info            { width: 400px;  display: inline-block; font-size: 22px; font-weight: bold; }
+    .info            { width: 400px;  display: inline-block; font-size: 18px; font-weight: bold; }
     .blk             { display: inline-block; text-align: center;}
     .hdr             { font-weight: bold; text-align: center;}
     .hTitle          { font-weight: bold; text-align: center; height:20px; }

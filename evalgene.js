@@ -5,6 +5,7 @@
 const { msg, err } = require( './msg.js' );
 const { asChord } = require( './etrack.js' );
 const { scDegToKeyNum } = require("./emuse");
+const { getStyle } = require( './egene.js' );
 
 class histogram {
     constructor( gene, style ){
@@ -12,12 +13,9 @@ class histogram {
         this.style = style;
 
         this.cnt = 0;
-        if ( gene[style]==undefined || gene[style].trim()=='' ){
-            msg( `histogram: ${gene.nm} gene.${style} empty` );
-            this.code = []
-        }  else {
-            this.code = gene[ style ].split(' ');
-        }
+        this.code = getStyle( gene, style );
+        if ( this.code==null ) return;
+
         let cds = this.code;
         this.cnt = this.code.length;
         this.values = {};
@@ -29,18 +27,20 @@ class histogram {
         for ( let i=0; i < cds.length; i++ ){
             let cd = cds[i].trim();
             if ( cd=='' ) err( `histogram:  ${gene.nm} gene.${style}[${i}] is '' ` );
-            if ( this.values[cd]==undefined ){
-                this.values[cd] = 0;
-                this.valueCnt++;
-            }
-            this.values[cd]++;
-            if ( this.values[cd] < this.cntmin ) this.cntmin = this.values[cd];
-            if ( this.values[cd] > this.cntmax ) this.cntmax = this.values[cd];
+            if ( cd!='.' && cd[0]!='|' ){
+                if ( this.values[cd]==undefined ){
+                    this.values[cd] = 0;
+                    this.valueCnt++;
+                }
+                this.values[cd]++;
+                if ( this.values[cd] < this.cntmin ) this.cntmin = this.values[cd];
+                if ( this.values[cd] > this.cntmax ) this.cntmax = this.values[cd];
 
-            if ( !isNaN( Number( cd )) ){     // numeric codes
-                cd = Number( cd );
-                this.sum += cd;
-                this.sumsq += cd*cd
+                if ( !isNaN( Number( cd )) ){     // numeric codes
+                    cd = Number( cd );
+                    this.sum += cd;
+                    this.sumsq += cd*cd
+                }
             }
         }
     }
@@ -57,7 +57,7 @@ class histogram {
         for ( let i=0; i<valNms.length; i++ ){
             let nm = valNms[i];
             let num = Number( nm );
-            if ( nm!='r' && nm!='.' ){
+            if ( nm!='r' && nm!='.' && nm[0]!='|' ){
                 switch ( this.style ){
                     case 'mRhythm':
                     case 'hRhythm':  

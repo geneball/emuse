@@ -107,36 +107,46 @@ var _plyr = {
         if ( e.nt != undefined ) return emStr(e.nt,false);
         if ( e.chord != undefined ) return chordName(e.chord, true);
     }
+
     function setTic( evts, tic ){
         _plyr.evts = evts;
         let bt = Math.trunc( tic / _gene.tpb );
-        let divBeat = document.getElementById( `beat${_plyr.currBeat}` );
-        removeClass( divBeat, 'on' );
-        let eIdx = _plyr.currEvtIdx;
-        if ( _plyr.currBeat < bt ) eIdx = 0;
-        _plyr.currEvtIdx = 0;
-        let e = null;
-        for( let i= eIdx; i<_plyr.evts.length; i++ ){
-            e = _plyr.evts[ i ];
-            if ( e.t >= tic ){ // next event
-                _plyr.currEvtIdx = i;
-                break;
+        
+    //    let divBeat = document.getElementById( `beat${_plyr.currBeat}` );
+    //        _plyr.currEvtIdx = 0;
+
+        if ( _plyr.evts[ _plyr.evts.length-1 ].t < tic )     // set currEvtIdx past last event, if it starts before tic 
+          _plyr.currEvtIdx = _plyr.evts.length;
+        else {        // or set currEvtIdx to first evt that starts at or after 'tic'
+            let eIdx = _plyr.currEvtIdx;            // scan forward from currEvtIdx
+            if ( bt < _plyr.currBeat ) eIdx = 0;    // or from start, if moving back
+            for( let i= eIdx; i<_plyr.evts.length; i++ ){
+                if ( _plyr.evts[ i ].t >= tic ){ // next event
+                    _plyr.currEvtIdx = i;
+                    break;
+                }
             }
         }
-        if ( _plyr.currEvtIdx <= 0 ){ 
-            bt = 0;     // restart
-        };
-        
-        if ( e==null ) return;
-        statusMsg( `${asBar(tic)} { ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }` );
-        
+
+        let stat = `${asBar(tic)} `;
+        let e = evts[ _plyr.currEvtIdx ];
+        if ( e != null ) stat += `{ ${asBar(e.t)} ${asNtChd(e)} ${inBeats(e.d)} }`;
+        statusMsg( stat );
+        setBeat( bt );
+    }
+    var _divBeat;
+    function setBeat( bt ){
+        if (_divBeat != undefined )
+            removeClass( _divBeat, 'on' );
+
         _plyr.currBeat = bt;
-        divBeat = document.getElementById( `beat${bt}` );
-        divBeat.scrollIntoView();
-        if ( bt+5 <= _plyr.maxTic/_plyr.tpb ) 
-            document.getElementById( `beat${bt+5}`).scrollIntoView();
-    
-        addClass( divBeat, 'on' );
+        _divBeat = document.getElementById( `beat${bt}` );
+        if ( _divBeat == undefined ) return;
+        addClass( _divBeat, 'on' );   
+        _divBeat.scrollIntoView();
+        let div = document.getElementById( `beat${bt+5}` );
+        if ( div == undefined ) return;
+        div.scrollIntoView(); 
     }
     function addHist( msg ){
         let currMs = (Date.now()-_plyr.msStart)/_plyr.msTic;
@@ -178,38 +188,37 @@ var _plyr = {
                 }
             }
         
-            for ( let i=_plyr.currEvtIdx; i<_plyr.evts.length; i++ ){
-                let e = _plyr.evts[ i ];
-                if ( e==null || e.t > tic ) break;
-                if ( e.nt != undefined ){ //&& (_plyr.m_tune || _plyr.m_rhythm) ){
-                    let nt = e.nt; 
-                //    if (!_plyr.m_tune) nt = _plyr.m_rhythmNote;     // no tune? play all notes as root
-                    let dur = e.d;
-                //    if ( !_plyr.m_rhythm ) dur = tpb;     // no rhythm? 1 beat per note
-                    setNoteOn( tic, nt, dur, _plyr.m_velocity );
-                }
-                if ( e.chord != undefined ){ //&& (_plyr.h_chords || _plyr.h_rhythm)  ){
-                    let dur = e.d;
-                    //if ( !_plyr.h_rhythm ) dur = tpb;
-                    let chd = e.chord;
-                    //if ( !_plyr.h_chords ) chd = [ _plyr.root, _plyr.root+4, _plyr.root+7 ];
-                    for ( let nt of chd ){
-                        setNoteOn( tic, nt, dur, _plyr.h_velocity );
+            if ( !_plyr.stop ){
+                for ( let i=_plyr.currEvtIdx; i<_plyr.evts.length; i++ ){
+                    let e = _plyr.evts[ i ];
+                    if ( e==null || e.t > tic ) break;
+                    if ( e.nt != undefined ){ 
+                       let nt = e.nt; 
+                       let dur = e.d;
+                       setNoteOn( tic, nt, dur, _plyr.m_velocity );
+                    }
+                    if ( e.chord != undefined ){ 
+                        let dur = e.d;
+                        let chd = e.chord;
+                        for ( let nt of chd ){
+                            setNoteOn( tic, nt, dur, _plyr.h_velocity );
+                        }
                     }
                 }
             }
             tic++;
-            if ( _plyr.stop || tic > _plyr.maxTic ){
-                btnPlay.innerText = 'Play';
-                if ( tic > _plyr.maxTic ) _plyr.currBeat = 0;
-            } else {
-                setTimeout( playtic, _plyr.msTic );
+            if ( tic >= _plyr.maxTic ){
+                stopPlay();
+                clearKeyMarkers();
+                setTic( _plyr.evts, 0 );
             }
+            if ( _plyr.stop )  return;
+            setTimeout( playtic, _plyr.msTic );
         }
         setTimeout( playtic, _plyr.msTic )
     }
     function stopPlay( ){
-        _plyr.stop = true;
+        _plyr.stop = true;              // signal pending playtic()'s to stop
         midiOutDev().allNotesOff(0);
         _plyr.notesOn = [];
         btnPlay.innerText = 'Play';

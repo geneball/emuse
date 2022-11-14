@@ -346,8 +346,8 @@ const encStyles = [  // in preferred order for generating events
         'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady', 'hmSteady'
 ];
 const encTypes = { 
-    mTune: 0, mRhythm: 1, hTune: 2, hRhythm: 3,
-    vToNm: [ 'mTune', 'mRythm', 'hTune', 'hRythm' ]
+    MN: 0, MR: 1, HN: 2, HR: 3,
+    vToNm: [ 'MN', 'MR', 'HN', 'HR' ]
 }
 const ntCh = 'ABCDEFGabcdefg#b0123456789-';
 const digCh = '+-0123456789';
@@ -356,18 +356,18 @@ const rhyCh = digCh + '.';
 const chdCh = ntCh + 'adgimbsu12345679#()/M';
 const romCh = 'IViv' + chdCh;
 const encodings = { 
-    notes:          { isRhythm: false, isMelody:  true,  isConst: false, type: 'mTune',     vchr: ntCh   },
-    intervals:      { isRhythm: false, isMelody:  true,  isConst: false, type: 'mTune',     vchr: digCh  },
-    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false, type: 'mTune',     vchr: sdCh   },
-    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true,  type: 'mTune',     vchr: ntCh   },
-    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false, type: 'mRhythm',   vchr: rhyCh  },
-    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true,  type: 'mRhythm',   vchr: rhyCh  },
-    chords:         { isRhythm: false, isMelody:  false, isConst: false, type: 'hTune',     vchr: chdCh  },
-    romans:         { isRhythm: false, isMelody:  false, isConst: false, type: 'hTune',     vchr: romCh  },
-    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true,  type: 'hTune',     vchr: chdCh  },     
-    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false, type: 'hRhythm',   vchr: rhyCh  },
-    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  type: 'hRhythm',   vchr: rhyCh  },
-    hmSteady:       { isRhythm: true,  isMelody:  false, isConst: true,  type: 'hRhythm',   vchr: rhyCh  }
+    notes:          { isRhythm: false, isMelody:  true,  isConst: false, isSteady: false, type: 'MN',   vchr: ntCh   },
+    intervals:      { isRhythm: false, isMelody:  true,  isConst: false, isSteady: false, type: 'MN',   vchr: digCh  },
+    scaledegrees:   { isRhythm: false, isMelody:  true,  isConst: false, isSteady: false, type: 'MN',   vchr: sdCh   },
+    rootNote:       { isRhythm: false, isMelody:  true,  isConst: true,  isSteady: false, type: 'MN',   vchr: ntCh   },
+    mRhythm:        { isRhythm: true,  isMelody:  true,  isConst: false, isSteady: false, type: 'MR',   vchr: rhyCh  },
+    mSteady:        { isRhythm: true,  isMelody:  true,  isConst: true,  isSteady: true,  type: 'MR',   vchr: rhyCh  },
+    chords:         { isRhythm: false, isMelody:  false, isConst: false, isSteady: false, type: 'HN',   vchr: chdCh  },
+    romans:         { isRhythm: false, isMelody:  false, isConst: false, isSteady: false, type: 'HN',   vchr: romCh  },
+    rootMajor:      { isRhythm: false, isMelody:  false, isConst: true,  isSteady: false, type: 'HN',   vchr: chdCh  },     
+    hRhythm:        { isRhythm: true,  isMelody:  false, isConst: false, isSteady: false, type: 'HR',   vchr: rhyCh  },
+    hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  isSteady: true,  type: 'HR',   vchr: rhyCh  },
+    hmSteady:       { isRhythm: true,  isMelody:  false, isConst: true,  isSteady: true,  type: 'HR',   vchr: rhyCh  }
 };
 function typeCnt( styles, typeToCount ){
     let cnt = 0;
@@ -375,25 +375,30 @@ function typeCnt( styles, typeToCount ){
         if ( encodings[s].type==typeToCount ) cnt++;
     return cnt;
 }
+function addTic( tic, tpm, cd ){
+    if ( tic % tpm == 0 )
+        cd.push( `|${(tic/tpm)+1}`);
+}
+
 function fromEvents( gene, style, evts ){
     let cd = [];
     if ( evts==undefined ) evts = gene.evts;
     let rootnt = toKeyNum( gene.root );
     let prevnt = rootnt;
     let scRows = scaleRows( rootnt, gene.mode );
-    let mtic = 0, htic = 0, bpm = gene.bpb * gene.tpb;
+    let mtic = 0, htic = 0, tpm = gene.bpb * gene.tpb;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];
     let mcnt = 0;  // cnt of melody events, if hmSteady => chords match notee count
-    
+
     for ( let e of evts ){
         if ( isMelody && e.nt != undefined ){   // process melody event
-            if ( mtic % bpm == 0 ) cd.push( '.' );
+            addTic( mtic, tpm, cd );
             if ( e.t > mtic ){
                 let rst = isConst? gene.tpb : e.t - mtic;
                 cd.push( isRhythm? rst : 'r' );
                 mtic = e.t;
-                if ( mtic % bpm == 0 ) cd.push( '.' );
+                addTic( mtic, tpm, cd );
             }
                 switch( style ){
                 case 'notes':       cd.push( e.nt ); break;
@@ -414,12 +419,12 @@ function fromEvents( gene, style, evts ){
              mcnt++;
         }
         if ( !isMelody && e.chord != undefined ){   // process harmony event
-            if ( htic % (4*bpm) == 0 ) cd.push( '.' );
+            addTic( htic, tpm, cd );
             if ( e.t > htic ){
                 let rst = isConst? gene.tpb : e.t - htic;
                 cd.push( isRhythm? rst : 'r' );
                 htic = e.t; 
-                if ( htic % (4*bpm) == 0 ) cd.push( '.' );
+                addTic( htic, tpm, cd );
             }
             switch( style ){
                 case 'chords':     cd.push( chordName( e.chord, true )); break;
@@ -440,22 +445,46 @@ function fromEvents( gene, style, evts ){
     }
     return cd;
 }
+function getStyle( gene, style ){       // returns [] from gene.style or null
+    if ( !encStyles.includes(style)) debugger;
+    let etype = encodings[ style ].type;
+    let g = gene;
+    if ( typeof gene[etype] == 'object' && gene[etype][style]!=undefined ) g = gene[ etype ];
+ 
+    let cd = g[ style ];
+    if (cd==undefined || ( typeof cd != 'string' && !(cd instanceof String))){
+        err( `${gene.nm} ${style} not string` );    
+        return null;
+    }
+    if ( cd.trim()=='' ){ 
+        msg( `getStyle: ${gene.nm} gene.${style} empty` );
+        return null;
+    }
+    return cd.split( cd.indexOf(',') >=0? ',' : ' ' );
+}
+function setStyle( gene, style, cd ){
+    if ( cd instanceof Array ) cd = cd.join(' ');
+    if ( cd==undefined || cd.trim()=='' ) err( `setStyle: ${gene.nm} ${style} set to '' `);
+    if ( !encStyles.includes( style )) debugger;
+    let etype = encodings[ style ].type;
+    if ( gene[etype]!=undefined ){
+        gene[etype][style] = cd;
+    } else
+        gene[style] = cd;
+
+}
 class cdStepper {
     constructor( gene, style ){
         this.gene = gene;
         this.style = style;
+        this.tpm = gene.tpb * gene.bpb;     // tics/measure
         this.idx = 0;
         this.cnt = 0;
-        if ( gene[style]==undefined || gene[style].trim()=='' ){
-            msg( `cdStepper: ${gene.nm} gene.${style} empty` );
-            return null;
-        }  
-        let cd = this.code = gene[ style ].split(' ');
-        this.cnt = cd.length;
-        for ( let i=0; i<cd.length; i++ ){
-            cd[i] = cd[i].trim();
-            if ( cd[i]=='' ) err( `cdStepper:  ${gene.nm} gene.${style} [${i}] is '' ` );
-        }
+        this.code = getStyle( gene, style );
+        this.isSteady = encodings[style].isSteady;
+        if ( this.code==null ) return;
+        checkCode( gene, style );
+        this.cnt = this.code.length;
     }
     nextCd(){
         return this.code[ this.idx++ ];
@@ -480,17 +509,9 @@ function getStyles( styles, melody ){
     return [ noteStyle, rhythmStyle ];
 }
 
-function firstDiffPos(a, b) {
-    let len = a.length;
-    if ( b.length > len ) len = b.length;
-    for ( let i=0; i < len; i++ ){
-        if ( a[i] !== b[i] ) return i;
-    }
-    return -1;
-} 
 function updateField( gene, style, evts ){
     let code = fromEvents( gene, style, evts );
-    let old = gene[style].split(' ');
+    let old = getStyle( gene, style );
     let fdif = -1, ndif = 0;
     let mxlen = code.length;
     if ( old.length > mxlen ) mxlen = old.length;
@@ -506,13 +527,25 @@ function updateField( gene, style, evts ){
     let br = '\r\n';
     let detail = `recalc'd version differs in ${ndif} places, old[${fdif}]= ${old[fdif]} not ${code[fdif]} `;
     if ( question( `Update ${gene.nm}.${style}?`, detail )){
-        gene['old'+style] = gene[style];
-        gene[style] = code.join(' ');
+        if ( gene.old==undefined ) gene.old = {};
+        gene.old[style] = old.join(' ');
+        setStyle( gene, style, code );
         saveGene( gene );
         msg( `saved ${gene.nm}.${style}` );
     }
 }
-
+function isBarMark( cd, cdstp, tic, isSteady ){
+    if ( isSteady==undefined ) isSteady = false;
+    if ( cd==undefined ) return false;
+    if ( cd=='.' || cd[0]=='|' ){
+        let tpm = cdstp.tpm;    
+        if ( isSteady ) return true;        // ignore bar mismatches if steady rhythm
+        if ( (tic % tpm)!=0 || (cd[0]=='|' && (tic/ tpm != Number(cd.substring(1)-1) )))
+            err( `${cdstp.gene.nm}: ${cdstp.style}[${cdstp.idx-1}]=${cd} (*${tpm}) at tic=${tic}` );
+        return true;
+    } else
+        return false;
+}
 function toMelody( gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, true );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no melody requested
@@ -527,10 +560,10 @@ function toMelody( gene, styles ){
     let rtnt = nt = toKeyNum( gene.root ), tic = 0;
     let ntOff = (60 + rtnt % 12) - rtnt + (gene.mOct-4)*12;      // offset to shift root to mOct
     let dur = gene.tpb;
+    let tpm = gene.bpb * gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( rcd == '.' ){   // measure boundary check
-            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: rhythm . at tic=${tic} idx=${rhy.idx}` );
+        if ( isBarMark( rcd, rhy, tic )){
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -545,8 +578,7 @@ function toMelody( gene, styles ){
             dur = gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next note (or rest)
-        if ( ncd == '.' ){   // measure boundary check
-            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toMelody: note . at tic=${tic} idx=${nts.idx}` );
+        if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
             ncd = nts.nextCd();
         }
 
@@ -571,10 +603,12 @@ function toMelody( gene, styles ){
         tic += dur;
     }
 
-    updateField( gene, noteStyle, evts );
+    if ( !rhy.isSteady )    // don't update notes from Steady rhythm
+        updateField( gene, noteStyle, evts );
     updateField( gene, rhythmStyle, evts );
     return evts;
 }
+
 function toHarmony( gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, false );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no harmony requested
@@ -589,8 +623,7 @@ function toHarmony( gene, styles ){
     let dur = gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( rcd == '.' ){   // measure boundary check
-            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toHarmony: rhythm . at tic=${tic} idx=${rhy.idx}` );
+        if ( isBarMark( rcd, rhy, tic ) ){   // measure boundary check
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -606,8 +639,7 @@ function toHarmony( gene, styles ){
             dur = gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next chord (or rest)
-        if ( ncd == '.' ){   // measure boundary check
-            if ( (tic % gene.tpb*gene.bpb)!=0 ) msg( `toHarmony: chord . at tic=${tic} idx=${nts.idx}` );
+        if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
             ncd = nts.nextCd();
         }
 
@@ -626,7 +658,8 @@ function toHarmony( gene, styles ){
         tic += dur;
     }
    
-    updateField( gene, noteStyle, evts );
+    if ( !rhy.isSteady )    // don't update notes from Steady rhythm
+        updateField( gene, noteStyle, evts );
     updateField( gene, rhythmStyle, evts );
     return evts;
 }
@@ -641,16 +674,19 @@ function toEvents( gene, styles ){
     // 'chords'       => 'chords,hSteady'
     // 'hRhythm'      => 'rootMajor,hRhythm'
     // 'notes,chords' => 'notes,mSteady,chords,hmSteady'
-    let typeCnts = {};
-    for ( let typ of encTypes.vToNm ) typeCnts[ typ ] = typeCnt( styles, typ );
-    if ( typeCnts.mTune > 0 && typeCnts.mRhythm== 0 ) styles.push( 'mSteady' );
-    if ( typeCnts.mTune== 0 && typeCnts.mRhythm > 0 ) styles.push( 'rootNote' );
-    if ( typeCnts.hTune > 0 && typeCnts.hRhythm== 0 ) 
-        styles.push( typeCnts.mRhythm==0?  'hmSteady' : 'hRhythm' );
-    if ( typeCnts.hTune== 0 && typeCnts.hRhythm > 0 ) styles.push( 'rootMajor' );
-    if ( styles.includes('mSteady')){
-        let idx = styles.indexOf('hRhythm');
-        if (idx>=0) styles[idx] = 'hmSteady';
+    // let typeCnts = {};
+    // for ( let typ of encTypes.vToNm ) typeCnts[ typ ] = typeCnt( styles, typ );
+    // if ( typeCnts.MN > 0 && typeCnts.MR== 0 ) styles.push( 'mSteady' );
+    // if ( typeCnts.MN== 0 && typeCnts.MR > 0 ) styles.push( 'rootNote' );
+    // if ( typeCnts.HN > 0 && typeCnts.HR== 0 ) 
+    //     styles.push( typeCnts.MR==0?  'hmSteady' : 'hRhythm' );
+    // if ( typeCnts.HN== 0 && typeCnts.HR > 0 ) styles.push( 'rootMajor' );
+    // if ( styles.includes('mSteady')){
+    //     let idx = styles.indexOf('hRhythm');
+    //     if (idx>=0) styles[idx] = 'hmSteady';
+    // }
+    if ( styles.includes('mSteady') && styles.includes('hSteady')){
+        styles[ styles.indexOf('hSteady')] = 'hmSteady';      
     }
     // 'notes,mRhythm'    => melody events from gene.notes & gene.mRhythm
     // 'notes,mSteady'    => melody events from gene.notes w/ 1 note per beat
@@ -779,10 +815,8 @@ function loadTrack( song, trk ){
 //     gene.evts = evts;
 // }
 function checkCode( g, sty ){       // return false & reports if code errors
-    let cd = g[ sty ];
-    if (cd==undefined || ( typeof cd != 'string' && !(cd instanceof String)))
-        err( `${g.nm} ${sty} not string` );
-    cd = cd.split( cd.indexOf(',')>=0? ',' : ' ' );
+    let cd = getStyle( g, sty );
+
     let validChars = encodings[sty].vchr;
     let isRhythm = encodings[sty].isRhythm;
     let empty = [], invalid = [], nonNums = [];
@@ -790,15 +824,17 @@ function checkCode( g, sty ){       // return false & reports if code errors
     for ( let i=0; i<cd.length; i++ ){
         let c = cd[i];
         if ( c=='' ) empty.push( i );
-        if ( c!='.' ){          // '.' ok in any code
-            vcnt++;     // count of non-empty non-dot codes
+        if ( c[0]=='|' || c=='.' ){          // '|1' or '.' ok in any code
+            if ( c[0]=='|' && isNaN( Number(c.substring(1)) ) ) nonNums.push( i );
+        } else {
+            vcnt++;     // count of non-empty non-bar codes
             if ( isRhythm || ( c!='r' && c!='R' )){     // r or R is ok in all Notes
                 for ( let j=0; j<c.length; j++ )
                     if ( !validChars.includes( c[j] ) ){ 
                         invalid.push( i ); 
                         break; 
                     }
-                if ( encodings[sty].isRhythm || (sty=='intervals' && c!='.') ){  // must be number
+                if ( encodings[sty].isRhythm || (sty=='intervals' && c[0]!='|') ){  // must be number
                     if ( isNaN( Number(c) ) ) nonNums.push( i );
                 }
             }
@@ -835,19 +871,19 @@ function loadGene( g ){     // verify gene json
     fillDefault( g, 'bpb', 4 );
     fillDefault( g, 'defs', {} );       // definition source per envType
     for ( let e of encStyles ){  // styles in order of preference
-        if ( g[e]!=undefined )
-            checkCode( g, e );
+        let cd = getStyle( g, e );
         let enc = encodings[e];
-        if ( g.defs[ enc.type ]==undefined ){  // no definition recorded
-            g.defs[ enc.type ] = e;     // use this one as definition
+        if ( g[ enc.type ]==undefined ) g[enc.type] = {};
+        if ( g[ enc.type ].def==undefined){  // no definition recorded
+            g[ enc.type ].def = e;     // use this one as definition
         }
     }
-    if ( g.defs.mTune!=undefined && g.defs.mRhythm!=undefined ){
-        let styles = g.defs.mTune + ',' + g.defs.mRhythm;
+    if ( g.MN.def!=undefined && g.MR.def!=undefined ){
+        let styles = g.MN.def + ',' + g.MR.def;
         msg( ` M:${styles}`, true );
     }
-    if ( g.defs.hTune!=undefined && g.defs.hRhythm!=undefined ){
-        let styles = g.defs.hTune + ',' + g.defs.hRhythm;
+    if ( g.HN.def!=undefined && g.HR.def!=undefined ){
+        let styles = g.HN.def + ',' + g.HR.def;
         msg( ` H:${styles}`, true );
     }
 }
@@ -915,5 +951,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { saveTrack, loadTrack, toEvents, findGene, geneNames, findSong, songNames };
-// const { saveTrack, loadTrack, toEvents, findGene, geneNames, findSong, songNames } = require("./egene");
+module.exports = { saveTrack, loadTrack, toEvents, findGene, getStyle, geneNames, findSong, songNames };
+// const { saveTrack, loadTrack, toEvents, findGene, getStyle, geneNames, findSong, songNames } = require("./egene");
