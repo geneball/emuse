@@ -41,10 +41,10 @@
     #selectRoot      { width: 3em; }
     #selectMode      { width: 8em; }
     #selectEvents    { width: 8em; }
-    #selMNotes       { width: 4em; }
-    #selMRhythm      { width: 4em; }
-    #selHNotes       { width: 4em; }
-    #selHRhythm      { width: 4em; }
+    #selMNotes       { width: 8em; }
+    #selMRhythm      { width: 8em; }
+    #selHNotes       { width: 8em; }
+    #selHRhythm      { width: 8em; }
 
     #sel_MN_gene     { width: 20em; }
     #sel_MR_gene     { width: 20em; }

@@ -5,7 +5,7 @@
 const { msg, err } = require( './msg.js' );
 const { asChord } = require( './etrack.js' );
 const { scDegToKeyNum } = require("./emuse");
-const { getStyle } = require( './egene.js' );
+const { getStyle, isRhythmStyle  } = require( './egene.js' );
 
 class histogram {
     constructor( gene, style ){
@@ -24,10 +24,16 @@ class histogram {
         this.sumsq = 0;
         this.cntmin = 10000;
         this.cntmax = -10000;
+    
+        this.auto = [];         // calc auto-correlation
+        this.max_auto = 0;      // max auto-correlation
+        this.max_pos = 0;       // offset of max
+        this.vals = [];         // array of just values (no bar-markers)
         for ( let i=0; i < cds.length; i++ ){
             let cd = cds[i].trim();
             if ( cd=='' ) err( `histogram:  ${gene.nm} gene.${style}[${i}] is '' ` );
             if ( cd!='.' && cd[0]!='|' ){
+                this.vals.push( cd );
                 if ( this.values[cd]==undefined ){
                     this.values[cd] = 0;
                     this.valueCnt++;
@@ -43,9 +49,19 @@ class histogram {
                 }
             }
         }
+        for ( let pos=1; pos < this.vals.length; pos++ ){
+            let cnt = 0;
+            for (let i=0; i < this.vals.length-pos; i++ ){
+                if ( this.vals[ i ] == this.vals[ i + pos ] ) cnt++;
+            }
+            this.auto.push( cnt );
+            if ( cnt > this.max_auto ){ this.max_auto = cnt; this.max_pos = pos; }
+        }
+        
     }
     html(){
-        let h = `<div id="${this.gene.nm}_hist"> <span class="hTitle"> ${this.gene.nm} ${this.style} </span> <div id="${this.style}bars" class="hist"> `;
+        let htics = isRhythmStyle( this.style )? ` tics=${this.sum}` : '';
+        let h = `<div id="${this.gene.nm}_hist"> <span class="hTitle"> ${this.gene.nm} ${this.style} cnt=${this.cnt} ${htics} maxcor=${this.max_auto} at ${this.max_pos}</span> <div id="${this.style}bars" class="hist"> `;
         let valNms = Object.getOwnPropertyNames( this.values );
         valNms = valNms.sort( (a,b) => { 
                 let na = Number(a), nb = Number(b);

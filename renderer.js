@@ -130,8 +130,8 @@ function initChordUI(){
 
 /* **********************  Song & Track UI  *******************  */
 var _song, _track, _trk, _evts;  
-selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
-selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); });
+selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
+selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
 
 function setKey( root, mode ){
   clearChordBtns();
@@ -141,6 +141,8 @@ function setKey( root, mode ){
   selMode.value = mode;
 
   let rkey = toKeyNum( root );    // root key in octave 4
+  MN_gene.root = rkey;
+  MN_gene.mode = mode;
   setScale( mode, rkey );
   let rows = scaleRows( );
   let schtml = '';
@@ -156,15 +158,10 @@ function setKey( root, mode ){
   setChordRoot( rkey, true );
   setChordType( 'M', true );
 }
-selHNgene.addEventListener("change", function() {
-  selHRgene.value = selHNgene.value;
-});
+var MN_gene, MR_gene, HN_gene, HR_gene;
 selMNgene.addEventListener("change", function() {
-  selMRgene.value = selMNgene.value;
-  selHNgene.value = selMNgene.value;
-  selHRgene.value = selMNgene.value;
-
-  _gene = findGene( selMNgene.value );
+  selMRgene.value = selHNgene.value = selHRgene.value = selMNgene.value;
+  _gene = MN_gene = MR_gene = HN_gene = HR_gene = findGene( selMNgene.value );
   setKey( _gene.root, _gene.mode );
 
   initValue( bpb, 'bpb', _gene.bpb, 4 );
@@ -174,30 +171,35 @@ selMNgene.addEventListener("change", function() {
 
   m_octave.value = _gene.melodyOctave == undefined? 4 : _gene.melodyOctave;
   h_octave.value = _gene.harmonyOctave == undefined? 3 : _gene.harmonyOctave;
- 
   reEval();
-  // getEvents();  // recalc events given  melody/harmony tune/rhythm settings
-
-  // showEventList(  );
-
-  // var evts = _evts.map( x => `${x.t}: ${x.chord!=undefined? emStr(x.chord,true) : emStr(x.nt,true)} * ${x.d}` );
-  // loadSelect( selEvts, evts );
-  // btnPlay.innerText = 'Play';
 });
-var MN_gene, MR_gene, HN_gene, HR_gene;
+selMRgene.addEventListener("change", function() {
+  MR_gene = findGene( selMRgene.value );
+  reEval();
+});
+selHNgene.addEventListener("change", function() {
+  selHRgene.value = selHNgene.value;
+  HR_gene = HN_gene = findGene( selHNgene.value );
+  reEval();
+});
+selHRgene.addEventListener("change", function() {
+  HR_gene = findGene( selHRgene.value ); 
+  reEval();
+});
 
 selMNotes.addEventListener( "change", (ev) => { 
-  selMRgene.value = selHNgene.value = selHRgene.value = selMNgene.value;
   reEval();  
 });
 selMRhythm.addEventListener("change", (ev) => { 
+  if ( selMRhythm.value=='mSteady' && selHRhythm.value!='hSteady' ) hMute.checked = true;
   reEval(); 
 });
 selHNotes.addEventListener( "change", (ev) => { 
-  selHRgene.value = selHNgene.value;
   reEval();  
 });
 selHRhythm.addEventListener("change", (ev) => { 
+  if ( selHRhythm.value=='hSteady' && selMRhythm.value!='mSteady' ) mMute.checked = true;
+
   reEval(); 
 });
 
@@ -229,30 +231,24 @@ function getEvents(){
   }
   if ( !hMute.checked ){
     style += ',' + selHNotes.value;
-    style += ',' + selHRhythm.value;
+    style += ',' + ((selMRhythm.value=='mSteady' && selHRhythm.value=='hSteady' )? 'hmSteady' : selHRhythm.value);
   }
   clearHist();
   _evts = [];
   if (style!='')
-    _evts = toEvents( _gene, style.substring(1) );
+    _evts = toEvents( MN_gene, MR_gene, HN_gene, HR_gene, style.substring(1) );
 
   if ( !mMute.checked ){
-    evalHist( _gene, selMNotes.value, mNotesHist );
-    evalHist( _gene, selMRhythm.value, mRhythmHist );
+    evalHist( MN_gene, selMNotes.value, mNotesHist );
+    evalHist( MR_gene, selMRhythm.value, mRhythmHist );
   }
   if ( !hMute.checked ){
-    evalHist( _gene, selHNotes.value, hNotesHist );
-    evalHist( _gene, selHRhythm.value, hRhythmHist );
+    evalHist( HN_gene, selHNotes.value, hNotesHist );
+    evalHist( HR_gene, selHRhythm.value, hRhythmHist );
   }
 }
 
 function reEval(){
-  MN_gene = findGene( selMNgene.value );
-  _gene = MN_gene;
-  MR_gene = findGene( selMRgene.value ); 
-  HN_gene = findGene( selHNgene.value ); 
-  HR_gene = findGene( selHRgene.value ); 
-
   MN_gene.mOct = m_octave.value;
   HN_gene.hOct = h_octave.value;
 

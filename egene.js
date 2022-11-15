@@ -369,6 +369,7 @@ const encodings = {
     hSteady:        { isRhythm: true,  isMelody:  false, isConst: true,  isSteady: true,  type: 'HR',   vchr: rhyCh  },
     hmSteady:       { isRhythm: true,  isMelody:  false, isConst: true,  isSteady: true,  type: 'HR',   vchr: rhyCh  }
 };
+function isRhythmStyle( style ){ return encodings[ style ].isRhythm; }
 function typeCnt( styles, typeToCount ){
     let cnt = 0;
     for ( let s of styles )
@@ -546,21 +547,21 @@ function isBarMark( cd, cdstp, tic, isSteady ){
     } else
         return false;
 }
-function toMelody( gene, styles ){
+function toMelody( n_gene, r_gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, true );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no melody requested
 
-    if ( !checkCode(gene, noteStyle) || !checkCode(gene, rhythmStyle) ) return [];      // invalid code strings
+    if ( !checkCode(n_gene, noteStyle) || !checkCode(r_gene, rhythmStyle) ) return [];      // invalid code strings
 
-    let nts = new cdStepper( gene, noteStyle );
-    let rhy  = new cdStepper( gene, rhythmStyle );
+    let nts = new cdStepper( n_gene, noteStyle );
+    let rhy  = new cdStepper( r_gene, rhythmStyle );
     if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
-    let rtnt = nt = toKeyNum( gene.root ), tic = 0;
-    let ntOff = (60 + rtnt % 12) - rtnt + (gene.mOct-4)*12;      // offset to shift root to mOct
-    let dur = gene.tpb;
-    let tpm = gene.bpb * gene.tpb;
+    let rtnt = nt = toKeyNum( n_gene.root ), tic = 0;
+    let ntOff = (60 + rtnt % 12) - rtnt + (n_gene.mOct-4)*12;      // offset to shift root to mOct
+    let dur = r_gene.tpb;
+    let tpm = r_gene.bpb * r_gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
         if ( isBarMark( rcd, rhy, tic )){
@@ -574,8 +575,8 @@ function toMelody( gene, styles ){
             }
         }
         if ( dur < 0 ){
-            err( `toMelody: ${gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
-            dur = gene.tpb; 
+            err( `toMelody: ${r_gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
+            dur = r_gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next note (or rest)
         if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
@@ -595,7 +596,7 @@ function toMelody( gene, styles ){
             }
             nt = Number(nt);
             if ( nt<0 || nt>127 ){ 
-                err( `toMelody: ${gene.nm} ${noteStyle} cd ${ncd} => out of range ${nt}` ); 
+                err( `toMelody: ${n_gene.nm} ${noteStyle} cd ${ncd} => out of range ${nt}` ); 
                 nt = rtnt; 
             }
             evts.push( { t:tic, d:dur, nt: Number(nt) + ntOff } );
@@ -604,23 +605,23 @@ function toMelody( gene, styles ){
     }
 
     if ( !rhy.isSteady )    // don't update notes from Steady rhythm
-        updateField( gene, noteStyle, evts );
-    updateField( gene, rhythmStyle, evts );
+        updateField( n_gene, noteStyle, evts );
+    updateField( r_gene, rhythmStyle, evts );
     return evts;
 }
 
-function toHarmony( gene, styles ){
+function toHarmony( n_gene, r_gene, styles ){
     let [ noteStyle, rhythmStyle ] = getStyles( styles, false );
     if ( noteStyle=='' && rhythmStyle=='' ) return [];     // no harmony requested
 
-    let nts = new cdStepper( gene, noteStyle );
-    let rhy  = new cdStepper( gene, rhythmStyle );
+    let nts = new cdStepper( n_gene, noteStyle );
+    let rhy  = new cdStepper( r_gene, rhythmStyle );
     if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
-    let rtNt = toKeyNum( gene.root ), nt = rtNt, tic = 0;
+    let rtNt = toKeyNum( n_gene.root ), nt = rtNt, tic = 0;
     let chd = [ nt, nt+4, nt+7 ];   // major chord
-    let dur = gene.tpb;
+    let dur = r_gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
         if ( isBarMark( rcd, rhy, tic ) ){   // measure boundary check
@@ -635,8 +636,8 @@ function toHarmony( gene, styles ){
             }
         }
         if ( dur < 0 ){
-            err( `toHarmony: ${gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
-            dur = gene.tpb; 
+            err( `toHarmony: ${r_gene.nm} ${rhythmStyle} cd ${rcd} => out of range ${dur}` ); 
+            dur = r_gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next chord (or rest)
         if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
@@ -648,7 +649,7 @@ function toHarmony( gene, styles ){
             if ( ncd!=undefined ){  // if cds run out, repeat last chd
                 switch ( noteStyle ){
                     case 'chords':  
-                    case 'romans':   chd = asChord( ncd, rtNt, gene.hOct );   break;
+                    case 'romans':   chd = asChord( ncd, rtNt, n_gene.hOct );   break;
                     default:
                     case 'rootMajor':    break;      // nt stays at root
                 }
@@ -659,13 +660,13 @@ function toHarmony( gene, styles ){
     }
    
     if ( !rhy.isSteady )    // don't update notes from Steady rhythm
-        updateField( gene, noteStyle, evts );
-    updateField( gene, rhythmStyle, evts );
+        updateField( n_gene, noteStyle, evts );
+    updateField( r_gene, rhythmStyle, evts );
     return evts;
 }
-function toEvents( gene, styles ){
-    if ( typeof styles == 'string' || styles instanceof String )
-        styles = styles.split( styles.includes(',')? ',':' ' );
+function toEvents( mn_gene, mr_gene, hn_gene, hr_gene, styles ){
+   if ( typeof styles == 'string' || styles instanceof String )
+       styles = styles.split( styles.includes(',')? ',':' ' );
 
     // 'notes'        => 'notes,mSteady'
     // 'notes,mRhythm,chords' => 'hSteady'  -- so chords match notes
@@ -685,9 +686,9 @@ function toEvents( gene, styles ){
     //     let idx = styles.indexOf('hRhythm');
     //     if (idx>=0) styles[idx] = 'hmSteady';
     // }
-    if ( styles.includes('mSteady') && styles.includes('hSteady')){
-        styles[ styles.indexOf('hSteady')] = 'hmSteady';      
-    }
+    // if ( styles.includes('mSteady') && styles.includes('hSteady')){
+    //     styles[ styles.indexOf('hSteady')] = 'hmSteady';      
+    // }
     // 'notes,mRhythm'    => melody events from gene.notes & gene.mRhythm
     // 'notes,mSteady'    => melody events from gene.notes w/ 1 note per beat
     // 'intervals'        => melody events from gene.intervals starting at gene.root
@@ -699,11 +700,11 @@ function toEvents( gene, styles ){
     // 'mSteady,hmSteady' => chord /num steady notes
     // 'romans'           => harmony events from gene.romans & gene.key (at 1 chord per beat)
 
-    gene.eventStyles = styles.join(',');
-    setScale( gene.mode, gene.root );
-    let melody = toMelody( gene, styles );
+    //gene.eventStyles = styles.join(',');
+    setScale( mn_gene.mode, mn_gene.root );
+    let melody = toMelody( mn_gene, mr_gene, styles );
 
-    let harmony = toHarmony( gene, styles );
+    let harmony = toHarmony( hn_gene, hr_gene, styles );
 
     let evts = melody.concat( harmony ); 
     evts.sort( (a,b) => a.t - b.t );
@@ -719,68 +720,68 @@ function saveGene( gene ){
     data.write( `${gene.nm}_gene.json`, gene ); //, 'json' );
     gene.evts = evts;
 }
-function saveTrack( song, trk, _trk ){
-    let data = jetpack.cwd( './data' );
-    data.write( `${song.nm}_def.json`, song );
+// function saveTrack( song, trk, _trk ){
+//     let data = jetpack.cwd( './data' );
+//     data.write( `${song.nm}_def.json`, song );
 
-    let gene = {
-        nm: `${song.nm}_${trk.nm}`,
-        root: song.root,
-        mode: song.mode,
-        bpb: song.beatsPerBar,
-        tpb: song.ticsPerBeat,
-        tempo: song.tempo,
-        codons: '',
-        orig_events: _trk.evts,
-        evts: []
-    };
-    genCodons( gene );
+//     let gene = {
+//         nm: `${song.nm}_${trk.nm}`,
+//         root: song.root,
+//         mode: song.mode,
+//         bpb: song.beatsPerBar,
+//         tpb: song.ticsPerBeat,
+//         tempo: song.tempo,
+//         codons: '',
+//         orig_events: _trk.evts,
+//         evts: []
+//     };
+//     genCodons( gene );
 
-    for ( let enc of encStyles ){
-        gene[ enc ] = fromEvents( gene, enc ).join(' ');
-    }
+//     for ( let enc of encStyles ){
+//         gene[ enc ] = fromEvents( gene, enc ).join(' ');
+//     }
 
-    let evts2 = toEvents( gene, 'notes,mRhythm,chords,hRhythm' );
-    let evts = gene.evts;
-    let f = [ 't', 'd', 'nt' ];
-    let diffcnt = 0;
-    for ( let i=0; i<gene.orig_events.length; i++ ){
-        let diff = false;
-        let oediff = false;
-        let e1 = evts[i], e2 = evts2[i], oe = gene.orig_events[i];
-        for ( let fld of f ){
-          if ( e1[fld] != oe[fld] ) oediff = true;
-          if ( e1[fld] != e2[fld] ){
-            console.log( `${i}.${fld}: e1=${e1[fld]} e2=${e2[fld]} ${oediff? oe[fld]:''}` );
-            diffcnt++;
-          }
-        }
-        oediff = false;
-        if (e1.chord != undefined){
-            let clen = e1.chord.length;
-            for ( let k=0; k<clen; k++ ){
-                if ( e1.chord[k]!=oe.chord[k] ) oediff = true;
-                if ( e1.chord[k]!=e2.chord[k] && Math.abs(e1.chord[k]-e2.chord[k])!=12 ){
-                  console.log( `${i}.chord[${k}]: e1=${e1.chord[k]} e2=${e2.chord[k]} ${oediff? oe.chord[k]:''} ` );
-                  diffcnt++;
-                }
-            }
-        }
-    }
-    if (diffcnt > 0) console.log( `saveTrack: ${diffcnt} diffs in ${song.nm} ${trk.nm}` );
-    delete gene.orig_events;        // since gene.evts matches
-    delete gene.evts;
+//     let evts2 = toEvents( gene, 'notes,mRhythm,chords,hRhythm' );
+//     let evts = gene.evts;
+//     let f = [ 't', 'd', 'nt' ];
+//     let diffcnt = 0;
+//     for ( let i=0; i<gene.orig_events.length; i++ ){
+//         let diff = false;
+//         let oediff = false;
+//         let e1 = evts[i], e2 = evts2[i], oe = gene.orig_events[i];
+//         for ( let fld of f ){
+//           if ( e1[fld] != oe[fld] ) oediff = true;
+//           if ( e1[fld] != e2[fld] ){
+//             console.log( `${i}.${fld}: e1=${e1[fld]} e2=${e2[fld]} ${oediff? oe[fld]:''}` );
+//             diffcnt++;
+//           }
+//         }
+//         oediff = false;
+//         if (e1.chord != undefined){
+//             let clen = e1.chord.length;
+//             for ( let k=0; k<clen; k++ ){
+//                 if ( e1.chord[k]!=oe.chord[k] ) oediff = true;
+//                 if ( e1.chord[k]!=e2.chord[k] && Math.abs(e1.chord[k]-e2.chord[k])!=12 ){
+//                   console.log( `${i}.chord[${k}]: e1=${e1.chord[k]} e2=${e2.chord[k]} ${oediff? oe.chord[k]:''} ` );
+//                   diffcnt++;
+//                 }
+//             }
+//         }
+//     }
+//     if (diffcnt > 0) console.log( `saveTrack: ${diffcnt} diffs in ${song.nm} ${trk.nm}` );
+//     delete gene.orig_events;        // since gene.evts matches
+//     delete gene.evts;
 
-    data.write( `${song.nm}_${trk.nm}_gene.json`, gene );
-    gene.evts = evts;
-}
-function loadTrack( song, trk ){
-    let data = jetpack.cwd( './data' );
-    let gene = data.read( `${song.nm}_${trk.nm}_gene.json`, 'json' );
+//     data.write( `${song.nm}_${trk.nm}_gene.json`, gene );
+//     gene.evts = evts;
+// }
+// function loadTrack( song, trk ){
+//     let data = jetpack.cwd( './data' );
+//     let gene = data.read( `${song.nm}_${trk.nm}_gene.json`, 'json' );
 
-    loadGeneEvents( gene );
-    return gene;
-}
+//     loadGeneEvents( gene );
+//     return gene;
+// }
 // function loadGeneEvents( gene ){
 
 //     let evts;
@@ -951,5 +952,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { saveTrack, loadTrack, toEvents, findGene, getStyle, geneNames, findSong, songNames };
-// const { saveTrack, loadTrack, toEvents, findGene, getStyle, geneNames, findSong, songNames } = require("./egene");
+module.exports = { toEvents, findGene, getStyle, isRhythmStyle, geneNames, findSong, songNames };
+// const { toEvents, findGene, getStyle, isRhythmStyle, geneNames, findSong, songNames } = require("./egene");
