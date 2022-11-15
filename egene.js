@@ -1,4 +1,4 @@
-const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chordName } = require("./emuse");
+const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chordName, emStr } = require("./emuse");
 const { asChord } = require( './etrack.js' );
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
@@ -265,6 +265,7 @@ function compareEvents( evts1, evts2, descr ){
     }
     if ( cnt>0 )
         err( `${descr}: ${cnt} diffs: ${diff}` );
+    return cnt;
 }
 
 //DECODING  codons => _dst & g.evts
@@ -435,7 +436,7 @@ function fromEvents( gene, style, evts ){
                     if (chnm=='m'){ rom = rom.toLowerCase(); chnm=''; } 
                     if (chnm=='M'){ rom = rom.toUpperCase(); chnm=''; }
                     cd.push( `${rom}${chnm}` ); break;
-                case 'rootMajor':  cd.push( gene.root+'M' ); break;
+                case 'rootMajor':  cd.push( emStr(rootnt,true)+'M' ); break;
                 case 'hRhythm':    cd.push( e.d ); break;
                 case 'hSteady':    cd.push( gene.tpb ); break;
                 case 'hmSteady':   cd.push( mcnt * gene.tpb ); mcnt = 0; break;
@@ -509,24 +510,39 @@ function getStyles( styles, melody ){
     }
     return [ noteStyle, rhythmStyle ];
 }
-
+function cdValsOnly( cds ){
+    if ( typeof cds=='string' || cds instanceof String )
+        cds = cds.split(' ');
+    let vals = [];
+    for ( let c of cds ){
+        let v = String(c);
+        if ( v!='.' && v[0]!='|' ) vals.push( v );
+    }
+    return vals;
+}
 function updateField( gene, style, evts ){
     let code = fromEvents( gene, style, evts );
     let old = getStyle( gene, style );
-    let fdif = -1, ndif = 0;
-    let mxlen = code.length;
+    let fdif = -1, ndif = 0, diffs = '';
+    if ( code[0] != old[0] ){           //  eg '|1' != '|1'
+        ndif++;  diffs = `0(${old[0]}=>${code[0]})`;
+    }
+    let newcd = cdValsOnly( code );
+    old = cdValsOnly( old );
+    let mxlen = newcd.length;
     if ( old.length > mxlen ) mxlen = old.length;
 
+
     for ( let i=0; i < mxlen; i++ )
-        if ( code[i] != old[i] ) {
+        if ( newcd[i] != old[i] ) {
             ndif++;
             if ( fdif < 0 ) fdif = i;
+            diffs += ` ${i}(${old[i]}=>${newcd[i]})`;
         }
-
     if ( ndif == 0 ) return;
 
     let br = '\r\n';
-    let detail = `recalc'd version differs in ${ndif} places, old[${fdif}]= ${old[fdif]} not ${code[fdif]} `;
+    let detail = `recalc'd version differs in ${ndif} places: ${diffs}`; //, old[${fdif}]= ${old[fdif]} not ${code[fdif]} `;
     if ( question( `Update ${gene.nm}.${style}?`, detail )){
         if ( gene.old==undefined ) gene.old = {};
         gene.old[style] = old.join(' ');
@@ -564,7 +580,7 @@ function toMelody( n_gene, r_gene, styles ){
     let tpm = r_gene.bpb * r_gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( isBarMark( rcd, rhy, tic )){
+        if ( isBarMark( rcd, rhy, tic, rhy.isSteady )){
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -624,7 +640,7 @@ function toHarmony( n_gene, r_gene, styles ){
     let dur = r_gene.tpb;
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( isBarMark( rcd, rhy, tic ) ){   // measure boundary check
+        if ( isBarMark( rcd, rhy, tic, rhy.isSteady ) ){   // measure boundary check
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -886,6 +902,12 @@ function loadGene( g ){     // verify gene json
     if ( g.HN.def!=undefined && g.HR.def!=undefined ){
         let styles = g.HN.def + ',' + g.HR.def;
         msg( ` H:${styles}`, true );
+    }
+
+    let styles = [ 'notes', 'mRhythm', 'chords', 'hRhythm' ];
+    let evts = toEvents( g, g, g, g, styles );
+    for ( let e of encStyles ){
+        updateField( g, e, evts );
     }
 }
 
