@@ -181,7 +181,7 @@
 		if ( modeDefs[0].scDeg == undefined )
 			initModeDegrees();
 
-        if (root==undefined) root = 0;
+        if (root==undefined) root = 'C';
 		currRoot = toKeyNum( root );
 		if ( md===undefined ) md = 'Major'; // modeDefs[0];
 		currMode = md;
@@ -240,8 +240,18 @@
 		if ( 'ABCDEFG'.includes( chd[0]) ) chnm = chd;
 		const chord = parseChord( chnm.trim() );
 		if ( chord.error==undefined ){
-			let semis = chord.normalized.semitones;
-			return chord.normalized.semitones.map( x => x + root );
+			let norm = chord.normalized;
+			let semis = norm.semitones;
+			let bassNt = norm.bassNote;
+			if ( bassNt != undefined ){  // inverted
+				for ( let i=0; i < norm.notes.length; i++ ){
+					if ( norm.notes[i] == bassNt ) break;  // found bass -- nothing else to invert
+					semis[ i ] += 12;
+				}
+				semis = semis.sort( (a,b) => { return a-b; } );
+			}
+			let s = semis.map( x => x + root );
+			return s;
 		}
 		else  err( `parseChord( ${chnm} ) => ${chord.error[0].message}`, true ); 
 	}
@@ -272,8 +282,12 @@
 			chd3.sort( (a,b) => a-b );
 			chd3 = chd3.map( x => x-chd3[0] );
 			idx = idxChd( chd3 );
-			if ( idx >= 0 )
-				return split? [ nts[i+1], `${chordDefs[idx].nm}/${nts[0]}` ] : `${nts[i+1]}${chordDefs[idx].nm}/${nts[0]}`;
+			if ( idx >= 0 ){
+				let nm = chordDefs[idx].nm;
+				if ( nm=='M' ) nm = '';
+				let rt = nts[i+1], bass = nts[0];
+				return split? [ rt, `${nm}/${bass}` ] : `${rt}${nm}/${bass}`;
+			}
 		}
 
 		err( `chordName: ${chd} unrecognized` );

@@ -1,6 +1,7 @@
 {
   "nm": "American Pie_Chorus",
-  "root": 67,
+  "root": "G",
+  "rootNt": 67,
   "mode": "Major",
   "bpb": 4,
   "tpb": 4,
@@ -23,7 +24,7 @@
   "HN": {
     "def": "chords",
     "chords": "|1 GM CM |2 GM DM |3 GM CM |4 GM DM |5 GM CM |6 GM DM |7 Em |8 A7 |9 Em |10 D7",
-    "romans": "|1 II V |2 II VI |3 II V |4 II VI |5 II V |6 II VI |7 vii |8 III7 |9 vii |10 VI7",
+    "romans": "|1 I IV |2 I V |3 I IV |4 I V |5 I IV |6 I V |7 vi |8 II7 |9 vi |10 V7",
     "rootMajor": "|1 GM GM |2 GM GM |3 GM GM |4 GM GM |5 GM GM |6 GM GM |7 GM |8 GM |9 GM |10 GM"
   },
   "HR": {
@@ -46,19 +47,6 @@
     "hSteady": 16,
     "hmSteady": 16
   },
-  "eventStyles": "notes,mRhythm,rootMajor,hSteady",
   "old": {
-    "scaledegrees": "|1 5 4 4 4 4 |2 3 2 1 2 r 5 5 5 5 4 4 4 4 3 2 1 0 -1 -2 r 5 5 4 4 4 3 2 1 2 3 2 |7 1 -1 1 -1 1 0 -1 |8 2 r |9 1 -1 1 -1 1 0 -1 |10 0 -1 -2 r",
-    "mRhythm": "|1 6 2 4 2 2 |2 2 2 2 2 2 4 4 2 2 2 2 2 2 4 2 2 1 1 2 4 4 4 4 2 2 4 2 2 6 2 2 |7 2 2 2 1 3 1 5 |8 8 8 |9 2 2 2 1 3 1 5 |10 2 2 6 24",
-    "notes": "74 72 72 72 72 71 69 67 69 r 74 74 74 74 72 72 72 72 71 69 67 66 64 62 r 74 74 72 72 72 71 69 67 69 71 69 67 64 67 64 67 66 64 69 r 67 64 67 64 67 66 64 66 64 62",
-    "intervals": "+7 -2 +0 +0 +0 -1 -2 -2 +2 r +5 +0 +0 +0 -2 +0 +0 +0 -1 -2 -2 -1 -2 -2 r +12 +0 -2 +0 +0 -1 -2 -2 +2 +2 -2 -2 -3 +3 -3 +3 -1 -2 +5 r -2 -3 +3 -3 +3 -1 -2 +2 -2 -2",
-    "rootNote": "|1 67 67 67 67 |2 67 67 67 67 |3 67 r 67 67 |4 67 67 67 67 |5 67 67 67 67 |6 67 67 67 67 |7 r 67 67 67 |8 67 67 67 67 |9 67 67 67 67 |10 67 67 67 67 |11 67 67 67 67 |12 r 67 67 67 |13 67 67 67 67 |14 67 67 67",
-    "mSteady": "|1 4 4 4 4 |2 4 4 4 4 |3 4 4 4 4 |4 4 4 4 4 |5 4 4 4 4 |6 4 4 4 4 |7 4 4 4 4 |8 4 4 4 4 |9 4 4 4 4 |10 4 4 4 4 |11 4 4 4 4 |12 4 4 4 4 |13 4 4 4 4 |14 4 4 4",
-    "chords": "|1 GM CM GM DM GM CM GM DM GM CM GM DM Em A7 Em D7",
-    "hmSteady": "4 16 24 24 16 32 24 40 8 16 24 24 24 56 8 56",
-    "romans": ". I IV I V I IV I V . I IV I V vi II7 . vi V7",
-    "rootMajor": ". G G G G G G G G . G G G G G G . G G",
-    "hSteady": "|1 4 4 4 4 |2 4 4 4 4 |3 4 4 4 4 |4 4 4 4 4"
-  },
-  "defs": {}
+  }
 }

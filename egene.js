@@ -339,8 +339,16 @@ function romanDegree( sdeg ){
     let n = Number(sdeg);
     while ( n > 7 ) n -= 7;
     while ( n < 0 ) n += 7;
-    let roman = [ 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
+    let roman = [ '?', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
     return roman[n] + sharps;
+}
+function toRomanChord( chord, scRows ){        // return e.g.  'I' 'ii'  'IV7'
+    let [ rt, chnm ] = chordName( chord, false, true );     // split root & name
+    let rom = romanDegree( scRows[ chord[0] ].bdeg );     // convert leading note to roman scale degree I..VII
+    if (chnm=='m'){ rom = rom.toLowerCase(); chnm=''; } 
+    if (chnm=='M'){ rom = rom.toUpperCase(); chnm=''; }
+    if (chnm=='m7'){ rom = rom.toLowerCase(); chnm='7'; }
+    return rom + chnm;
 }
 const encStyles = [  // in preferred order for generating events
         'scaledegrees', 'notes', 'intervals', 'rootNote', 'mRhythm', 'mSteady',
@@ -385,7 +393,7 @@ function addTic( tic, tpm, cd ){
 function fromEvents( gene, style, evts ){
     let cd = [];
     if ( evts==undefined ) evts = gene.evts;
-    let rootnt = toKeyNum( gene.root );
+    let rootnt = gene.rootNt;
     let prevnt = rootnt;
     let scRows = scaleRows( rootnt, gene.mode );
     let mtic = 0, htic = 0, tpm = gene.bpb * gene.tpb;
@@ -430,12 +438,7 @@ function fromEvents( gene, style, evts ){
             }
             switch( style ){
                 case 'chords':     cd.push( chordName( e.chord, true )); break;
-                case 'romans':       // convert leading note to roman scale degree 1..7
-                    let [ rt, chnm ] = chordName( e.chord, false, true );     // split root & name
-                    let rom = romanDegree( scRows[ e.chord[0] ].bdeg );
-                    if (chnm=='m'){ rom = rom.toLowerCase(); chnm=''; } 
-                    if (chnm=='M'){ rom = rom.toUpperCase(); chnm=''; }
-                    cd.push( `${rom}${chnm}` ); break;
+                case 'romans':     cd.push( toRomanChord( e.chord, scRows ) );  break; 
                 case 'rootMajor':  cd.push( emStr(rootnt,true)+'M' ); break;
                 case 'hRhythm':    cd.push( e.d ); break;
                 case 'hSteady':    cd.push( gene.tpb ); break;
@@ -574,7 +577,7 @@ function toMelody( n_gene, r_gene, styles ){
     if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
-    let rtnt = nt = toKeyNum( n_gene.root ), tic = 0;
+    let rtnt = nt = n_gene.rootNt, tic = 0;
     let ntOff = (60 + rtnt % 12) - rtnt + (n_gene.mOct-4)*12;      // offset to shift root to mOct
     let dur = r_gene.tpb;
     let tpm = r_gene.bpb * r_gene.tpb;
@@ -635,7 +638,7 @@ function toHarmony( n_gene, r_gene, styles ){
     if ( nts.isEmpty() || rhy.isEmpty() ) return [];         // no harmony data
 
     let evts = [];
-    let rtNt = toKeyNum( n_gene.root ), nt = rtNt, tic = 0;
+    let rtNt = n_gene.rootNt, nt = rtNt, tic = 0;
     let chd = [ nt, nt+4, nt+7 ];   // major chord
     let dur = r_gene.tpb;
     while ( true ){
@@ -880,7 +883,15 @@ function loadGene( g ){     // verify gene json
     msg( `loading ${g.nm}...` );
     fillDefault( g, 'mOct', 4 );
     fillDefault( g, 'hOct', 3 );
-    fillDefault( g, 'root', 'C' ); 
+    if ( g.root!=undefined ){
+        if ( isNaN( Number(g.root)) ){
+            g.rootNt = toKeyNum( g.root );
+        
+        } else {
+            g.rootNt = g.root; 
+            g.root = emStr( g.root, true );
+        }
+    } else { g.root = 'C'; g.rootNt = 60; }
     fillDefault( g, 'mode', 'Major' );
     fillDefault( g, 'bpb', 4 );        // beats per bar (measure)
     fillDefault( g, 'tpb', 4 );        // tics per beat
