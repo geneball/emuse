@@ -2,7 +2,7 @@
 const { msg, statusMsg } = require("./msg.js");
 const { shell } = require('electron');
 
-const { toKeyNum, setScale, scaleRows, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
+const { toKeyNum, setScale, scaleRows, scDegToKeyNum, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
 const { clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack  } = require('./etrack.js');
@@ -92,7 +92,7 @@ const divChords   = document.getElementById('chords');
 function asBtnHtml( nms ){
   let html = '';
   for ( let n of nms ){
-    html += `<button>${n}</button>`;
+    html += `<button id="chty_${n}">${n}</button>`;
   }
   return html;
 }
@@ -120,7 +120,12 @@ function initChordUI(){
     
     addClass( ev.target, 'root' );
     let key = Number( ev.target.id.substr(3));  // e.g. scd50..scd71
-    setChordRoot( key );
+    setChordRoot( key, true );
+    let [ rnm, chty ] = modeChord( key );
+    clearChordBtns();
+    let chdbtn = document.getElementById( 'chty_'+chty );
+    if ( chdbtn != undefined ) addClass( chdbtn, 'root' );
+    setChordType( chty );
     chd_inv.value = 0;
   });
   chd_inv.addEventListener('change', (ev) => {
@@ -133,6 +138,19 @@ var _song, _track, _trk, _evts;
 selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
 selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
 
+function modeChord( key ){  // return e.g. [ 'I', 'M' ] or [ 'ii', 'm' ] or [ 'VIIdim', 'dim' ]
+  let rows = scaleRows();
+  let bdeg = Number( rows[key].bdeg );
+  const romans = [ 'x', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
+  let rom = romans[ bdeg ];
+  let chord = [ key, scDegToKeyNum(bdeg+2), scDegToKeyNum(bdeg+4) ];    // root + 3rd & 5th in scale
+ 
+  let [ rt, nm ] = chordName( chord, true, true );  // get name of the chord
+  let rnm = nm;
+  if ( nm == 'm' ){ rom = rom.toLowerCase(); rnm = ''; }
+  if ( nm == 'M' ) rnm = '';
+  return [ rom + rnm, nm ];
+}
 function setKey( root, mode ){
   clearChordBtns();
   rmClassFrChildren( scaleDegrees, 'root' );
@@ -149,7 +167,10 @@ function setKey( root, mode ){
 
   for ( let sd=rkey; sd<rkey+12; sd++ ){
     let rw = rows[sd];
-    schtml += `<button id="scd${sd}" class="${rw.chdcls}"> ${rw.scdeg} ${emStr((sd), true)}</button>`;
+    if ( rw.inscale ){
+      let [ rnm, chty ] = modeChord( sd );
+      schtml += `<button id="scd${sd}" class="${rw.chdcls}"> ${rnm} ${emStr((sd), true)}${chty}</button>`;
+    }
   }  
   scaleDegrees.innerHTML = schtml;
   setKeyScale( rows );      // piano scale coloring
