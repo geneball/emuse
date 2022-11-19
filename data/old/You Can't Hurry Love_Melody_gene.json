@@ -1,0 +1,23 @@
+{
+  "nm": "You Can't Hurry Love_Melody",
+  "root": "Bb",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 99,
+  "codons": "FwAQBFCEDBEwGeHvJqRMxNALuQHrRHqRHuJuRMxNALqQHxRMsNALuQHqJqRHuRMlNAQHqRHqRHuJuRMzNALwQOCHpJqRHvJuRMkNALoQHuJqRHuRHlJuRMxNAL2QHqJqRHqROBJrRHuJtRHuRHtRHrRMlNALeQHqJrRMxNALyQHuJtRHtRHuJtRHqJrRMxNALqQHrRHqRHuJuRMsNALqQHxRMsNAQHqJqRMsNALqQHuRMlNALwQHqRHqRHuJuRMzNALwQOCHpJqRHvJuRMkNALoQHuJqRHuRHlRMxNALwQRHqRHqROBJrRHuJtRMlNALqQHuRHtROBHuRMxNALoQRRMsNAQ",
+  "notes": "63 62 60 62 67 65 67 65 63 65 r 62 65 67 69 62 60 58 r 58 60 62 63 62 60 62 63 65 63 62 60 62 67 65 67 65 63 65 r 62 65 67 69 62 62 60 58 r 58 60 62 63 r 65 65 65",
+  "intervals": "-7 -1 -2 +2 +5 -2 +2 -2 -2 +2 r -3 +3 +2 +2 -7 -2 -2 r +0 +2 +2 +1 -1 -2 +2 +1 +2 -2 -1 -2 +2 +5 -2 +2 -2 -2 +2 r -3 +3 +2 +2 -7 +0 -2 -2 r +0 +2 +2 +1 r +2 +0 +0",
+  "scaledegrees": "-3 -4 -5 -4 -1 -2 -1 -2 -3 -2 r -4 -2 -1 0 -4 -5 -6 r -6 -5 -4 -3 -4 -5 -4 -3 -2 -3 -4 -5 -4 -1 -2 -1 -2 -3 -2 r -4 -2 -1 0 -4 -4 -5 -6 r -6 -5 -4 -3 r -2 -2 -2",
+  "rootNote": "70 70 70 70 70 70 70 70 70 70 r 70 70 70 70 70 70 70 r 70 70 70 70 70 70 70 70 70 70 70 70 70 70 70 70 70 70 70 r 70 70 70 70 70 70 70 70 r 70 70 70 70 r 70 70 70",
+  "mRhythm": "2 2 2 4 4 2 2 2 2 4 2 2 4 2 2 4 2 2 1 1 2 2 2 2 1 2 2 3 2 2 2 4 4 2 2 2 2 4 2 2 4 2 2 2 2 2 2 1 1 2 2 2 1 2 2 2",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "FM A#M A#M D#M A#M DM GM CM FM A#M A#M A#M A#M D#M A#M DM GM CM FM FM",
+  "romans": "VIM IIM IIM VM IIM IVM VIIM IIIM VIM IIM IIM IIM IIM VM IIM IVM VIIM IIIM VIM VIM",
+  "rootMajor": "BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM",
+  "hRhythm": "6 4 6 6 10 6 16 2 8 6 4 4 2 6 10 6 10 8 4 4",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 24 8 16 24 16 24 56 8 32 24 8 8 8 24 16 24 40 24 16"
+}

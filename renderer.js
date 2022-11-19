@@ -6,7 +6,7 @@ const { toKeyNum, setScale, scaleRows, scDegToKeyNum, modeNames, chordNames, cho
 const { clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack  } = require('./etrack.js');
-const { saveTrack, loadTrack, findGene, geneNames, findSong, songNames, toEvents  } = require("./egene");
+const { findGene, geneNames, saveGene, toEvents  } = require("./egene");
 const { evalGene, evalHist } = require( './evalgene.js' );
 const { resetPlyr, startPlay, stopPlay, setTic, mNt, hNt, setChordRoot,  chordRoot, setChordType, adjInversion, plyrVal, playEvent, selectEl } = require( './eplyr.js' );
 
@@ -308,8 +308,8 @@ btnPlay.addEventListener("click", (ev) => {     // Play
   }
 });
 btnSave.addEventListener("click", (ev) => {     // Save
-  saveTrack( _song, _track, _trk ); 
-  msg( `Saved track '${_track.nm}' of '${_song.nm}'` );
+  saveGene( _gene ); 
+  msg( `Saved gene '${_gene.nm}` );
 });
 
 /*  ********************* Note scroll #bars display ************************ */

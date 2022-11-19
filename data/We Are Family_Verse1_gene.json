@@ -1,0 +1,23 @@
+{
+  "nm": "We Are Family_Verse1",
+  "root": "A",
+  "mode": "Mixolydian",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 119,
+  "codons": "FwAJBFCEDFEwGoM1NAL2QOKH1JqRHqRHuRMnNALoQOCHqROCRMqNALqQOCHpRHqRHuJuRMzNALyQHpJqROGHoRRRMnNALoQOCH6JuRHqRMqNALqQJqROEJuRMzNALyQOGJqRHqRHuRMnNALoQOCHqRHpRHvJuRMqNALqQHpJqRHqRHuJuRMzNALyQHpJqROGHoRRRMnNALoQOCH6JuRHqRMqNALqQOGRMzNALyQOEJqRRRJuRMnNALoQHqJqROCHpRRMqNALqQRHqRHuJuRMzNALyQHpJqROGHoRHwRRMnNALoQHoRRMqNALqQMzNALyQOOH8RHqRHqRHuRHqRRHpJuRMnNALoQHvRMqNALqQOKHlJqRMzNALyQHwRHvRHuRHqRRHuRHtRMnNALoQHrRHqJ0RMqNALqQ",
+  "notes": "r 69 67 69 r 67 r 67 r 64 62 64 61 r 57 57 57 r 71 69 69 r 69 r 69 67 69 r 67 64 67 64 62 64 61 r 57 57 57 r 71 69 r 69 r 69 69 69 69 67 r 64 64 64 62 64 61 r 57 61 61 57 57 r 73 71 69 71 69 69 66 69 r 62 66 69 71 69 69 71 72 71 69",
+  "intervals": "r +0 -2 +2 r -2 r +0 r -3 -2 +2 -3 r -4 +0 +0 r +14 -2 +0 r +0 r +0 -2 +2 r -2 -3 +3 -3 -2 +2 -3 r -4 +0 +0 r +14 -2 r +0 r +0 +0 +0 +0 -2 r -3 +0 +0 -2 +2 -3 r -4 +4 +0 -4 +0 r +16 -2 -2 +2 -2 +0 -3 +3 r -7 +4 +3 +2 -2 +0 +2 +1 -1 -2",
+  "scaledegrees": "r 1 0 1 r 0 r 0 r -2 -3 -2 -4 r -6 -6 -6 r 2 1 1 r 1 r 1 0 1 r 0 -2 0 -2 -3 -2 -4 r -6 -6 -6 r 2 1 r 1 r 1 1 1 1 0 r -2 -2 -2 -3 -2 -4 r -6 -4 -4 -6 -6 r 3 2 1 2 1 1 -1 1 r -3 -1 1 2 1 1 2 2# 2 1",
+  "rootNote": "r 69 69 69 r 69 r 69 r 69 69 69 69 r 69 69 69 r 69 69 69 r 69 r 69 69 69 r 69 69 69 69 69 69 69 r 69 69 69 r 69 69 r 69 r 69 69 69 69 69 r 69 69 69 69 69 69 r 69 69 69 69 69 r 69 69 69 69 69 69 69 69 r 69 69 69 69 69 69 69 69 69 69",
+  "mRhythm": "10 2 2 2 2 2 2 2 2 2 2 4 2 6 2 2 2 2 4 4 2 4 4 6 2 2 2 2 2 2 4 2 2 4 2 6 2 2 2 2 4 4 6 4 4 2 2 2 4 2 2 2 2 2 2 4 2 6 2 2 2 2 2 14 2 2 2 2 2 2 4 4 10 2 2 2 2 2 2 2 2 2 10",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "AM EM DM AM EM DM AM EM DM AM EM DM AM EM DM AM EM DM AM EM DM AM EM DM",
+  "romans": "IIM VIM VM IIM VIM VM IIM VIM VM IIM VIM VM IIM VIM VM IIM VIM VM IIM VIM VM IIM VIM VM",
+  "rootMajor": "AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM AM",
+  "hRhythm": "14 10 8 14 10 8 14 10 8 14 10 8 14 10 8 14 10 8 14 10 8 14 10 8",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "0 24 16 24 32 16 16 24 24 24 32 16 8 32 24 24 32 16 0 56 8 8 56 16"
+}

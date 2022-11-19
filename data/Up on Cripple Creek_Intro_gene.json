@@ -1,0 +1,23 @@
+{
+  "nm": "Up on Cripple Creek_Intro",
+  "root": "A",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 128,
+  "codons": "FwAJBFCEDBEwGsH$JqRM1NAL-QJuRRHnJqRHxJyRJoRHwRHoJuRMlNAQJqRRHpJqRHvJyRHpJoRHvRHpRHuJqRMuNAQJuRRHoJqRHwJyRJmRRHvJuRHlJqRHwRHtRMuNALcQJuRJqRHpJuRJqRHvRHuRMtNAQRHvJuRHlJwR",
+  "notes": "81 81 81 76 81 81 85 81 81 81 78 81 78 81 78 80 80 80 76 80 80 80 83 76 80 81 81 81 78 78 81 83 83 86 79",
+  "intervals": "+12 +0 +0 -5 +5 +0 +4 -4 +0 +0 -3 +3 -3 +3 -3 +2 +0 +0 -4 +4 +0 +0 +3 -7 +4 +1 +0 +0 -3 +0 +3 +2 +0 +3 -7",
+  "scaledegrees": "8 8 8 5 8 8 10 8 8 8 6 8 6 8 6 7 7 7 5 7 7 7 9 5 7 8 8 8 6 6 8 9 9 11 6#",
+  "rootNote": "69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69 69",
+  "mRhythm": "2 4 4 2 8 4 4 6 4 4 2 8 4 4 4 2 4 4 2 8 2 2 4 2 2 2 4 2 4 2 2 2 2 4 8",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "AM DM EM F#M GM",
+  "romans": "IIM VM VIM VIIM VII#M",
+  "rootMajor": "AM AM AM AM AM",
+  "hRhythm": "32 32 32 16 16",
+  "hSteady": "4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 56 64 80 48"
+}

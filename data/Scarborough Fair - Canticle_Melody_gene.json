@@ -1,0 +1,23 @@
+{
+  "nm": "Scarborough Fair - Canticle_Melody",
+  "root": "E",
+  "mode": "Dorian",
+  "bpb": 3,
+  "tpb": 4,
+  "tempo": 128,
+  "codons": "FwAEBFCEDCEvGsHwJwRMwNAL#QJoRHzJqRJyRJmRHnJwRM2NALgQHtJoRHrJuRHqJ0RMiNAL4QMvNALgQOQHzJkRHvRHuJwRMpNAQHqJoRHpRMvNALkQHuRMuNALwQHoRHuJ~RMnNAL:QOIHxJMRJwRMsNALIQJoRHqJwRMvNAL4QHpRHqJoRHqRHrJqRMzNAQHoJ6ROGHuJkRMiNALgQHzJoRHqJwRM2NAL4QHqJoRHrRHqRHqRHuJ~RMiNAL&Q",
+  "notes": "64 64 71 71 71 66 67 66 64 r 71 74 76 74 71 73 69 71 r 76 76 76 74 71 69 67 66 62 r 64 71 69 67 66 64 62 64",
+  "intervals": "+0 +0 +7 +0 +0 -5 +1 -1 -2 r +7 +3 +2 -2 -3 +2 -4 +2 r +5 +0 +0 -2 -3 -2 -2 -1 -4 r +2 +7 -2 -2 -1 -2 -2 +2",
+  "scaledegrees": "1 1 5 5 5 2 3 2 1 r 5 7 8 7 5 6 4 5 r 8 8 8 7 5 4 3 2 0 r 1 5 4 3 2 1 0 1",
+  "rootNote": "64 64 64 64 64 64 64 64 64 r 64 64 64 64 64 64 64 64 r 64 64 64 64 64 64 64 64 64 r 64 64 64 64 64 64 64 64",
+  "mRhythm": "8 4 2 8 2 6 2 4 12 16 4 4 8 4 4 4 4 36 8 4 8 4 8 8 4 4 2 16 6 8 4 8 4 4 4 4 36",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "EM DM EM GM EM GM AM EM EM GM DM EM DM EM",
+  "romans": "IIM IM IIM IVM IIM IVM VM IIM IIM IVM IM IIM IM IIM",
+  "rootMajor": "EM EM EM EM EM EM EM EM EM EM EM EM EM EM",
+  "hRhythm": "24 12 24 12 12 4 8 48 12 24 24 12 24 48",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 40 24 0 24 16 8 16 16 16 32 16 16 40"
+}

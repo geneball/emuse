@@ -1,6 +1,6 @@
 {
   "nm": "American Pie_Intro",
-  "root": "G",
+  "root": 67,
   "rootNt": 67,
   "mode": "Major",
   "bpb": 4,
@@ -9,20 +9,6 @@
   "mOct": "4",
   "hOct": "3",
   "codons": "FwAHBFCEDBEwGTOPH6JpRH4JvRPQMzNAQRMzNAQJpRMuNALwQHpRHoJvROCHxJpRMlNAQHpJuRHvJrRRHrJrRMvNAQHqJuRHqJqRHrJuRHtJrRMwNALwQHrROCHtJrRHrRHtJtRHrRHoJ2RMqNAL0QOHJhRH4RMlNALcQHpRHvRRJtRMzNAQRHuJrRMuNALwQHjJvROCJpRHuRMlNAQHuJuRHtJrRHrRHqRMvNAQHuRHtJtRHpJqRHqJtRMwNAQHpRHvJrRHpJuRHvJrRMoNAQHpJuRHvJpRHwJ0RMuNAL0QMuNALkQOKHlJlRHzJrRRRRHtJtRMlNAQHrRHoJrRHuROCHuRMzNAQJtRJrRRJuRHtRMlNAQHrJqRHoRHpROCHvJtRMvNALoQRJtRMnNAQHrJqRHqJtRMuNALwQHvROCJtRMvNAQHuJqRHuJtRHxRHqRHpRMuNAQOEHvRHuRMlNALoQHqJrRJtRMzNAQHpJrRHtRHrRHoJuRMuNALwQHrJqRHqJvRHxJrRMlNAQHuJqRHtRHrRJtRHqJrRMxNAQHuJuRHqJrROCHuRMlNALoQRRMzNAQRJtRMuNALwQJqRHqRHqRHpRHvRHnJxRMoNAQHxJoRHxJuRMuNAQHrRHoJwRMlNAL0Q",
-  "cnts": {
-    "scaledegrees": 121,
-    "notes": 121,
-    "intervals": 121,
-    "rootNote": 121,
-    "mRhythm": 121,
-    "mSteady": 121,
-    "chords": 36,
-    "romans": 36,
-    "rootMajor": 36,
-    "hRhythm": 36,
-    "hSteady": 36,
-    "hmSteady": 36
-  },
   "MN": {
     "def": "scaledegrees",
     "notes": "|1 r 74 |2 86 86 86 83 79 r |3 84 81 84 84 83 81 79 78 |4 79 78 r 79 78 79 78 74 r 74 |6 86 83 86 86 86 86 88 79 r 79 |7 81 83 84 83 81 83 84 81 |8 79 76 79 76 79 76 79 83 r 76 83 83 83 83 84 83 79 81 r |11 83 83 83 83 83 84 83 79 76 r |12 79 79 79 78 76 79 r 79 81 83 88 86 83 r 86 |14 88 86 86 83 84 83 79 78 76 |15 81 83 84 83 83 81 83 81 r |16 83 83 83 83 83 83 81 79 76 79 |17 74 79 84 83 |18 79",
@@ -38,7 +24,7 @@
   "HN": {
     "def": "chords",
     "chords": "|1 r |2 GM D/F# Em7 |3 Am CM |4 Em D/F# |6 GM DM Em7 |7 Am CM |8 Em CM |9 DM |10 Em Am |11 Em Am |12 CM GM Am |13 CM DM |14 GM DM Em |15 Am7 DM |16 GM DM Em |17 CM DM7 |18 GM",
-    "romans": "|1 r |2 I V/1 vi7 |3 ii IV |4 vi V/1 |6 I V vi7 |7 ii IV |8 vi IV |9 V |10 vi ii |11 vi ii |12 IV I ii |13 IV V |14 I V vi |15 ii7 V |16 I V vi |17 IV VM7 |18 I",
+    "romans": "|1 r |2 I V/1 VI7 |3 ii IV |4 vi V/1 |6 I V VI7 |7 ii IV |8 vi IV |9 V |10 vi ii |11 vi ii |12 IV I ii |13 IV V |14 I V vi |15 II7 V |16 I V vi |17 IV VM7 |18 I",
     "rootMajor": "|1 r |2 GM GM GM |3 GM GM |4 GM GM |6 GM GM GM |7 GM GM |8 GM GM |9 GM |10 GM GM |11 GM GM |12 GM GM GM |13 GM GM |14 GM GM GM |15 GM GM |16 GM GM GM |17 GM GM |18 GM"
   },
   "HR": {
@@ -49,6 +35,79 @@
   },
   "old": {
     "origchords": "r G D/F# Em7 Am C Em D |6 G D/F# Em7 Am C Em C |9 D Em Am Em Am C G/B Am |13 C D G D/F# Em Am7 D G D/F# Em |17 C D7 G",
-    "origromans": "r I V/1 vi7 ii IV vi V |6 I V/1 vi7 ii IV vi IV |9 V vi ii vi ii IV I6 ii |13 IV V I V/1 vi ii7 V I V/1 vi |17 IV V7 I"
+    "origromans": "r I V/1 vi7 ii IV vi V |6 I V/1 vi7 ii IV vi IV |9 V vi ii vi ii IV I6 ii |13 IV V I V/1 vi ii7 V I V/1 vi |17 IV V7 I",
+    "romans": "r I V/1 vi7 ii IV vi V/1 I V vi7 ii IV vi IV V vi ii vi ii IV I ii IV V I V vi ii7 V I V vi IV VM7 I"
+  },
+  "eval": {
+    "notes": {
+      "cnt": 121,
+      "hist_max": "83",
+      "hist_maxPct": 0.2727272727272727,
+      "auto_max": 0.31932773109243695,
+      "auto_off": [
+        1
+      ]
+    },
+    "mRhythm": {
+      "cnt": 121,
+      "hist_max": "1",
+      "hist_maxPct": 0.3884297520661157,
+      "auto_max": 0.42424242424242425,
+      "auto_off": [
+        0,
+        42,
+        65,
+        66,
+        86,
+        87,
+        93,
+        115
+      ]
+    },
+    "chords": {
+      "cnt": 36,
+      "hist_max": "DM",
+      "hist_maxPct": 0.16666666666666666,
+      "auto_max": 0.5,
+      "auto_off": [
+        33
+      ]
+    },
+    "hRhythm": {
+      "cnt": 36,
+      "hist_max": "8",
+      "hist_maxPct": 0.5833333333333334,
+      "auto_max": 1,
+      "auto_off": [
+        34
+      ]
+    },
+    "intervals": {
+      "cnt": 121,
+      "hist_max": "+0",
+      "hist_maxPct": 0.2066115702479339,
+      "auto_max": 0.3125,
+      "auto_off": [
+        104
+      ]
+    },
+    "romans": {
+      "cnt": 36,
+      "hist_max": "V",
+      "hist_maxPct": 0.16666666666666666,
+      "auto_max": 0.5,
+      "auto_off": [
+        33
+      ]
+    },
+    "scaledegrees": {
+      "cnt": 121,
+      "hist_max": "10",
+      "hist_maxPct": 0.2727272727272727,
+      "auto_max": 0.31932773109243695,
+      "auto_off": [
+        1
+      ]
+    }
   }
 }

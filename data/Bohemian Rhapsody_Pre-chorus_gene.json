@@ -1,0 +1,23 @@
+{
+  "nm": "Bohemian Rhapsody_Pre-chorus",
+  "root": "Bb",
+  "mode": "Major",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 144,
+  "codons": "FwAQBFCEDBEwG0H(JqRMvNAL#QJ#RHqJaRMzNALcQHuJqRHtRHrJ%RMiNAL&QOEJWRRHtJyRMxNALYQHrJmRJuRMrNALkQHqJ4RMtNALwQMpNAQOCHlJiRM0NAL&QHzJqRRHuJqRJwRHtJqRRHuJqRHqJuRMlNALcQHrJuROEHqJoRHuRMzNAQHoJ2RHnJiRRMiNAQHtJuRHuJqRHqJuRHuJqRHqJuRM0NAQHrJ4RMnNAQ",
+  "notes": "86 86 84 86 87 86 r 86 86 87 86 86 84 r 77 84 84 86 86 87 87 89 87 86 r 84 86 82 77 77 78 80 78 80 78 77",
+  "intervals": "+16 +0 -2 +2 +1 -1 r +0 +0 +1 -1 +0 -2 r -7 +7 +0 +2 +0 +1 +0 +2 -2 -1 r -2 +2 -4 -5 +0 +1 +2 -2 +2 -2 -1",
+  "scaledegrees": "10 10 9 10 11 10 r 10 10 11 10 10 9 r 5 9 9 10 10 11 11 12 11 10 r 9 10 8 5 5 5# 6# 5# 6# 5# 5",
+  "rootNote": "70 70 70 70 70 70 r 70 70 70 70 70 70 r 70 70 70 70 70 70 70 70 70 70 r 70 70 70 70 70 70 70 70 70 70 70",
+  "mRhythm": "2 22 4 2 2 24 4 2 2 8 2 4 16 2 6 4 4 2 6 4 4 2 4 6 4 2 2 12 2 2 4 2 4 2 4 16",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "D#M A#M CM FM EM FM DM A#M D#M A#M CM G#M D#M",
+  "romans": "VM IIM IIIM VIM V#M VIM IVM IIM VM IIM IIIM VII#M VM",
+  "rootMajor": "BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM",
+  "hRhythm": "24 8 32 12 4 8 8 32 16 16 16 16 16",
+  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 16 24 24 16 8 0 8 64 24 24 40 8"
+}

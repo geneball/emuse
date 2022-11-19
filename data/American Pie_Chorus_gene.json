@@ -1,6 +1,6 @@
 {
   "nm": "American Pie_Chorus",
-  "root": "G",
+  "root": 67,
   "rootNt": 67,
   "mode": "Major",
   "bpb": 4,
@@ -47,6 +47,74 @@
     "hSteady": 16,
     "hmSteady": 16
   },
-  "old": {
+  "old": {},
+  "defs": {},
+  "eval": {
+    "notes": {
+      "cnt": 55,
+      "hist_max": "72",
+      "hist_maxPct": 0.2,
+      "auto_max": 0.35714285714285715,
+      "auto_off": [
+        1,
+        12
+      ]
+    },
+    "mRhythm": {
+      "cnt": 55,
+      "hist_max": "2",
+      "hist_maxPct": 0.5636363636363636,
+      "auto_max": 1,
+      "auto_off": [
+        53
+      ]
+    },
+    "chords": {
+      "cnt": 16,
+      "hist_max": "GM",
+      "hist_maxPct": 0.375,
+      "auto_max": 0.6666666666666666,
+      "auto_off": [
+        3
+      ]
+    },
+    "hRhythm": {
+      "cnt": 16,
+      "hist_max": "8",
+      "hist_maxPct": 0.75,
+      "auto_max": 0.8666666666666667,
+      "auto_off": [
+        0,
+        1
+      ]
+    },
+    "scaledegrees": {
+      "cnt": 55,
+      "hist_max": "4",
+      "hist_maxPct": 0.2,
+      "auto_max": 0.35714285714285715,
+      "auto_off": [
+        1,
+        12
+      ]
+    },
+    "intervals": {
+      "cnt": 55,
+      "hist_max": "-2",
+      "hist_maxPct": 0.32727272727272727,
+      "auto_max": 0.5,
+      "auto_off": [
+        52
+      ]
+    },
+    "romans": {
+      "cnt": 16,
+      "hist_max": "I",
+      "hist_maxPct": 0.375,
+      "auto_max": 0.6666666666666666,
+      "auto_off": [
+        3
+      ]
+    }
   }
 }

@@ -843,6 +843,12 @@ function saveGene( gene ){
 
 //     gene.evts = evts;
 // }
+function setEval( g, sty, fld, val ){
+    if ( g.eval==undefined ) g.eval = {};
+    let ev = g.eval[sty];
+    if ( ev==undefined ) ev = g.eval[sty] = {};
+    ev[fld] = val;
+}
 function checkCode( g, sty ){       // return false & reports if code errors
     let cd = getStyle( g, sty );
 
@@ -874,11 +880,9 @@ function checkCode( g, sty ){       // return false & reports if code errors
     if ( invalid.length>0 ) msg += ` ${invalid.length} invalid entries (${invalid})`;
     if ( nonNums.length>0 ) msg += ` ${nonNums.length} nonNumeric entries (${nonNums})`;
     if (msg==''){
-        if (g.cnts==undefined) g.cnts = {};
-        g.cnts[ sty ] = vcnt;
+        setEval( g, sty, 'cnt', vcnt );
         return true;
     }
-
     err( `${g.nm} ${sty} errors: ${msg}` );
     return false;
 }
@@ -994,5 +998,5 @@ function songNames(){
     return song_names;
 }
 
-module.exports = { toEvents, findGene, getStyle, isRhythmStyle, geneNames, findSong, songNames };
+module.exports = { toEvents, findGene, saveGene, getStyle, isRhythmStyle, setEval, geneNames, findSong, songNames };
 // const { toEvents, findGene, getStyle, isRhythmStyle, geneNames, findSong, songNames } = require("./egene");

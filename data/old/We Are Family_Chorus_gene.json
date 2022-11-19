@@ -1,0 +1,23 @@
+{
+  "nm": "We Are Family_Chorus",
+  "root": "A",
+  "mode": "Mixolydian",
+  "bpb": 4,
+  "tpb": 4,
+  "tempo": 119,
+  "codons": "FwAJBFCEDFEwGoH$RM1NAL2QHqRRJqRHuJtRMqNALuQMnNAQOPHqJrRRRRRRRHuJtRMxNAQMuNAQOPJtRHqRRJqRHuJtRMqNAQMnNAQOPHqJrRRRHpRHvRHpRHvRHuJtRMxNALuQ",
+  "notes": "81 79 79 79 81 r 79 79 79 79 79 79 79 81 r 81 79 79 79 81 r 79 79 79 76 79 76 79 81",
+  "intervals": "+12 -2 +0 +0 +2 r -2 +0 +0 +0 +0 +0 +0 +2 r +0 -2 +0 +0 +2 r -2 +0 +0 -3 +3 -3 +3 +2",
+  "scaledegrees": "8 7 7 7 8 r 7 7 7 7 7 7 7 8 r 8 7 7 7 8 r 7 7 7 5 7 5 7 8",
+  "rootNote": "69 69 69 69 69 r 69 69 69 69 69 69 69 69 r 69 69 69 69 69 r 69 69 69 69 69 69 69 69",
+  "mRhythm": "4 4 4 2 3 15 2 2 2 2 2 2 2 3 15 4 4 4 2 3 15 2 2 2 2 2 2 2 3",
+  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
+  "chords": "AM GM DM GM AM GM DM GM",
+  "romans": "IIM IM VM IM IIM IM VM IM",
+  "rootMajor": "AM AM AM AM AM AM AM AM",
+  "hRhythm": "14 16 16 16 16 16 16 18",
+  "hSteady": "4 4 4 4 4 4 4 4",
+  "mOct": 4,
+  "hOct": 3,
+  "hmSteady": "4 32 0 64 0 40 0 64"
+}
