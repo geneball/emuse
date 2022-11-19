@@ -343,11 +343,20 @@ function romanDegree( sdeg ){
     return roman[n] + sharps;
 }
 function toRomanChord( chord, scRows ){        // return e.g.  'I' 'ii'  'IV7'
-    let [ rt, chnm ] = chordName( chord, false, true );     // split root & name
-    let rom = romanDegree( scRows[ chord[0] ].bdeg );     // convert leading note to roman scale degree I..VII
-    if (chnm=='m'){ rom = rom.toLowerCase(); chnm=''; } 
-    if (chnm=='M'){ rom = rom.toUpperCase(); chnm=''; }
-    if (chnm=='m7'){ rom = rom.toLowerCase(); chnm='7'; }
+    let [ rt, chname ] = chordName( chord, true, true );     // split root & name
+    let [ chnm, bass ] = chname.split('/');     // strip bass note of inversion
+    let rom = romanDegree( scRows[ toKeyNum(rt) ].bdeg );     // convert leading note to roman scale degree I..VII
+    if ( chnm=='m' ){ rom = rom.toLowerCase(); chnm=''; } 
+    if ( chnm=='M' ){ rom = rom.toUpperCase(); chnm=''; }
+    if ( chnm=='m7' ){ rom = rom.toLowerCase(); chnm='7'; }
+    if ( bass != undefined ){   // inverted-- calc which by finding rt in chord
+        for (let i=0; i<chord.length; i++){
+            if ( emStr( chord[i], true ) == rt ){ 
+                chnm += `/${chord.length-i}`;    // 0=>root, 1=>(len-1) 2=>(len-2)
+                break; 
+            }
+        }
+    }
     return rom + chnm;
 }
 const encStyles = [  // in preferred order for generating events

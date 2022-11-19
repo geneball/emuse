@@ -20,11 +20,11 @@ function adjInversion( inv ){
     playChord();   
     return _chdInv;
 }
-function invertChord( chd ){   
+function invertChord( chd, inv ){   
     let len = chd.length;
-    for ( let i=0; i < Math.abs(_chdInv); i++ ){
+    for ( let i=0; i < Math.abs( inv ); i++ ){
         let idx = i % len;
-        if ( _chdInv < 0 )
+        if ( inv < 0 )
             chd[ len-1-idx ] -= 12;
         else
             chd[ idx ] += 12;
@@ -47,7 +47,7 @@ function playEvent( e ){
 }
 function playChord(){
     let chd = toChord( _chdChord, _chdRoot );
-    chd = invertChord( chd );
+    chd = invertChord( chd, _chdInv );
     nameChord( `${emStr(chd,false)} = ${chordName(chd, true)}` );
     playEvent( { t:0, chord: chd, d: 800 } );
 }
@@ -230,7 +230,7 @@ var _plyr = {
         addClass( el, 'sel' );
     }
   
-    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion,
+    module.exports = { resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, adjInversion, invertChord,
         plyrVal, chordRoot, playEvent, playChord, selectEl, setNoteOn, setNoteOff };
  // const { 
  //       resetPlyr, startPlay, stopPlay, setTic, setChordRoot, setChordType, invertChord,

@@ -27,7 +27,8 @@
       { nm: 'Ab',  midi4: 68 },  
       { nm: 'Bb',  midi4: 70 }
 	];
-	function toKeyNum( nt ){
+	function toKeyNum( nt, astype ){
+		if ( astype == undefined ) astype = false;
 		if (!isNaN(parseFloat(nt))) return nt;
 		let lst = nt.length-1;
 		if ( nt[lst-1]=='-' ) lst = lst-1;
@@ -38,7 +39,7 @@
 			nt = nt.substring(0, lst);
 		for (var i=0; i < noteDefs.length; i++){
 			if ( nt.toUpperCase()=== noteDefs[i].nm.toUpperCase() ) 
-				return noteDefs[i].midi4 + (oct-4)*12;
+				return noteDefs[i].midi4 + ( astype? -60 : (oct-4)*12 );
 		}
 		err( `toKeyNum: unrecognized note ${nt}`, true );
 	}
@@ -276,7 +277,7 @@
 		if ( idx >= 0 )  
 			return split? [ nts[0], chordDefs[idx].nm ] : `${nts[0]}${chordDefs[idx].nm}`;
 
-		for ( let i=0; i < chd2.length-1; i++ ){
+		for ( let i=0; i < chd2.length-1; i++ ){	// check for inversions
 			chd2[i] += 12;
 			let chd3 = [ ...chd2 ];
 			chd3.sort( (a,b) => a-b );

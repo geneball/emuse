@@ -1,6 +1,6 @@
 const { toChord, toKeyNum, toScale, scaleRows, scaleDegMap, setScale, scDegToKeyNum } = require("./emuse");
 const { msg, err } = require('./msg.js');
-const { mNt, hNt } = require( './eplyr.js' );
+const { invertChord } = require( './eplyr.js' );
 
 function trackNames( song ){
   return song.tracks.map( x => x.nm );
@@ -17,12 +17,14 @@ function splitPrefix( s, prefix ){   // return s split into [ 'leading chars in 
   return [ s, '' ];
 }
 function asChord( nm, rootkey, octave ){    // decode chord string
-  //  roman:  e.g. 'Im' or 'iii6(9)'
-  //  scdeg:  1#m  2##sus2
-  //  note:   G#m  A6(9)
+  //  roman:  e.g. 'Im' or 'iii6(9)'  'V/1' 
+  //  scdeg:  1#m  2##sus2  5/1
+  //  note:   G#m  A6(9)  D/F#
   if ( octave==undefined ) octave = 3;
   let roman = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5, 'VI': 6, 'VII': 7 };
+  let inv;
   nm = nm.trim();
+  [ nm, inv ] = nm.split('/');
   let rootnm = '', chordnm = '';
   if ( rootkey==undefined ) rootkey = 60;
   let fch = nm.toUpperCase().substring(0,1);
@@ -54,7 +56,18 @@ function asChord( nm, rootkey, octave ){    // decode chord string
   // let chd = nm.substr(i);
   if (chordnm.trim()=='') chordnm = 'M';
   let ntOff = (60 + rootkey % 12) - rootkey + (octave-4)*12;      // offset to shift rootkey to octave
-  return toChord( chordnm, rootkey + ntOff );   // shift root key to desired octave 
+  let chd = toChord( chordnm, rootkey + ntOff );   // shift root key to desired octave 
+  if ( inv != undefined ){  
+    // adj inv to 1,2,...
+    if ( isNaN( Number(inv)) ){   // e.g. /F#
+      let bass = toKeyNum( inv, true );
+      for (let i=0; i < chd.length; i++ ){
+        if ( chd[i]%12 == bass ){ inv = i; break; }
+      }
+    }
+    chd = invertChord( chd, inv );
+  }
+  return chd;
 }
 
 function asNote( scdeg ){  // decode scale degree even if <0 or >7
