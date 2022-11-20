@@ -1,6 +1,6 @@
 {
   "nm": "You Can't Hurry Love_Melody",
-  "root": 70,
+  "root": "A#",
   "mode": "Major",
   "bpb": 4,
   "tpb": 4,
@@ -23,7 +23,7 @@
   },
   "HN": {
     "def": "chords",
-    "chords": "|1 FM A#M A#M |2 D#M A#M |3 DM GM CM FM |5 A#M A#M A#M A#M |6 D#M A#M |7 DM GM |8 CM FM FM",
+    "chords": "|1 F A# A# |2 D# A# |3 D G C F |5 A# A# A# A# |6 D# A# |7 D G |8 C F F",
     "romans": "|1 V I I |2 IV I |3 III VI II V |5 I I I I |6 IV I |7 III VI |8 II V V",
     "rootMajor": "|1 A#M A#M A#M |2 A#M A#M |3 A#M A#M A#M A#M |5 A#M A#M A#M A#M |6 A#M A#M |7 A#M A#M |8 A#M A#M A#M"
   },
@@ -56,7 +56,7 @@
     },
     "chords": {
       "cnt": 20,
-      "hist_max": "A#M",
+      "hist_max": "A#",
       "hist_maxPct": 0.4,
       "auto_max": 1,
       "auto_off": [
