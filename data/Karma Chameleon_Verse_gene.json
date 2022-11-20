@@ -6,18 +6,77 @@
   "tpb": 4,
   "tempo": 92,
   "codons": "FwAQBFCEDBEwGaOMH9JqRHuRHvRPQM2NALwQJrRHuJtRHuRHqJuRMnNAQHuJrRHoJqRHuJtRMxNAL8QHqJxRODHpJnRHqJtRHxJrRJrRHuJtRHuRHqJuRMnNALcQHuJrRHoJzRMxNAL0QODHwJlRHoJrRJyRMlNAQOCJlRHrJuRHtJrRHuJtRMuNAQHuJuRODHqJqRHqJrRHuRMqNAQHqJwROCJnRHrJuRHtJrRHuJyRMuNAQODHuJnRHoJrRHuRMqNAQHqJwROCJnRHrJuRHtJrRHuJtRMuNAQHuJuROCHqJoRJtRHqJ1RMqNAQOCHwJiRJtRHoJzRMwNALkQJlRHrJuRMqNALoQ",
-  "notes": "r 77 79 82 82 84 86 84 86 82 84 82 r 79 77 82 82 84 86 84 86 82 r 86 82 82 r 82 81 82 84 86 r 84 82 84 82 r 82 81 82 84 r 86 82 84 82 r 82 81 82 84 86 r 84 84 82 r 86 86 82 82 81",
-  "intervals": "r +7 +2 +3 +0 +2 +2 -2 +2 -4 +2 -2 r -3 -2 +5 +0 +2 +2 -2 +2 -4 r +4 -4 +0 r +0 -1 +1 +2 +2 r -2 -2 +2 -2 r +0 -1 +1 +2 r +2 -4 +2 -2 r +0 -1 +1 +2 +2 r -2 +0 -2 r +4 +0 -4 +0 -1",
-  "scaledegrees": "r 5 6 8 8 9 10 9 10 8 9 8 r 6 5 8 8 9 10 9 10 8 r 10 8 8 r 8 7 8 9 10 r 9 8 9 8 r 8 7 8 9 r 10 8 9 8 r 8 7 8 9 10 r 9 9 8 r 10 10 8 8 7",
-  "rootNote": "r 70 70 70 70 70 70 70 70 70 70 70 r 70 70 70 70 70 70 70 70 70 r 70 70 70 r 70 70 70 70 70 r 70 70 70 70 r 70 70 70 70 r 70 70 70 70 r 70 70 70 70 70 r 70 70 70 r 70 70 70 70 70",
-  "mRhythm": "12 2 2 2 1 2 2 4 3 1 2 7 3 2 3 2 1 2 2 4 3 10 3 3 2 8 2 1 3 2 3 5 3 3 2 2 6 2 1 3 2 8 3 3 2 2 6 2 1 3 2 3 5 2 1 2 11 2 1 2 9 2 4",
-  "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
-  "chords": "r A#M FM A#M FM A#M D#M FM D#M FM D#M FM D#M GM FM",
-  "romans": "r IIM VIM IIM VIM IIM VM VIM VM VIM VM VIM VM VIIM VIM",
-  "rootMajor": "r BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM BbM",
-  "hRhythm": "16 8 8 24 8 16 16 16 16 16 16 16 16 8 4",
-  "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
-  "mOct": 4,
-  "hOct": 3,
-  "hmSteady": "4 24 32 24 64 16 24 32 32 40 24 40 32 24 16"
+  "mOct": "4",
+  "hOct": "3",
+  "rootNt": 70,
+  "MN": {
+    "def": "scaledegrees",
+    "scaledegrees": "|1 r 5 6 |2 8 8 9 10 9 10 8 9 8 r 6 5 |4 8 8 9 10 9 10 8 r 10 8 |6 8 r 8 7 8 |7 9 10 r 9 8 |8 9 8 r 8 7 8 |9 9 r 10 8 |10 9 8 r 8 7 8 |11 9 10 r 9 9 8 r 10 10 8 8 7",
+    "notes": "|1 r 77 79 |2 82 82 84 86 84 86 82 84 82 r 79 77 |4 82 82 84 86 84 86 82 r 86 82 |6 82 r 82 81 82 |7 84 86 r 84 82 |8 84 82 r 82 81 82 |9 84 r 86 82 |10 84 82 r 82 81 82 |11 84 86 r 84 84 82 r 86 86 82 82 81",
+    "intervals": "|1 r +7 +2 |2 +3 +0 +2 +2 -2 +2 -4 +2 -2 r -3 -2 |4 +5 +0 +2 +2 -2 +2 -4 r +4 -4 |6 +0 r +0 -1 +1 |7 +2 +2 r -2 -2 |8 +2 -2 r +0 -1 +1 |9 +2 r +2 -4 |10 +2 -2 r +0 -1 +1 |11 +2 +2 r -2 +0 -2 r +4 +0 -4 +0 -1",
+    "rootNote": "|1 r 70 70 |2 70 70 70 70 70 70 70 70 70 r 70 70 |4 70 70 70 70 70 70 70 r 70 70 |6 70 r 70 70 70 |7 70 70 r 70 70 |8 70 70 r 70 70 70 |9 70 r 70 70 |10 70 70 r 70 70 70 |11 70 70 r 70 70 70 r 70 70 70 70 70"
+  },
+  "MR": {
+    "def": "mRhythm",
+    "mRhythm": "|1 12 2 2 |2 2 1 2 2 4 3 1 2 7 3 2 3 |4 2 1 2 2 4 3 10 3 3 2 |6 8 2 1 3 2 |7 3 5 3 3 2 |8 2 6 2 1 3 2 |9 8 3 3 2 |10 2 6 2 1 3 2 |11 3 5 2 1 2 11 2 1 2 9 2 4",
+    "mSteady": "|1 4 4 4 |2 4 4 4 4 4 4 4 4 4 4 4 4 |4 4 4 4 4 4 4 4 4 4 4 |6 4 4 4 4 4 |7 4 4 4 4 4 |8 4 4 4 4 4 4 |9 4 4 4 4 |10 4 4 4 4 4 4 |11 4 4 4 4 4 4 4 4 4 4 4 4"
+  },
+  "HN": {
+    "def": "chords",
+    "chords": "|1 r |2 A# F |3 A# F |5 A# |6 D# |7 F |8 D# |9 F |10 D# |11 F |12 D# |13 G F",
+    "romans": "|1 r |2 I V |3 I V |5 I |6 IV |7 V |8 IV |9 V |10 IV |11 V |12 IV |13 VI V",
+    "rootMajor": "|1 r |2 A#M A#M |3 A#M A#M |5 A#M |6 A#M |7 A#M |8 A#M |9 A#M |10 A#M |11 A#M |12 A#M |13 A#M A#M"
+  },
+  "HR": {
+    "def": "hRhythm",
+    "hRhythm": "|1 16 |2 8 8 |3 24 8 |5 16 |6 16 |7 16 |8 16 |9 16 |10 16 |11 16 |12 16 |13 8 4",
+    "hSteady": "|1 4 |2 4 4 |3 4 4 |5 4 |6 4 |7 4 |8 4 |9 4 |10 4 |11 4 |12 4 |13 4 4",
+    "hmSteady": "|1 4 |2 24 32 |3 24 64 |5 16 |6 24 |7 32 |8 32 |9 40 |10 24 |11 40 |12 32 |13 24 16"
+  },
+  "eval": {
+    "scaledegrees": {
+      "cnt": 63,
+      "hist_max": "8",
+      "hist_maxPct": 0.3492063492063492,
+      "auto_max": 0.5,
+      "auto_off": [
+        56
+      ]
+    },
+    "mRhythm": {
+      "cnt": 63,
+      "hist_max": "2",
+      "hist_maxPct": 0.4126984126984127,
+      "auto_max": 0.4444444444444444,
+      "auto_off": [
+        53,
+        55,
+        57
+      ]
+    },
+    "chords": {
+      "cnt": 15,
+      "hist_max": "F",
+      "hist_maxPct": 0.4,
+      "auto_max": 0.6153846153846154,
+      "auto_off": [
+        1
+      ]
+    },
+    "hRhythm": {
+      "cnt": 15,
+      "hist_max": "16",
+      "hist_maxPct": 0.6,
+      "auto_max": 0.6666666666666666,
+      "auto_off": [
+        11
+      ]
+    }
+  },
+  "old": {
+    "scaledegrees": "r 5 6 8 8 9 10 9 10 8 9 8 r 6 5 8 8 9 10 9 10 8 r 10 8 8 r 8 7 8 9 10 r 9 8 9 8 r 8 7 8 9 r 10 8 9 8 r 8 7 8 9 10 r 9 9 8 r 10 10 8 8 7",
+    "mRhythm": "12 2 2 2 1 2 2 4 3 1 2 7 3 2 3 2 1 2 2 4 3 10 3 3 2 8 2 1 3 2 3 5 3 3 2 2 6 2 1 3 2 8 3 3 2 2 6 2 1 3 2 3 5 2 1 2 11 2 1 2 9 2 4",
+    "chords": "r A#M FM A#M FM A#M D#M FM D#M FM D#M FM D#M GM FM",
+    "hRhythm": "16 8 8 24 8 16 16 16 16 16 16 16 16 8 4"
+  }
 }

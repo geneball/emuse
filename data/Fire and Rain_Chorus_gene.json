@@ -1,6 +1,6 @@
 {
   "nm": "Fire and Rain_Chorus",
-  "root": 60,
+  "root": "C",
   "mode": "Major",
   "bpb": 4,
   "tpb": 4,
@@ -36,8 +36,8 @@
   },
   "HN": {
     "def": "chords",
-    "chords": "|1 FM CM DM GM |2 CM |3 FM CM DM GM |4 CM |5 FM CM DM GM |6 CM |7 A#M FM GM GM |8 CM",
-    "romans": "|1 IV I II V |2 I |3 IV I II V |4 I |5 IV I II V |6 I |7 VI IV V V |8 I",
+    "chords": "|1 F C D G |2 C |3 F C D G |4 C |5 F C D G |6 C |7 A# F G G |8 C",
+    "romans": "|1 IV I II V |2 I |3 IV I II V |4 I |5 IV I II V |6 I |7 VI# IV V V |8 I",
     "rootMajor": "|1 CM CM CM CM |2 CM |3 CM CM CM CM |4 CM |5 CM CM CM CM |6 CM |7 CM CM CM CM |8 CM"
   },
   "HR": {
@@ -92,7 +92,7 @@
     "intervals": "r +9 +0 +0 -2 +0 -2 +2 r +2 +0 +0 +0 +0 -2 -2 +4 -2 +0 -2 +0 -1 r +5 +0 +0 +0 +3 -3 -2 +5 -3 -2 -2 +2 r -3 +0 +1 +0 +0 -1 +1 +0 -1 -4 +0",
     "rootNote": "r 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60 60 r 60 60 60 60 60 60 60 60 60 60 60",
     "mSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
-    "romans": "IV I II V I IV I II V I IV I II V I VI# IV V V I",
+    "romans": "IV I II V I IV I II V I IV I II V I VI IV V V I",
     "rootMajor": "CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM CM",
     "hSteady": "4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4",
     "hmSteady": "0 8 16 16 16 16 24 24 16 24 16 16 24 16 24 8 24 24 16 16"

@@ -159,7 +159,7 @@ function setKey( root, mode ){
   selMode.value = mode;
 
   let rkey = toKeyNum( root );    // root key in octave 4
-  MN_gene.root = rkey;
+  MN_gene.rootNt = rkey;
   MN_gene.mode = mode;
   setScale( mode, rkey );
   let rows = scaleRows( );

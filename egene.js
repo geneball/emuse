@@ -466,9 +466,10 @@ function getStyle( gene, style ){       // returns [] from gene.style or null
     if ( typeof gene[etype] == 'object' && gene[etype][style]!=undefined ) g = gene[ etype ];
  
     let cd = g[ style ];
-    if (cd==undefined || ( typeof cd != 'string' && !(cd instanceof String))){
-        err( `${gene.nm} ${style} not string` );    
-        return null;
+    if ( cd==undefined ) return undefined;
+    if ( typeof cd != 'string' && !(cd instanceof String)){
+        err( `${gene.nm} ${style} not string: ${cd}` );    
+        return undefined;
     }
     if ( cd.trim()=='' ){ 
         msg( `getStyle: ${gene.nm} gene.${style} empty` );
@@ -534,7 +535,17 @@ function cdValsOnly( cds ){
 }
 function updateField( gene, style, evts ){
     let code = fromEvents( gene, style, evts );
+    if ( code.length==0 ) return;
+
     let old = getStyle( gene, style );
+    if ( old==undefined ){     // first definition
+
+        setStyle( gene, style, code );
+        saveGene( gene );
+        msg( `saved ${gene.nm}.${style}` );        
+        return;      
+    } 
+
     let fdif = -1, ndif = 0, diffs = '';
     if ( code[0] != old[0] ){           //  eg '|1' != '|1'
         ndif++;  diffs = `0(${old[0]}=>${code[0]})`;
@@ -590,9 +601,10 @@ function toMelody( n_gene, r_gene, styles ){
     let ntOff = (60 + rtnt % 12) - rtnt + (n_gene.mOct-4)*12;      // offset to shift root to mOct
     let dur = r_gene.tpb;
     let tpm = r_gene.bpb * r_gene.tpb;
+    let checkBars = (n_gene==r_gene) && !rhy.isSteady;    
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( isBarMark( rcd, rhy, tic, rhy.isSteady )){
+        if ( isBarMark( rcd, rhy, tic, checkBars )){
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -607,7 +619,7 @@ function toMelody( n_gene, r_gene, styles ){
             dur = r_gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next note (or rest)
-        if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
+        if ( isBarMark( ncd, nts, tic, checkBars ) ){   // measure boundary check
             ncd = nts.nextCd();
         }
 
@@ -650,9 +662,10 @@ function toHarmony( n_gene, r_gene, styles ){
     let rtNt = n_gene.rootNt, nt = rtNt, tic = 0;
     let chd = [ nt, nt+4, nt+7 ];   // major chord
     let dur = r_gene.tpb;
+    let checkBars = (n_gene==r_gene) && !rhy.isSteady;  
     while ( true ){
         let rcd = rhy.nextCd();     // get next duration
-        if ( isBarMark( rcd, rhy, tic, rhy.isSteady ) ){   // measure boundary check
+        if ( isBarMark( rcd, rhy, tic, checkBars ) ){   // measure boundary check
             rcd = rhy.nextCd();
         }
         if ( rcd != undefined ){    // if cds run out, repeat last dur
@@ -668,7 +681,7 @@ function toHarmony( n_gene, r_gene, styles ){
             dur = r_gene.tpb; 
         }
         let ncd = nts.nextCd();     // get next chord (or rest)
-        if ( isBarMark( ncd, nts, tic, rhy.isSteady ) ){   // measure boundary check
+        if ( isBarMark( ncd, nts, tic, checkBars ) ){   // measure boundary check
             ncd = nts.nextCd();
         }
 
@@ -742,8 +755,10 @@ function toEvents( mn_gene, mr_gene, hn_gene, hr_gene, styles ){
 function saveGene( gene ){
     let data = jetpack.cwd( './data' );
     let evts = gene.evts;
-    delete gene.orig_events;  
-    delete gene.evts;
+    const cleanups = [ 'defs', 'cnts', 'scaledegrees', 'notes', 'intervals', 'rootNote', 'mRhythm', 'mSteady',
+    'chords', 'romans', 'rootMajor', 'hRhythm', 'hSteady', 'hmSteady', 'orig_events', 'evts' ];
+    for ( let f of cleanups )
+        if ( gene[f] != undefined ) delete gene[f];
 
     data.write( `${gene.nm}_gene.json`, gene ); //, 'json' );
     gene.evts = evts;
@@ -851,6 +866,7 @@ function setEval( g, sty, fld, val ){
 }
 function checkCode( g, sty ){       // return false & reports if code errors
     let cd = getStyle( g, sty );
+    if (cd==undefined) return false;
 
     let validChars = encodings[sty].vchr;
     let isRhythm = encodings[sty].isRhythm;
@@ -899,7 +915,6 @@ function loadGene( g ){     // verify gene json
     if ( g.root!=undefined ){
         if ( isNaN( Number(g.root)) ){
             g.rootNt = toKeyNum( g.root );
-        
         } else {
             g.rootNt = g.root; 
             g.root = emStr( g.root, true );
@@ -910,25 +925,30 @@ function loadGene( g ){     // verify gene json
     fillDefault( g, 'tpb', 4 );        // tics per beat
     fillDefault( g, 'tempo', 100 );
     fillDefault( g, 'bpb', 4 );
-    fillDefault( g, 'defs', {} );       // definition source per envType
+    for ( let ty of encTypes.vToNm ){
+        if ( g[ty]==undefined ) g[ty] = {};
+    }
     for ( let e of encStyles ){  // styles in order of preference
         let cd = getStyle( g, e );
-        let enc = encodings[e];
-        if ( g[ enc.type ]==undefined ) g[enc.type] = {};
-        if ( g[ enc.type ].def==undefined){  // no definition recorded
-            g[ enc.type ].def = e;     // use this one as definition
+        if ( cd != undefined && cd != '' ){
+            let enc = encodings[e];
+            if ( g[ enc.type ].def==undefined){  // no definition recorded
+                g[ enc.type ].def = e;     // use this one as definition
+                g[ enc.type ][e] = cd.join(' ');     
+            }
         }
     }
+    let styles = '';
     if ( g.MN.def!=undefined && g.MR.def!=undefined ){
-        let styles = g.MN.def + ',' + g.MR.def;
+        styles = g.MN.def + ',' + g.MR.def;
         msg( ` M:${styles}`, true );
     }
     if ( g.HN.def!=undefined && g.HR.def!=undefined ){
-        let styles = g.HN.def + ',' + g.HR.def;
-        msg( ` H:${styles}`, true );
+        let hsty =  g.HN.def + ',' + g.HR.def;
+        msg( ` H:${hsty}`, true );
+        styles += (styles==''? '':',' ) + hsty;
     }
 
-    let styles = [ 'notes', 'mRhythm', 'chords', 'hRhythm' ];
     let evts = toEvents( g, g, g, g, styles );
     for ( let e of encStyles ){
         updateField( g, e, evts );

@@ -274,8 +274,11 @@
         chd2 = chd.map( x => x-rt );
  
 		let idx = idxChd( chd2 );
-		if ( idx >= 0 )  
-			return split? [ nts[0], chordDefs[idx].nm ] : `${nts[0]}${chordDefs[idx].nm}`;
+		if ( idx >= 0 ){  
+			let nm = chordDefs[idx].nm;
+			if ( nm=='M' ) nm = '';
+			return split? [ nts[0], nm ] : `${nts[0]}${nm}`;
+		}
 
 		for ( let i=0; i < chd2.length-1; i++ ){	// check for inversions
 			chd2[i] += 12;

@@ -23,8 +23,8 @@
   },
   "HN": {
     "def": "chords",
-    "chords": "|1 r |2 GM D/F# Em7 |3 Am CM |4 Em D/F# |6 GM DM Em7 |7 Am CM |8 Em CM |9 DM |10 Em Am |11 Em Am |12 CM GM Am |13 CM DM |14 GM DM Em |15 Am7 DM |16 GM DM Em |17 CM DM7 |18 GM",
-    "romans": "|1 r |2 I V/1 VI7 |3 ii IV |4 vi V/1 |6 I V VI7 |7 ii IV |8 vi IV |9 V |10 vi ii |11 vi ii |12 IV I ii |13 IV V |14 I V vi |15 II7 V |16 I V vi |17 IV VM7 |18 I",
+    "chords": "|1 r |2 G D/F# Em7 |3 Am C |4 Em D/F# |6 G D Em7 |7 Am C |8 Em C |9 D |10 Em Am |11 Em Am |12 C G Am |13 C D |14 G D Em |15 Am7 D |16 G D Em |17 C DM7 |18 G",
+    "romans": "|1 r |2 I V/1 vi7 |3 ii IV |4 vi V/1 |6 I V vi7 |7 ii IV |8 vi IV |9 V |10 vi ii |11 vi ii |12 IV I ii |13 IV V |14 I V vi |15 ii7 V |16 I V vi |17 IV VM7 |18 I",
     "rootMajor": "|1 r |2 GM GM GM |3 GM GM |4 GM GM |6 GM GM GM |7 GM GM |8 GM GM |9 GM |10 GM GM |11 GM GM |12 GM GM GM |13 GM GM |14 GM GM GM |15 GM GM |16 GM GM GM |17 GM GM |18 GM"
   },
   "HR": {
@@ -36,7 +36,8 @@
   "old": {
     "origchords": "r G D/F# Em7 Am C Em D |6 G D/F# Em7 Am C Em C |9 D Em Am Em Am C G/B Am |13 C D G D/F# Em Am7 D G D/F# Em |17 C D7 G",
     "origromans": "r I V/1 vi7 ii IV vi V |6 I V/1 vi7 ii IV vi IV |9 V vi ii vi ii IV I6 ii |13 IV V I V/1 vi ii7 V I V/1 vi |17 IV V7 I",
-    "romans": "r I V/1 vi7 ii IV vi V/1 I V vi7 ii IV vi IV V vi ii vi ii IV I ii IV V I V vi ii7 V I V vi IV VM7 I"
+    "romans": "r I V/1 VI7 ii IV vi V/1 I V VI7 ii IV vi IV V vi ii vi ii IV I ii IV V I V vi II7 V I V vi IV VM7 I",
+    "chords": "r GM D/F# Em7 Am CM Em D/F# GM DM Em7 Am CM Em CM DM Em Am Em Am CM GM Am CM DM GM DM Em Am7 DM GM DM Em CM DM7 GM"
   },
   "eval": {
     "notes": {
@@ -66,7 +67,7 @@
     },
     "chords": {
       "cnt": 36,
-      "hist_max": "DM",
+      "hist_max": "D",
       "hist_maxPct": 0.16666666666666666,
       "auto_max": 0.5,
       "auto_off": [

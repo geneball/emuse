@@ -14,7 +14,7 @@ class histogram {
 
         this.cnt = 0;
         this.code = getStyle( gene, style );
-        if ( this.code==null ) return;
+        if ( this.code==undefined ) return;
 
         let cds = this.code;
         this.cnt = this.code.length;
@@ -71,39 +71,41 @@ class histogram {
     html(){
         let htics = isRhythmStyle( this.style )? ` tics=${this.sum}` : '';
         let h = `<div id="${this.gene.nm}_hist"> <span class="hTitle"> ${this.gene.nm} ${this.style} cnt=${this.cnt} ${htics} maxcor=${this.max_auto} at ${this.max_pos}</span> <div id="${this.style}bars" class="hist"> `;
-        let valNms = Object.getOwnPropertyNames( this.valcnts );
-        valNms = valNms.sort( (a,b) => { 
-                let na = Number(a), nb = Number(b);
-                if ( !isNaN(na)&&!isNaN(nb) ) return na-nb;
-                return isNaN(na)? -1 : 1;
-            }
-        );
-        let ht = 10, cls = 'sp2', rows = scaleRows();
-        for ( let i=0; i<valNms.length; i++ ){
-            let nm = valNms[i];
-            let num = Number( nm );
-            if ( nm!='r' && nm!='.' && nm[0]!='|' ){
-                switch ( this.style ){
-                    case 'mRhythm':
-                    case 'hRhythm':  
-                    case 'intervals':      
-                        cls = i%2==0? 'n1':'n5';    
-                        break;
-                    case 'scaledegrees':    
-                        num = scDegToKeyNum( nm );
-                    case 'notes':
-                    case 'rootNote':
-                        cls = rows[ num ].ntcls;
-                        break;
-                    case 'chords':
-                    case 'romans':
-                    case 'rootMajor':
-                        let ch = asChord( nm );
-                        cls = rows[ ch[0] ].ntcls;
-                        break;
+        if ( this.valcnts ){    // had values to count
+            let valNms = Object.getOwnPropertyNames( this.valcnts );
+            valNms = valNms.sort( (a,b) => { 
+                    let na = Number(a), nb = Number(b);
+                    if ( !isNaN(na)&&!isNaN(nb) ) return na-nb;
+                    return isNaN(na)? -1 : 1;
                 }
+            );
+            let ht = 10, cls = 'sp2', rows = scaleRows();
+            for ( let i=0; i<valNms.length; i++ ){
+                let nm = valNms[i];
+                let num = Number( nm );
+                if ( nm!='r' && nm!='.' && nm[0]!='|' ){
+                    switch ( this.style ){
+                        case 'mRhythm':
+                        case 'hRhythm':  
+                        case 'intervals':      
+                            cls = i%2==0? 'n1':'n5';    
+                            break;
+                        case 'scaledegrees':    
+                            num = scDegToKeyNum( nm );
+                        case 'notes':
+                        case 'rootNote':
+                            cls = rows[ num ].ntcls;
+                            break;
+                        case 'chords':
+                        case 'romans':
+                        case 'rootMajor':
+                            let ch = asChord( nm );
+                            cls = rows[ ch[0] ].ntcls;
+                            break;
+                    }
+                }
+                h += `<div id="hv_${nm}" class="histBar ln${this.valcnts[nm]*2} ${cls}"> ${nm} (${this.valcnts[nm]})</div>`;
             }
-            h += `<div id="hv_${nm}" class="histBar ln${this.valcnts[nm]*2} ${cls}"> ${nm} (${this.valcnts[nm]})</div>`;
         }
         h += `</div></div>`;
         return h;

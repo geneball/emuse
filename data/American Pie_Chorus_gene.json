@@ -23,7 +23,7 @@
   },
   "HN": {
     "def": "chords",
-    "chords": "|1 GM CM |2 GM DM |3 GM CM |4 GM DM |5 GM CM |6 GM DM |7 Em |8 A7 |9 Em |10 D7",
+    "chords": "|1 G C |2 G D |3 G C |4 G D |5 G C |6 G D |7 Em |8 A7 |9 Em |10 D7",
     "romans": "|1 I IV |2 I V |3 I IV |4 I V |5 I IV |6 I V |7 vi |8 II7 |9 vi |10 V7",
     "rootMajor": "|1 GM GM |2 GM GM |3 GM GM |4 GM GM |5 GM GM |6 GM GM |7 GM |8 GM |9 GM |10 GM"
   },
@@ -33,22 +33,9 @@
     "hSteady": "|1 4 4 |2 4 4 |3 4 4 |4 4 4 |5 4 4 |6 4 4 |7 4 |8 4 |9 4 |10 4",
     "hmSteady": "|1 4 16 |2 24 24 |3 16 32 |4 24 40 |5 8 16 |6 24 24 |7 24 |8 56 |9 8 |10 56"
   },
-  "cnts": {
-    "scaledegrees": 55,
-    "notes": 55,
-    "intervals": 55,
-    "rootNote": 55,
-    "mRhythm": 55,
-    "mSteady": 55,
-    "chords": 16,
-    "romans": 16,
-    "rootMajor": 16,
-    "hRhythm": 16,
-    "hSteady": 16,
-    "hmSteady": 16
+  "old": {
+    "chords": "GM CM GM DM GM CM GM DM GM CM GM DM Em A7 Em D7"
   },
-  "old": {},
-  "defs": {},
   "eval": {
     "notes": {
       "cnt": 55,
@@ -71,7 +58,7 @@
     },
     "chords": {
       "cnt": 16,
-      "hist_max": "GM",
+      "hist_max": "G",
       "hist_maxPct": 0.375,
       "auto_max": 0.6666666666666666,
       "auto_off": [
