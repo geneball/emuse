@@ -1,4 +1,4 @@
-const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chordName, emStr } = require("./emuse");
+const { toKeyNum, scDegToKeyNum, scaleRows, modeNames, chordNames, toChord, chordName, modeChord, emStr } = require("./emuse");
 const { asChord } = require( './etrack.js' );
 const jetpack = require("fs-jetpack");
 const { find } = require("fs-jetpack");
@@ -404,7 +404,7 @@ function fromEvents( gene, style, evts ){
     if ( evts==undefined ) evts = gene.evts;
     let rootnt = gene.rootNt;
     let prevnt = rootnt;
-    let scRows = scaleRows( rootnt, gene.mode );
+    let scRows = scaleRows( gene.root, gene.mode );
     let mtic = 0, htic = 0, tpm = gene.bpb * gene.tpb;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];
@@ -862,6 +862,7 @@ function setEval( g, sty, fld, val ){
     if ( g.eval==undefined ) g.eval = {};
     let ev = g.eval[sty];
     if ( ev==undefined ) ev = g.eval[sty] = {};
+    if ( !isNaN( Number( val ))) val = Math.round( val*100 )/100; 
     ev[fld] = val;
 }
 function checkCode( g, sty ){       // return false & reports if code errors

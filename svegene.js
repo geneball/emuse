@@ -48,7 +48,7 @@ function fromEvents( gene, style, evts ){
     if ( evts==undefined ) evts = gene.evts;
     let rootnt = toKeyNum( gene.root );
     let prevnt = rootnt;
-    let scRows = scaleRows( rootnt, gene.mode );
+    let scRows = scaleRows( gene.root, gene.mode );
     let mtic = 0, htic = 0, bpm = gene.bpb * gene.tpb;
     if ( encodings[style] == undefined ) debugger;
     let { isRhythm, isMelody, isConst } = encodings[ style ];

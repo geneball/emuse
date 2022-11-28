@@ -1,6 +1,6 @@
 {
   "nm": "American Pie_Chorus",
-  "root": 67,
+  "root": "G",
   "rootNt": 67,
   "mode": "Major",
   "bpb": 4,
@@ -39,69 +39,97 @@
   "eval": {
     "notes": {
       "cnt": 55,
-      "hist_max": "72",
+      "hist_max": 72,
       "hist_maxPct": 0.2,
-      "auto_max": 0.35714285714285715,
+      "auto_max": 0.36,
       "auto_off": [
         1,
         12
-      ]
+      ],
+      "code_len": 61,
+      "avg_val": 65.09,
+      "avg_sqr": 4493.24,
+      "tic_len": 0,
+      "legal": 0
     },
     "mRhythm": {
       "cnt": 55,
-      "hist_max": "2",
-      "hist_maxPct": 0.5636363636363636,
+      "hist_max": 2,
+      "hist_maxPct": 0.56,
       "auto_max": 1,
-      "auto_off": [
-        53
-      ]
+      "auto_off": 53,
+      "code_len": 61,
+      "avg_val": 2.8,
+      "avg_sqr": 10.51,
+      "tic_len": 154,
+      "legal": 0
     },
     "chords": {
       "cnt": 16,
       "hist_max": "G",
-      "hist_maxPct": 0.375,
-      "auto_max": 0.6666666666666666,
-      "auto_off": [
-        3
-      ]
+      "hist_maxPct": 0.38,
+      "auto_max": 0.67,
+      "auto_off": 3,
+      "code_len": 26,
+      "avg_val": 0,
+      "avg_sqr": 0,
+      "tic_len": 0,
+      "legal": 0
     },
     "hRhythm": {
       "cnt": 16,
-      "hist_max": "8",
+      "hist_max": 8,
       "hist_maxPct": 0.75,
-      "auto_max": 0.8666666666666667,
+      "auto_max": 0.87,
       "auto_off": [
         0,
         1
-      ]
+      ],
+      "code_len": 26,
+      "avg_val": 11,
+      "avg_sqr": 160,
+      "tic_len": 176,
+      "legal": 0
     },
     "scaledegrees": {
       "cnt": 55,
-      "hist_max": "4",
+      "hist_max": 4,
       "hist_maxPct": 0.2,
-      "auto_max": 0.35714285714285715,
+      "auto_max": 0.36,
       "auto_off": [
         1,
         12
-      ]
+      ],
+      "code_len": 61,
+      "avg_val": 1.85,
+      "avg_sqr": 8,
+      "tic_len": 0,
+      "legal": 0
     },
     "intervals": {
       "cnt": 55,
-      "hist_max": "-2",
-      "hist_maxPct": 0.32727272727272727,
+      "hist_max": -2,
+      "hist_maxPct": 0.33,
       "auto_max": 0.5,
-      "auto_off": [
-        52
-      ]
+      "auto_off": 52,
+      "code_len": 61,
+      "avg_val": -0.09,
+      "avg_sqr": 7.44,
+      "tic_len": 0,
+      "legal": 0
     },
     "romans": {
       "cnt": 16,
       "hist_max": "I",
-      "hist_maxPct": 0.375,
-      "auto_max": 0.6666666666666666,
-      "auto_off": [
-        3
-      ]
-    }
+      "hist_maxPct": 0.38,
+      "auto_max": 0.67,
+      "auto_off": 3,
+      "code_len": 26,
+      "avg_val": 0,
+      "avg_sqr": 0,
+      "tic_len": 0,
+      "legal": 0
+    },
+    "total": -0.585
   }
 }

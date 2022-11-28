@@ -2,7 +2,7 @@
 const { msg, statusMsg } = require("./msg.js");
 const { shell } = require('electron');
 
-const { toKeyNum, setScale, scaleRows, scDegToKeyNum, modeNames, chordNames, chordName, emStr } = require( './emuse.js' );
+const { toKeyNum, setScale, scaleRows, scDegToKeyNum, modeNames, chordNames, chordName, modeChord, emStr } = require( './emuse.js' );
 const { clearKeyMarkers, setKeyScale, rmClassFrChildren, addClass } = require( './piano.js' );
 
 const { trackNames, findTrack, evalTrack  } = require('./etrack.js');
@@ -138,19 +138,6 @@ var _song, _track, _trk, _evts;
 selRoot.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
 selMode.addEventListener("change", function() {  setKey( selRoot.value, selMode.value ); reEval(); });
 
-function modeChord( key ){  // return e.g. [ 'I', 'M' ] or [ 'ii', 'm' ] or [ 'VIIdim', 'dim' ]
-  let rows = scaleRows();
-  let bdeg = Number( rows[key].bdeg );
-  const romans = [ 'x', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII' ];
-  let rom = romans[ bdeg ];
-  let chord = [ key, scDegToKeyNum(bdeg+2), scDegToKeyNum(bdeg+4) ];    // root + 3rd & 5th in scale
- 
-  let [ rt, nm ] = chordName( chord, true, true );  // get name of the chord
-  let rnm = nm;
-  if ( nm == 'm' ){ rom = rom.toLowerCase(); rnm = ''; }
-  if ( nm == 'M' ) rnm = '';
-  return [ rom + rnm, nm ];
-}
 function setKey( root, mode ){
   clearChordBtns();
   rmClassFrChildren( scaleDegrees, 'root' );
@@ -161,7 +148,7 @@ function setKey( root, mode ){
   let rkey = toKeyNum( root );    // root key in octave 4
   MN_gene.rootNt = rkey;
   MN_gene.mode = mode;
-  setScale( mode, rkey );
+  setScale( mode, root );
   let rows = scaleRows( );
   let schtml = '';
 
@@ -192,6 +179,8 @@ selMNgene.addEventListener("change", function() {
 
   m_octave.value = _gene.melodyOctave == undefined? 4 : _gene.melodyOctave;
   h_octave.value = _gene.harmonyOctave == undefined? 3 : _gene.harmonyOctave;
+
+  msg( `Eval = ${ evalGene( _gene )}` );  
   reEval();
 });
 selMRgene.addEventListener("change", function() {
