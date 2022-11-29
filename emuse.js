@@ -167,30 +167,38 @@
 	const cls = {   // class names by scale degree
 			'1':	{ chd: 'ch1',   nt: 'n1',   sd:'sd1',   row: 'sp1' },
 			'1#':	{ chd: 'ch12',  nt: 'n12',  sd:'sd12',  row: 'sp2' },
+			'2b':	{ chd: 'ch12',  nt: 'n12',  sd:'sd12',  row: 'sp2' },
 			'1##':	{ chd: 'ch21',  nt: 'n21',  sd:'sd21',  row: 'sp2' },
 			'2':	{ chd: 'ch2',   nt: 'n2',   sd:'sd2',   row: 'sp1' },
 			'2#':	{ chd: 'ch23',  nt: 'n23',  sd:'sd23',  row: 'sp2' },
+			'3b':	{ chd: 'ch23',  nt: 'n23',  sd:'sd23',  row: 'sp2' },
 			'2##':	{ chd: 'ch32',  nt: 'n32',  sd:'sd32',  row: 'sp2' },
 			'3':	{ chd: 'ch3',   nt: 'n3',   sd:'sd3',   row: 'sp1' },
 			'3#':	{ chd: 'ch34',  nt: 'n34',  sd:'sd34',  row: 'sp2' },
+			'4b':	{ chd: 'ch34',  nt: 'n34',  sd:'sd34',  row: 'sp2' },
 			'3##':	{ chd: 'ch43',  nt: 'n43',  sd:'sd43',  row: 'sp2' },
 			'4':	{ chd: 'ch4',   nt: 'n4',   sd:'sd4',   row: 'sp1' },
 			'4#':	{ chd: 'ch45',  nt: 'n45',  sd:'sd45',  row: 'sp2' },
+			'5b':	{ chd: 'ch45',  nt: 'n45',  sd:'sd45',  row: 'sp2' },
 			'4##':	{ chd: 'ch54',  nt: 'n54',  sd:'sd54',  row: 'sp2' },
 			'5':	{ chd: 'ch5',   nt: 'n5',   sd:'sd5',   row: 'sp1' },
 			'5#':	{ chd: 'ch56',  nt: 'n56',  sd:'sd56',  row: 'sp2' },
+			'6b':	{ chd: 'ch56',  nt: 'n56',  sd:'sd56',  row: 'sp2' },
 			'5##':	{ chd: 'ch65',  nt: 'n65',  sd:'sd65',  row: 'sp2' },
 			'6':	{ chd: 'ch6',   nt: 'n6',   sd:'sd6',   row: 'sp1' },
 			'6#':	{ chd: 'ch67',  nt: 'n67',  sd:'sd67',  row: 'sp2' },
+			'7b':	{ chd: 'ch67',  nt: 'n67',  sd:'sd67',  row: 'sp2' },
 			'6##':	{ chd: 'ch76',  nt: 'n76',  sd:'sd76',  row: 'sp2' },
 			'7':	{ chd: 'ch7',   nt: 'n7',   sd:'sd7',   row: 'sp1' },
 			'7#':	{ chd: 'ch71',  nt: 'n71',  sd:'sd71',  row: 'sp2' },
+			'1b':	{ chd: 'ch71',  nt: 'n71',  sd:'sd71',  row: 'sp2' },
 			'7##':	{ chd: 'ch17',  nt: 'n17',  sd:'sd17',  row: 'sp2' },
 		};
 
 	function addScaleRow( k, insc, ntnm, scdeg, bdeg ){  // add row to currScaleRows
 		if ( k<0 || k>127 ) return;		// only legal midi keys
 
+		if ( cls[scdeg]===undefined ) debugger;
 		currScaleRows[ k ] = { key: k, inscale: insc, ntnm: ntnm, scdeg: scdeg, bdeg: bdeg, 
 			ntcls: cls[scdeg].nt, sdcls: cls[scdeg].sd, chdcls: cls[scdeg].chd, rowcls: cls[scdeg].row };
 		currScaleDegMap[ bdeg ] = k;   // map from eg. GMaj:  '1' => 67, '1#' => 68, '-1' => 65
